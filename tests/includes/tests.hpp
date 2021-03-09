@@ -1,18 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   tests.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/03/09 15:04:36 by juligonz          #+#    #+#             */
-/*   Updated: 2021/03/09 15:17:32 by juligonz         ###   ########.fr       */
+/*   Created: 2021/03/09 15:14:29 by juligonz          #+#    #+#             */
+/*   Updated: 2021/03/09 15:22:16 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "tests.hpp"
+#ifndef TESTS_HPP
+#define TESTS_HPP
 
-int main()
-{
-	return 0;
+#include "algorithm"
+#include "vector"
+
+template<class Container>
+void testVector{
+	Container
+	std::vector
 }
+
+#endif

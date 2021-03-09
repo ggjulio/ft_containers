@@ -6,13 +6,11 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/09 15:04:36 by juligonz          #+#    #+#             */
-/*   Updated: 2021/03/09 15:17:32 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/03/09 15:09:37 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "tests.hpp"
-
 int main()
 {
-	return 0;
+	
 }

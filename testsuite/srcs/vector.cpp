@@ -3,9 +3,17 @@
 #include <vector>
 #include <string>
 
-TEMPLATE_TEST_CASE( "vectors can be sized and resized", "[vector][template][size][capacity]", int, std::string ) {
+#define NS_NAME std
 
-    std::vector<TestType> v( 5 );
+#ifdef NS_NAME
+    namespace cn = ::NS_NAME;
+#else
+    namespace cn = ft;
+#endif
+
+TEMPLATE_TEST_CASE( "vectors can be sized and resized", "[vector][template][size()][capacity]", int, std::string ) {
+
+    cn::vector<TestType> v( 5 );
     REQUIRE( v.size() == 5 );
     REQUIRE( v.capacity() >= 5 );
 
@@ -20,13 +28,12 @@ TEMPLATE_TEST_CASE( "vectors can be sized and resized", "[vector][template][size
 
         REQUIRE( v.size() == 0 );
         REQUIRE( v.capacity() >= 5 );
+    }
+    SECTION("We can use the 'swap trick' to reset the capacity") {
+        cn::vector<TestType> empty;
+        empty.swap( v );
 
-        SECTION("We can use the 'swap trick' to reset the capacity") {
-            std::vector<TestType> empty;
-            empty.swap( v );
-
-            REQUIRE( v.capacity() == 0 );
-        }
+        REQUIRE( v.capacity() == 0 );
     }
     SECTION("reserving smaller does not change size or capacity") {
         v.reserve( 0 );

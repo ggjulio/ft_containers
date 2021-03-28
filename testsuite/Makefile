@@ -59,8 +59,12 @@ SRCS_DIR = $(shell find $(SRC_DIR) -type d)
 INC = 
 vpath %.hpp $(INC_DIR)
 
+# Unit test framework source code
 SRC = main.cpp catch_amalgamated.cpp
-SRC+= vector.cpp
+
+# Our tests
+SRC+= vector.cpp stack.cpp
+
 
 OBJ = $(addprefix  $(OBJ_DIR)/,$(SRC:%.cpp=%.o))
 vpath %.cpp $(SRCS_DIR)

@@ -2,36 +2,23 @@
 
 #include <stack>
 #include <string>
+#include <deque>
 
-TEMPLATE_TEST_CASE( "vectors can be sized and resized", "[vector][template][size][capacity]", int, std::string ) {
+#define NS_NAME std
 
-    std::stack<TestType> v( 5 );
-    REQUIRE( v.() == 5 );
-    REQUIRE( v.capacity() >= 5 );
+#ifdef NS_NAME
+    namespace cn = ::NS_NAME;
+#else
+    namespace cn = ft;
+#endif
 
-    SECTION("resizing bigger changes size and capacity") {
-        v.resize( 10 );
+TEMPLATE_TEST_CASE( "stack", "[stack][template][size][capacity]", std::string ) {
 
-        REQUIRE( v.size() == 10 );
-        REQUIRE( v.capacity() >= 10 );
-    }
-    SECTION("resizing smaller changes size but not capacity") {
-        v.resize( 0 );
+    typedef int T;
+    cn::stack<T> s = cn::stack<T>();
 
-        REQUIRE( v.size() == 0 );
-        REQUIRE( v.capacity() >= 5 );
+    SECTION( "Member types") {
+        REQUIRE( std::is_same<std::stack<T>::value_type, T>::value );
 
-        SECTION("We can use the 'swap trick' to reset the capacity") {
-            std::vector<TestType> empty;
-            empty.swap( v );
-
-            REQUIRE( v.capacity() == 0 );
-        }
-    }
-    SECTION("reserving smaller does not change size or capacity") {
-        v.reserve( 0 );
-
-        REQUIRE( v.size() == 5 );
-        REQUIRE( v.capacity() >= 5 );
     }
 }

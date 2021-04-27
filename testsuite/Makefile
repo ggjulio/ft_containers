@@ -50,6 +50,7 @@ UNAME := $(shell uname)
 NAME = tests
 
 SRC_DIR = ./srcs
+BUILD_DIR = ./build
 INC_DIR = $(shell find . -type d -name "includes")
 INC_DIR+= ../includes
 OBJ_DIR = obj
@@ -91,7 +92,8 @@ $(OBJ_DIR)/%.o: %.cpp
 	@$(CXX) $(CXXFLAGS) $(IFLAGS) -c $< -o $@
 
 $(NAME): $(INC) $(OBJ)
-	@$(CXX) $(CXXFLAGS) $(IFLAGS)  -o $@ $(OBJ) $(LDFLAGS)
+	mkdir -p $(BUILD_DIR)
+	$(CXX) $(CXXFLAGS) $(IFLAGS)  -o $(BUILD_DIR)/$@ $(OBJ) $(LDFLAGS)
 	@printf "$(_GREEN)Compiled : $(_MAGENTA)$(NAME)$(_R)\n"
 	@printf "\nDo $(_CYAN)$(_BOLD)make show$(_R) to debug the Makefile\n"
 	@printf "Do $(_RED)$(_BOLD)make debug$(_R) to run tests with lldb\n"
@@ -131,7 +133,7 @@ clean:
 	@printf "$(_RED)Removed :$(_MAGENTA) $(OBJ_DIR)/$(_MAGENTA)\n"
 
 fclean: clean
-	@rm -fr $(NAME) $(DEBUG_EXEC) $(NAME).dSYM/
+	@rm -fr $(BUILD_DIR)/ $(NAME).dSYM/
 	@printf "$(_RED)Removed : $(_MAGENTA)./$(NAME), $(NAME).dSYM/$(_R)\n"
 
 re: fclean all

@@ -6,9 +6,12 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/10 18:33:59 by juligonz          #+#    #+#             */
-/*   Updated: 2021/03/10 19:08:30 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/05/01 01:44:32 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+#ifndef _FT_STACK_H
+#define _FT_STACK_H
 
 #include <deque> // to remove #######################
 
@@ -20,6 +23,7 @@ namespace ft{
    *  @tparam _T  			Type of element.
    *  @tparam _Container  	Type of underlying sequence, defaults to deque<_T>.
    *
+   *  @details
    *  Meets many of the requirements of a container,
    *  but does not define anything to do with iterators.  Very few of the
    *  other standard container interfaces are defined.
@@ -36,35 +40,72 @@ namespace ft{
    *  type.
    *
    *  Members not found in normal containers are @c container_type,
-   *  which is a typedef for the second Sequence parameter, and
+   *  which is a typedef for the second template parameter, and
    *  @c push, @c pop, and @c top, which are standard %stack/FILO
    *  operations.
   */
-
 template<class _T, class _Container=std::deque<_T> >
 class stack
 {
-	public:
-		typedef typename _Container::value_type			value::type;
-		typedef typename _Container::reference			reference;
-		typedef typename _Container::const_reference	const_reference;
-		typedef typename _Container::size_type			size_type;
-		typedef typename _Container						container_type;
-		
-	protected:
-		_Container c;
+public:
+	typedef typename _Container::value_type			value_type;
+	typedef typename _Container::size_type			size_type;
+	typedef 		 _Container 					container_type;
 
-	public:
-		stack(): c(){}
-		stack(const _Container& other): c(other){}
+protected:
+	_Container c;
 
-		
-		empty(){
-			
-		}		
-	private:
-		
-}
+public:
+	stack(const _Container& ctnr = _Container()): c(ctnr){}
+
+	bool				empty(void) const 				{ return c.empty(); }
+	size_type			size() const					{ return c.size(); }
+	value_type&			top(void)						{ return c.back(); }
+	const value_type&	top(void) const					{ return c.back(); }
+	void				push(const value_type& value)	{ c.push_back(value); }
+    void				pop(void)						{ c.pop_back(); }
 
 
-}
+private:
+	template<class _T1, class _Container1>
+	friend bool operator==(const stack<_T1, _Container1>&, const stack<_T1, _Container1>&);
+	
+	template<class _T1, class _Container1>
+	friend bool operator<(const stack<_T1, _Container1>&, const stack<_T1, _Container1>&);
+};
+
+template<class _T, class _Container>
+	inline bool
+	operator==(const stack<_T, _Container>& lhs, const stack<_T, _Container>& rhs)
+	{ return lhs.c == rhs.c; }
+
+template<class _T, class _Container>
+	inline bool
+	operator<(const stack<_T, _Container>& lhs, const stack<_T, _Container>& rhs)
+	{ return lhs.c < rhs.c; }
+
+
+
+template<class _T, class _Container>
+	inline bool
+	operator!=(const stack<_T, _Container>& lhs, const stack<_T, _Container>& rhs)
+	{ return !(lhs == rhs); }
+
+template<class _T, class _Container>
+	inline bool
+	operator<=(const stack<_T, _Container>& lhs, const stack<_T, _Container>& rhs)
+	{ return !(rhs < lhs); }
+
+template<class _T, class _Container>
+	inline bool
+	operator>(const stack<_T, _Container>& lhs, const stack<_T, _Container>& rhs)
+	{ return rhs < lhs; }
+
+template<class _T, class _Container>
+	inline bool
+	operator>=(const stack<_T, _Container>& lhs, const stack<_T, _Container>& rhs)
+	{ return !(lhs < rhs); }
+
+} // namespace
+
+#endif /* _FT_STACK_H */

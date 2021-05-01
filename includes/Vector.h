@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/10 18:34:04 by juligonz          #+#    #+#             */
-/*   Updated: 2021/05/01 02:02:27 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/05/01 02:20:04 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,15 +15,19 @@
 #define _FT_VECTOR_H
 
 
+#include <memory>
+
 namespace ft{
 
-template<class _T, class _Container=std::deque<_T> >
-class vector
+template<typename _Tp, typename _Alloc = std::allocator<_Tp> >
+class vector : // protected _Vector_base<_Tp, _Alloc>class vector
 {
 public:
-	typedef typename _Container::value_type			value_type;
+	typedef typename _T			value_type;
+	//allocator ??
+	typedef typename 			value_type;
+	
 	typedef typename _Container::size_type			size_type;
-	typedef 		 _Container 					container_type;
 
 protected:
 	_Container c;

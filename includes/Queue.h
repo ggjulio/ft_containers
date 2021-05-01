@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/10 18:34:14 by juligonz          #+#    #+#             */
-/*   Updated: 2021/05/01 01:52:37 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/05/01 02:03:27 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 #define _FT_QUEUE_H
 
 #include <deque> // to remove #######################
-#include <queue>
 
 namespace ft{
 

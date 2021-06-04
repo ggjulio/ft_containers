@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/09 15:30:35 by juligonz          #+#    #+#             */
-/*   Updated: 2021/06/04 15:57:34 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/06/04 16:00:30 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,6 +105,13 @@ template <class BinaryPredicate>
 	void merge(list& x);
 template <class Compare>
 	void merge(list& x, Compare comp);
+	void sort();
+template <class Compare>
+	void sort(Compare comp);
+	void reverse();
+
+	// ?? allocator_type get_allocator() const;
+
 private:
 	// operators todo
 	
@@ -122,6 +129,9 @@ template <class T, class Alloc>
 	bool operator>  (const list<T,Alloc>& lhs, const list<T,Alloc>& rhs){}
 template <class T, class Alloc>
 	bool operator>= (const list<T,Alloc>& lhs, const list<T,Alloc>& rhs){}
+
+template <class T, class Alloc>
+  void swap (list<T,Alloc>& x, list<T,Alloc>& y);
 
 } // namespace
 

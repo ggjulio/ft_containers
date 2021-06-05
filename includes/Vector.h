@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/10 18:34:04 by juligonz          #+#    #+#             */
-/*   Updated: 2021/05/01 02:20:04 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/06/05 17:52:10 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,21 +16,30 @@
 
 
 #include <memory>
+#include <vector> // to delete
 
 namespace ft{
 
-template<typename _Tp, typename _Alloc = std::allocator<_Tp> >
-class vector : // protected _Vector_base<_Tp, _Alloc>class vector
+template<typename _T, typename _Alloc = std::allocator<_T> >
+class vector //: protected _Vector_base<_T, _Alloc>class vector
 {
 public:
 	typedef typename _T			value_type;
-	//allocator ??
-	typedef typename 			value_type;
-	
+	typedef typename _Alloc		allocator_type;
+	typedef value_type&			reference;
+	typedef const value_type&	const_reference;
+	typedef f		pointer;
+	typedef f		const_pointer;
+	typedef f		iterator;
+	typedef f		const_iterator;
+	typedef f		reverse_iterator;
+	typedef f		const_reverse_iterator;
+	typedef f		difference_type;
+
 	typedef typename _Container::size_type			size_type;
 
 protected:
-	_Container c;
+	_Container ctrn;
 
 public:
 	vector(const _Container& ctnr = _Container()): c(ctnr){}

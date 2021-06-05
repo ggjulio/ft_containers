@@ -29,15 +29,15 @@ TEST_CASE( "Stack - member types", "[stack][member_type][to_do]" ) {
         // this works ? probably not...
         REQUIRE( std::is_same<cn::stack<T, Container>::size_type, cn::stack<T, Container>::container_type::size_type >::value);
     }
-    // SECTION( "has all member types ??" ) {
-    //     // must test if others member types are properly declared
-    //     // (value_type, container_type, size_type)
-    //     REQUIRE( std::is_object<std::stack<T>::container_type::value_type >::value );
-    //     // REQUIRE( std::is_member_object_pointer<std::stack<T>::container_type >::value );
-    // }
-    // SECTION( "Has every member functions" ) {
-    //     REQUIRE( std::is_member_function_pointer< decltype( &std::stack<T>::empty ) >::value);
-    // }
+    SECTION( "has all member types ??" ) {
+        // must test if others member types are properly declared
+        // (value_type, container_type, size_type)
+        REQUIRE( std::is_object<std::stack<T>::container_type::value_type >::value );
+        // REQUIRE( std::is_member_object_pointer<std::stack<T>::container_type >::value );
+    }
+    SECTION( "Has every member functions" ) {
+        REQUIRE( std::is_member_function_pointer< decltype( &std::stack<T>::empty ) >::value);
+    }
 }
 TEST_CASE( "Stack - Constructors", "[stack][member_function][constructor][to_do]" ) {
 

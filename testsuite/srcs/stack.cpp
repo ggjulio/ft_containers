@@ -44,11 +44,11 @@ TEST_CASE( "Stack - Constructors", "[stack][member_function][constructor][to_do]
 }
 
 TEST_CASE( "Stack - empty()", "[stack][member_function][empty]" ) {
-	std::deque<T> deq = std::deque<T>();          // deque with 3 elements
+	// std::deque<T> deq = std::deque<T>();          // deque with 3 elements
+    cn::stack<T, Container> s = cn::stack<T, Container>();
     
 
     SECTION( "Is empty" ) {
-        cn::stack<T, Container> s = cn::stack<T, Container>();
         REQUIRE( s.empty() );
     }
     SECTION( "Is not empty" ) {

@@ -2,8 +2,9 @@
 
 #include <vector>
 #include <string>
+#include "../includes/Vector.h"
 
-#define NS_NAME std
+// #define NS_NAME std
 
 #ifdef NS_NAME
     namespace cn = ::NS_NAME;

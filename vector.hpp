@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Vector.h                                           :+:      :+:    :+:   */
+/*   vector.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/10 18:34:04 by juligonz          #+#    #+#             */
-/*   Updated: 2021/07/15 16:35:42 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/07/15 17:05:10 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,12 +45,24 @@ private:
 
 public:
 	/// Constructs an empty container, with no elements.
-	vector (const allocator_type& alloc = allocator_type()) {}
+	vector (const allocator_type& alloc = allocator_type()):
+		_size(0), _capacity(0) _ptrArray(NULL){}
 	/// Constructs a container with n elements. Each element is a copy of val.
-	vector (size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type()){}
+	vector (size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type()):
+		_size(n), _capacity(0), _ptrArray(NULL)
+	{
+		_ptrArray(alloc.allocate(n));
+		for (size_t i = 0; i < n; i++)
+			_ptrArray[i] = val;		
+	}
 	// Range constructor
 	template <class InputIterator>
-	  vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type()) {}
+	vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type()):
+		_size(0), _capacity(0), _ptrArray(NULL)
+	{
+		alloc.allocate();
+			
+	}
 	/// Copy constructor
 	vector (const vector& other) {}
 	// assign operator

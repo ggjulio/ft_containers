@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/10 18:34:04 by juligonz          #+#    #+#             */
-/*   Updated: 2021/07/15 17:05:10 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/07/15 18:00:08 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,18 +21,24 @@
 
 namespace ft{
 
+// template<typename _T, typename _Alloc = std::allocator<_T> >
+// struct _Vector_base<_T, _Alloc>
+// {
+	
+// }
+
 template<typename _T, typename _Alloc = std::allocator<_T> >
-class vector //: protected _Vector_base<_T, _Alloc>class vector
+class vector: /// protected _Vector_base<_T, _Alloc>class vector
 {
 public:
 	typedef typename _T								value_type;
 	typedef typename _Alloc							allocator_type;
 	typedef value_type&								reference;
 	typedef const value_type&						const_reference;
-	typedef f								pointer;
-	typedef f								const_pointer;
-	typedef pointer							iterator;
-	typedef const								const_iterator;
+	// typedef allocator_type::pointer					pointer;
+	// typedef allocator_type::connst_pointer			const_pointer;
+	// typedef pointer							iterator;
+	// typedef const								const_iterator;
 	typedef 			reverse_iterator;
 	typedef 	const_reverse_iterator;
 	typedef ptrdiff_t		difference_type;
@@ -53,31 +59,32 @@ public:
 	{
 		_ptrArray(alloc.allocate(n));
 		for (size_t i = 0; i < n; i++)
-			_ptrArray[i] = val;		
+			alloc.construct(_ptrArray + i, val);
+			// _ptrArray[i] = val;
 	}
 	// Range constructor
-	template <class InputIterator>
-	vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type()):
-		_size(0), _capacity(0), _ptrArray(NULL)
-	{
-		alloc.allocate();
-			
-	}
+	// template <class InputIterator>
+	// vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type()):
+	// 	_size(0), _capacity(0), _ptrArray(NULL)
+	// {
+	// 	alloc.allocate();
+	// 
+	// }
 	/// Copy constructor
 	vector (const vector& other) {}
 	// assign operator
-	vector & operator=(const vector & othe){}
+	// vector & operator=(const vector & other){}
 	~vector(){}
 
 	// iterators
 	iterator 				begin();
-	const_iterator			begin() const;
-	iterator				end();
-	const_iterator			end() const;
-	reverse_iterator 		rbegin();
-	const_reverse_iterator 	rbegin() const;
-	reverse_iterator		rend();
-	const_reverse_iterator	rend() const;
+	// const_iterator			begin() const;
+	// iterator				end();
+	// const_iterator			end() const;
+	// reverse_iterator 		rbegin();
+	// const_reverse_iterator 	rbegin() const;
+	// reverse_iterator		rend();
+	// const_reverse_iterator	rend() const;
 	
 	// capacity
 	size_type				size() const;
@@ -92,7 +99,6 @@ public:
 		
 		value_type  *newPtrArray = new value_type[n]; // to replace using allocator
 		this->_capacity = n;
-		
 	}
 
 	// Element access
@@ -115,15 +121,15 @@ public:
 			reserve( 2 * _capacity + 1);
 		_ptrArray[_size++] = val;
 	}
-	void		pop_back() {}
-	iterator 	insert(iterator position, const value_type& val) {}
-	void		insert (iterator position, size_type n, const value_type& val) {}
-	template <class InputIterator>
-      void		insert (iterator position, InputIterator first, InputIterator last){}
-	iterator	erase (iterator position) {}
-	iterator	erase (iterator first, iterator last) {}
-	void		swap (vector& other);
-	void		clear();
+	// void		pop_back() {}
+	// iterator 	insert(iterator position, const value_type& val) {}
+	// void		insert (iterator position, size_type n, const value_type& val) {}
+	// template <class InputIterator>
+    //   void		insert (iterator position, InputIterator first, InputIterator last){}
+	// iterator	erase (iterator position) {}
+	// iterator	erase (iterator first, iterator last) {}
+	// void		swap (vector& other);
+	// void		clear();
 
 	// Allocator
 	allocator_type get_allocator() const;
@@ -174,4 +180,4 @@ private:
 
 } // namespace
 
-#endif /* _FT_VECTOR_H */
+#endif /* _FT_VECTOR_HPP */

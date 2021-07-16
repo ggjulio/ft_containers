@@ -2,7 +2,7 @@
 
 #include <memory>
 #include <vector>
-#include "vector.hpp"
+// #include "vector.hpp"
 #include <iostream>
 
 
@@ -10,24 +10,33 @@
 namespace ft{
 
 
-template<class T, T v>
-struct integral_constant
-{
-	static constexpr T value = v;
-	typedef T value_type;
-	typedef integral_constant type;
-	constexpr operator value_type() const noexcept { return value; }
-	constexpr value_type operator()() const noexcept { return value; }
+// template<class T, T v>
+// struct integral_constant
+// {
+// 	static const T value = v;
+// 	typedef T value_type;
+// 	typedef integral_constant type;
+// 	constexpr operator value_type() const noexcept { return value; }
+// 	constexpr value_type operator()() const noexcept { return value; }
+// };
+
+template <class T, T v>
+struct integral_constant {
+  static constexpr T value = v;
+  typedef T value_type;
+  typedef integral_constant<T,v> type;
+  const operator T() { return v; }
 };
 
 typedef integral_constant<bool, true> true_type;
 typedef integral_constant<bool, false> false_type;
 
 template <class T>	struct is_integral							: public false_type{};
+
 template <>			struct is_integral<bool>					: public true_type {};
 template <>			struct is_integral<char>					: public true_type {};
-template <>			struct is_integral<char16_t>				: public true_type {};
-template <>			struct is_integral<char32_t>				: public true_type {};
+// template <>			struct is_integral<char16_t>				: public true_type {};
+// template <>			struct is_integral<char32_t>				: public true_type {};
 template <>			struct is_integral<wchar_t>					: public true_type {};
 template <>			struct is_integral<signed char>				: public true_type {};
 template <>			struct is_integral<short int>				: public true_type {};
@@ -57,6 +66,12 @@ int main()
 	std::cout << "char: " 	<< std::is_integral<char>::value << std::endl;
 	std::cout << "int: " 	<< std::is_integral<int>::value << std::endl;
 	std::cout << "float: " 	<< std::is_integral<float>::value << std::endl;
+ 
+	std::cout << std::boolalpha;
+	std::cout << "is_integral:" << std::endl;
+	std::cout << "char: " 	<< ft::is_integral<char>::value << std::endl;
+	std::cout << "int: " 	<< ft::is_integral<int>::value << std::endl;
+	std::cout << "float: " 	<< ft::is_integral<float>::value << std::endl;
  
 	return 0;
 }

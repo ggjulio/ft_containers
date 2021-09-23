@@ -14,3 +14,7 @@
 - [ ] is_integral
 - [ ] std::make_pair
 - [ ] equal/lexicographical compare
+
+https://users.cs.northwestern.edu/~riesbeck/programming/c++/stl-iterator-define.html
+
+https://web.stanford.edu/class/cs107l/handouts/04-Custom-Iterators.pdf

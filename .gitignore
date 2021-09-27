@@ -9,6 +9,5 @@ a.out.dSYM
 .DS_STORE
 .\#*
 output_valgrind
-tests
 demo
 obj/

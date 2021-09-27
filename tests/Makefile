@@ -65,7 +65,7 @@ SRC = main.cpp catch_amalgamated.cpp
 
 # Our tests
 SRC+= TestsVector.cpp TestsStack.cpp
-SRC+= TestsUtility.cpp
+SRC+= TestsTypeTraits.cpp
 
 
 OBJ = $(addprefix  $(OBJ_DIR)/,$(SRC:%.cpp=%.o))

@@ -1,5 +1,5 @@
-#ifndef UTILITY_HPP
-#define UTILITY_HPP
+#ifndef TYPE_TRAITS_HPP
+#define TYPE_TRAITS_HPP
 namespace ft{
 
 template <class T, T v>
@@ -31,4 +31,4 @@ template <>			struct is_integral<unsigned long long int>	: public true_type {};
 // template <>			struct is_integral<char32_t>				: public true_type {};
 } /* UTILS_HPP */
 
-#endif /* UTILITY_HPP */
+#endif /* TYPE_TRAITS_HPP */

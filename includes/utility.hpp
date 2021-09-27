@@ -1,15 +1,5 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   utils.hpp                                          :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/07/24 13:02:03 by juligonz          #+#    #+#             */
-/*   Updated: 2021/07/24 13:03:09 by juligonz         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
+#ifndef UTILITY_HPP
+#define UTILITY_HPP
 namespace ft{
 
 template <class T, T v>
@@ -40,3 +30,5 @@ template <>			struct is_integral<unsigned long long int>	: public true_type {};
 // template <>			struct is_integral<char16_t>				: public true_type {};
 // template <>			struct is_integral<char32_t>				: public true_type {};
 } /* UTILS_HPP */
+
+#endif /* UTILITY_HPP */

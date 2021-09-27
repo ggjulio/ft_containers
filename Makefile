@@ -38,43 +38,39 @@ _IWHITE   =\e[107m
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+         #
+#                                                   +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2020/05/20 12:43:01 by juligonz          #+#    #+#              #
-#    Updated: 2020/08/24 16:37:55 by juligonz         ###   ########.fr        #
+#                                                      #+#    #+#              #
+#                                                     ###   ########.fr        #
 #                                                                              #
 #******************************************************************************#
 
 UNAME := $(shell uname)
 
-NAME = tests
+NAME = demo
 
-SRC_DIR = ./srcs
-BUILD_DIR = ./build
+SRC_DIR = ./src
 INC_DIR = $(shell find . -type d -name "includes")
-INC_DIR+= ../includes
 OBJ_DIR = obj
 
 SRCS_DIR = $(shell find $(SRC_DIR) -type d)
+INCS_DIR = $(shell find $(INC_DIR) -type d)
 
-INC = 
-vpath %.hpp $(INC_DIR)
+vpath %.hpp $(INCS_DIR)
 
-# Unit test framework source code
-SRC = main.cpp catch_amalgamated.cpp
-
-# Our tests
-SRC+= vector.cpp stack.cpp
+SRC = main.cpp
 
 
 OBJ = $(addprefix  $(OBJ_DIR)/,$(SRC:%.cpp=%.o))
 vpath %.cpp $(SRCS_DIR)
 
+DEP = $(addprefix  $(OBJ_DIR)/,$(SRC:%.cpp=%.d))
+
 LDFLAGS = $(foreach lib, $(LIB_DIR),-L$(lib))  $(foreach lib, $(LIB),-l$(lib))
 
 CXX = clang++
-CXXFLAGS  = -Wall -Wextra -Werror #-g #-fsanitize=address  -fsanitize=undefined -fstack-protector  
-IFLAGS  = $(foreach inc, $(INC_DIR),-I$(inc))
+CXXFLAGS  = -Wall -Wextra -Werror -std=c++98 -MMD -MP  -g #-fsanitize=address  -fsanitize=undefined -fstack-protector  
+IFLAGS  = $(foreach inc, $(INCS_DIR),-I$(inc))
 
 #OS specific
 ifeq ($(UNAME), Darwin)
@@ -91,9 +87,8 @@ $(OBJ_DIR)/%.o: %.cpp
 	@mkdir -p $(OBJ_DIR)
 	@$(CXX) $(CXXFLAGS) $(IFLAGS) -c $< -o $@
 
-$(NAME): $(INC) $(OBJ)
-	mkdir -p $(BUILD_DIR)
-	$(CXX) $(CXXFLAGS) $(IFLAGS)  -o $(BUILD_DIR)/$@ $(OBJ) $(LDFLAGS)
+$(NAME): $(OBJ)
+	@$(CXX) $(CXXFLAGS) $(IFLAGS)  -o $@ $(OBJ) $(LDFLAGS)
 	@printf "$(_GREEN)Compiled : $(_MAGENTA)$(NAME)$(_R)\n"
 	@printf "\nDo $(_CYAN)$(_BOLD)make show$(_R) to debug the Makefile\n"
 	@printf "Do $(_RED)$(_BOLD)make debug$(_R) to run tests with lldb\n"
@@ -114,31 +109,40 @@ valgrind: $(NAME)
 	@cat output_valgrind
 
 show:
-	@printf "$(_MAGENTA)UNAME  :$(_GREEN)  $(UNAME)$(_END)\n"
-	@printf "$(_MAGENTA)ARCH   :$(_GREEN)  $(shell uname -p)$(_END)\n\n"
-	@printf "$(_CYAN)NAME   :$(_RED)  $(NAME)$(_END)\n\n"
-	@printf "$(_CYAN)CXX    :$(_RED)  $(CXX)$(_END)\n"
-	@printf "$(_CYAN)CXXFLAGS :$(_RED)  $(CXXFLAGS)$(_END)\n"
-	@printf "$(_CYAN)IFLAGS :$(_RED)  $(IFLAGS)$(_END)\n"
+	@printf "$(_MAGENTA)UNAME   :$(_GREEN)  $(UNAME)$(_END)\n"
+	@printf "$(_MAGENTA)ARCH    :$(_GREEN)  $(shell uname -p)$(_END)\n\n"
+	@printf "$(_CYAN)NAME    :$(_RED)  $(NAME)$(_END)\n\n"
+	@printf "$(_CYAN)CXX     :$(_RED)  $(CXX)$(_END)\n"
+	@printf "$(_CYAN)CXXFLAGS:$(_RED)  $(CXXFLAGS)$(_END)\n"
+	@printf "$(_CYAN)IFLAGS  :$(_RED)  $(IFLAGS)$(_END)\n"
 	@printf "$(_CYAN)LDFLAGS :$(_RED)  $(LDFLAGS)$(_END)\n\n"
-	@printf "$(_CYAN)SRC_DIR:$(_RED)  $(SRC_DIR)$(_END)\n"
-	@printf "$(_CYAN)INC_DIR:$(_RED)  $(INC_DIR)$(_END)\n"
-	@printf "$(_CYAN)LIB_DIR:$(_RED)  $(LIB_DIR)$(_END)\n\n"
-	@printf "$(_CYAN)INC    :$(_RED)  $(INC)$(_END)\n"
-	@printf "$(_CYAN)SRC    :$(_RED)  $(SRC)$(_END)\n"
-	@printf "$(_CYAN)OBJ    :$(_RED)  $(OBJ)$(_END)\n"
+	@printf "$(_CYAN)SRC_DIR :$(_RED)  $(SRC_DIR)$(_END)\n"
+	@printf "$(_CYAN)INC_DIR :$(_RED)  $(INC_DIR)$(_END)\n"
+	@printf "$(_CYAN)SRCS_DIR:$(_RED)  $(SRCS_DIR)$(_END)\n"
+	@printf "$(_CYAN)INCS_DIR:$(_RED)  $(INCS_DIR)$(_END)\n"
+	@printf "$(_CYAN)LIB_DIR :$(_RED)  $(LIB_DIR)$(_END)\n\n"
+	@printf "$(_CYAN)SRC     :$(_RED)  $(SRC)$(_END)\n"
+	@printf "$(_CYAN)OBJ     :$(_RED)  $(OBJ)$(_END)\n"
+	@printf "$(_CYAN)DEP     :$(_RED)  $(DEP)$(_END)\n"
+
+check:
+	@$(MAKE) check -C tests ARGS="$(ARGS)"
 
 clean:
 	@rm -rf $(OBJ_DIR) output_valgrind
-	@printf "$(_RED)Removed :$(_MAGENTA) $(OBJ_DIR)/$(_MAGENTA)\n"
+	@printf "$(_RED)Removed :$(_MAGENTA) $(OBJ_DIR)/ $(_MAGENTA)\n"
 
 fclean: clean
-	@rm -fr $(BUILD_DIR)/ $(NAME).dSYM/
+	@rm -fr $(NAME) $(DEBUG_EXEC) $(NAME).dSYM/
 	@printf "$(_RED)Removed : $(_MAGENTA)./$(NAME), $(NAME).dSYM/$(_R)\n"
+	@$(MAKE) fclean -C tests
 
 re: fclean all
 
-.PHONY: all run debug valgrind norminette bonus show clean fclean re
+-include $(DEP)
+
+.PHONY: all run debug valgrind norminette bonus show check clean fclean re
+
 
 #******************************************************************************#
 #                                  REMINDER                                    #  
@@ -171,6 +175,9 @@ https://www.gnu.org/software/make/manual/html_node/index.html#SEC_Contents      
 http://web.mit.edu/gnu/doc/html/make_toc.html#SEC88                              \
 https://www3.nd.edu/~zxu2/acms60212-40212/Makefile.pdf                           \
 																				 \
-cpp:																			 \
 																				 \
-https://www.gnu.org/software/make/manual/html_node/Catalogue-of-Rules.html
+cpp:																			 \
+https://www.gnu.org/software/make/manual/html_node/Catalogue-of-Rules.html		 \
+																				 \
+																				 \
+https://codereview.stackexchange.com/questions/2547/makefile-dependency-generation/11109#11109 		\

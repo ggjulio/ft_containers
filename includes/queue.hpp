@@ -1,17 +1,5 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   Queue.h                                            :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/03/10 18:34:14 by juligonz          #+#    #+#             */
-/*   Updated: 2021/05/01 02:03:27 by juligonz         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
-#ifndef _FT_QUEUE_H
-#define _FT_QUEUE_H
+#ifndef QUEUE_HPP
+#define QUEUE_HPP
 
 #include <deque> // to remove #######################
 
@@ -47,7 +35,7 @@ private:
 	
 	template<class _T1, class _Container1>
 	friend bool operator<(const queue<_T1, _Container1>&, const queue<_T1, _Container1>&);
-};
+}; /* class queue */
 
 template<class _T, class _Container>
 	inline bool
@@ -81,6 +69,6 @@ template<class _T, class _Container>
 	operator>=(const queue<_T, _Container>& lhs, const queue<_T, _Container>& rhs)
 	{ return !(lhs < rhs); }
 
-} // namespace
+} /* namespace ft */
 
-#endif /* _FT_QUEUE_H */
+#endif /* QUEUE_HPP */

@@ -1,17 +1,5 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   Stack.h                                            :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/03/10 18:33:59 by juligonz          #+#    #+#             */
-/*   Updated: 2021/05/01 01:44:32 by juligonz         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
-#ifndef _FT_STACK_H
-#define _FT_STACK_H
+#ifndef STACK_HPP
+#define STACK_HPP
 
 #include <deque> // to remove #######################
 
@@ -72,7 +60,7 @@ private:
 	
 	template<class _T1, class _Container1>
 	friend bool operator<(const stack<_T1, _Container1>&, const stack<_T1, _Container1>&);
-};
+}; /* class stack */
 
 template<class _T, class _Container>
 	inline bool
@@ -106,6 +94,6 @@ template<class _T, class _Container>
 	operator>=(const stack<_T, _Container>& lhs, const stack<_T, _Container>& rhs)
 	{ return !(lhs < rhs); }
 
-} // namespace
+} /* namespace ft */
 
-#endif /* _FT_STACK_H */
+#endif /* STACK_HPP */

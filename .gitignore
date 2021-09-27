@@ -10,3 +10,5 @@ a.out.dSYM
 .\#*
 output_valgrind
 tests
+demo
+obj/

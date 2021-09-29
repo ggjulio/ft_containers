@@ -14,7 +14,7 @@ namespace NS_NAME
 	template<class T1, class T2>
 	std::ostream&	operator<<(std::ostream& os, const pair<T1, T2>& pair)
 	{
-		os << "pair<" << pair.first << "," << pair.second << ">";
+		os << "pair<" << pair.first << ", " << pair.second << ">";
 		return os;
 	}
 }
@@ -39,13 +39,22 @@ TEST_CASE( "cn::make_pair", "[utility][pair][make_pair]" ) {
 	CHECK( p.second == "foo");
 }
 
+TEST_CASE( "cn::pair::swap", "[utility][pair][swap]" ) {
+	cn::pair<int, std::string> p1 = cn::make_pair(42, std::string("foo"));
+	cn::pair<int, std::string> p2 = cn::make_pair(43, std::string("bar"));
+
+	p1.swap(p2);
+	CHECK( p1 == cn::make_pair(43, std::string("bar")) );
+	CHECK( p2 == cn::make_pair(42, std::string("foo")) );
+}
+
 TEST_CASE( "cn::pair lexicographical comparison", "[utility][pair][comparison]" ) {
 
 	SECTION("Equality and inequality")
 	{
 		cn::pair<int, std::string> p1 = cn::make_pair(42, std::string("foo"));
-		cn::pair<int, std::string> p2 = p1;
-		cn::pair<int, std::string> p3 = p1;
+		cn::pair<int, std::string> p2(p1);
+		cn::pair<int, std::string> p3(p1);
 		
 		CHECK( p1 == p2);
 		p2.second = "bar";
@@ -56,6 +65,38 @@ TEST_CASE( "cn::pair lexicographical comparison", "[utility][pair][comparison]" 
 		CHECK( p1 != p3);
 	}
 
+	SECTION("others comparison operators")
+	{
+		REQUIRE( cn::make_pair(4, 5) < cn::make_pair(5, 5) );
+		REQUIRE( cn::make_pair(5, 4) < cn::make_pair(5, 5) );
+		REQUIRE( cn::make_pair(4, 4) < cn::make_pair(5, 5) );
+		REQUIRE( !(cn::make_pair(5, 5) < cn::make_pair(5, 5)) );
+		REQUIRE( !(cn::make_pair(6, 5) < cn::make_pair(5, 5)) );
+		REQUIRE( !(cn::make_pair(5, 6) < cn::make_pair(5, 5)) );
+
+		REQUIRE( cn::make_pair(4, 4) <= cn::make_pair(5, 5) );
+		REQUIRE( cn::make_pair(5, 5) <= cn::make_pair(5, 5) );
+		REQUIRE( cn::make_pair(5, 4) <= cn::make_pair(5, 5) );
+		REQUIRE( cn::make_pair(4, 5) <= cn::make_pair(5, 5) );
+		REQUIRE( !(cn::make_pair(5, 6) <= cn::make_pair(5, 5) ));
+		REQUIRE( !(cn::make_pair(6, 5) <= cn::make_pair(5, 5) ));
+		REQUIRE( !(cn::make_pair(6, 6) <= cn::make_pair(5, 5) ));
+
+		REQUIRE( cn::make_pair(5, 5) > cn::make_pair(4, 5) );
+		REQUIRE( cn::make_pair(5, 5) > cn::make_pair(5, 4) );
+		REQUIRE( cn::make_pair(5, 5) > cn::make_pair(4, 4) );
+		REQUIRE( !(cn::make_pair(5, 5) > cn::make_pair(5, 5)) );
+		REQUIRE( !(cn::make_pair(5, 5) > cn::make_pair(6, 5)) );
+		REQUIRE( !(cn::make_pair(5, 5) > cn::make_pair(5, 6)) );
+
+		REQUIRE( cn::make_pair(5, 5) >= cn::make_pair(4, 4) );
+		REQUIRE( cn::make_pair(5, 5) >= cn::make_pair(5, 5) );
+		REQUIRE( cn::make_pair(5, 5) >= cn::make_pair(5, 4) );
+		REQUIRE( cn::make_pair(5, 5) >= cn::make_pair(4, 5) );
+		REQUIRE( !(cn::make_pair(5, 5) >= cn::make_pair(5, 6)) );
+		REQUIRE( !(cn::make_pair(5, 5) >= cn::make_pair(6, 5)) );
+		REQUIRE( !(cn::make_pair(5, 5) >= cn::make_pair(6, 6)) );
+	}
 
 	SECTION("Sort test")
 	{

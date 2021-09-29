@@ -4,3 +4,4 @@
 - https://web.stanford.edu/class/cs107l/handouts/04-Custom-Iterators.pdf
 - https://h-deb.clg.qc.ca/Sujets/TrucsScouts/Comprendre_enable_if.html
 - https://h-deb.clg.qc.ca/Sujets/Divers--cplusplus/SFINAE.html
+- https://www.fluentcpp.com/2018/05/15/make-sfinae-pretty-1-what-value-sfinae-brings-to-code/

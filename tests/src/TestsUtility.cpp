@@ -48,6 +48,14 @@ TEST_CASE( "cn::pair::swap", "[utility][pair][swap]" ) {
 	CHECK( p2 == cn::make_pair(42, std::string("foo")) );
 }
 
+TEST_CASE( "cn::pair assign operator", "[utility][pair][assign][operator]" ) {
+	cn::pair<int, std::string> p;
+
+	REQUIRE( p == cn::make_pair(0, std::string()) );
+	p = cn::make_pair(42, std::string("foo"));
+	REQUIRE( p == cn::make_pair(42, std::string("foo")) );
+}
+
 TEST_CASE( "cn::pair lexicographical comparison", "[utility][pair][comparison]" ) {
 
 	SECTION("Equality and inequality")

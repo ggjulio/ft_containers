@@ -61,11 +61,11 @@ SRCS_DIR = $(shell find $(SRC_DIR) -type d)
 vpath %.hpp $(INC_DIR)
 
 # Unit test framework source code
-SRC = main.cpp catch_amalgamated.cpp
+SRC = catch_amalgamated.cpp
 
 # Our tests
 SRC+= TestsVector.cpp TestsStack.cpp
-SRC+= TestsTypeTraits.cpp
+SRC+= TestsTypeTraits.cpp TestsUtility.cpp
 
 
 OBJ = $(addprefix  $(OBJ_DIR)/,$(SRC:%.cpp=%.o))
@@ -89,6 +89,13 @@ else
 	CXXFLAGS += -D LINUX
 endif
 
+ifeq ($(strip $(NS_NAME)),)
+NS_NAME := ft
+endif
+CXXFLAGS += -D NS_NAME=$(NS_NAME)
+# https://www.cmcrossroads.com/article/rebuilding-when-cppflags-changes
+# -include signature
+
 all:  $(BUILD_DIR)/$(NAME)
 
 $(OBJ_DIR)/%.o: %.cpp
@@ -107,7 +114,7 @@ $(BUILD_DIR)/$(NAME): $(OBJ)
 run:  $(BUILD_DIR)/$(NAME)
 	@./$(NAME)
 
-debug:	CFLAGS += -g
+debug:	CXXFLAGS += -g
 debug: $(BUILD_DIR)/$(NAME)
 	@lldb $(BUILD_DIR)/$(NAME) $(ARGS)
 
@@ -121,7 +128,8 @@ valgrind: $(BUILD_DIR)/$(NAME)
 show:
 	@printf "$(_MAGENTA)UNAME  :$(_GREEN)  $(UNAME)$(_END)\n"
 	@printf "$(_MAGENTA)ARCH   :$(_GREEN)  $(shell uname -p)$(_END)\n\n"
-	@printf "$(_CYAN)NAME   :$(_RED)  $(NAME)$(_END)\n\n"
+	@printf "$(_CYAN)NAME   :$(_RED)  $(NAME)$(_END)\n"
+	@printf "$(_CYAN)NS_NAME:$(_RED)  $(NS_NAME)$(_END)\n\n"
 	@printf "$(_CYAN)CXX    :$(_RED)  $(CXX)$(_END)\n"
 	@printf "$(_CYAN)CXXFLAGS :$(_RED)  $(CXXFLAGS)$(_END)\n"
 	@printf "$(_CYAN)IFLAGS :$(_RED)  $(IFLAGS)$(_END)\n"

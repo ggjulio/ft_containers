@@ -3916,6 +3916,14 @@ namespace Catch {
     CATCH_INTERNAL_STOP_WARNINGS_SUPPRESSION
 }
 
+
+
+// ft_containers 
+    #define xstre(s) stre(s)
+    #define stre(s) #s
+    #include "tests.hpp"
+// end
+
 #if defined(CATCH_CONFIG_WCHAR) && defined(CATCH_PLATFORM_WINDOWS) && defined(_UNICODE) && !defined(DO_NOT_USE_WMAIN)
 // Standard C/C++ Win32 Unicode wmain entry point
 extern "C" int wmain (int argc, wchar_t * argv[], wchar_t * []) {
@@ -3928,7 +3936,9 @@ int main (int argc, char * argv[]) {
     // and its constructor, as it (optionally) registers leak detector
     (void)&Catch::leakDetector;
 
-    return Catch::Session().run( argc, argv );
+    int result = Catch::Session().run( argc, argv );
+    Catch::cout() << "Namespace tested: " << xstre(NS_NAME) << std::endl;
+    return result;
 }
 
 

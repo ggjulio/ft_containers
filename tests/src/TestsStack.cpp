@@ -1,17 +1,11 @@
-#include "catch_amalgamated.hpp"
+#include "tests.hpp"
+
+#include "stack.hpp"
 
 #include <stack>
 #include <string>
 #include <deque>
 #include <type_traits>
-
-#define NS_NAME std
-
-#ifdef NS_NAME
-    namespace cn = ::NS_NAME;
-#else
-    namespace cn = ft;
-#endif
 
 typedef int             T;
 typedef std::deque<T>   Container;

@@ -1,16 +1,8 @@
-#include "catch_amalgamated.hpp"
+#include "tests.hpp"
 
 #include <vector>
 #include <string>
 #include "vector.hpp"
-
-// #define NS_NAME std
-
-#ifdef NS_NAME
-    namespace cn = ::NS_NAME;
-#else
-    namespace cn = ft;
-#endif
 
 TEST_CASE( "vectors can be sized and resized", "[vector][template][size()][capacity]" ) {
 

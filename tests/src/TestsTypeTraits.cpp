@@ -1,16 +1,36 @@
-#include "catch_amalgamated.hpp"
+#include "tests.hpp"
 
-#include <type_traits>
-
-#include <cstdint>
-#include <string>
 #include "type_traits.hpp"
 
-#ifdef NS_NAME
-    namespace cn = ::NS_NAME;
-#else
-    namespace cn = ft;
-#endif
+#include <type_traits>
+#include <cstdint>
+#include <string>
+#include <iostream>
+class foo;
+class bar;
+
+template<class T>
+struct is_bar
+{
+    template<class _T = T>
+    typename cn::enable_if<std::is_same<_T, bar>::value, bool>::type check()
+    {
+        return true;
+    }
+
+    template<class _T = T>
+    typename cn::enable_if<!std::is_same<_T, bar>::value, bool>::type check()
+    {
+        return false;
+    }
+};
+
+TEST_CASE( "cn::enable_if", "[type_traits][enable_if]" ) {
+    is_bar<foo> foo_is_bar;
+    is_bar<bar> bar_is_bar;
+    CHECK( !foo_is_bar.check());
+	CHECK( bar_is_bar.check());
+}
 
 TEST_CASE( "cn::is_integral", "[type_traits][is_integral]" ) {
 	/// non const
@@ -83,3 +103,4 @@ TEST_CASE( "cn::is_integral", "[type_traits][is_integral]" ) {
 	CHECK( !cn::is_integral<std::string>::value );
 	CHECK( !cn::is_integral<const std::string>::value );
 }
+

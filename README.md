@@ -6,3 +6,4 @@
 - https://h-deb.clg.qc.ca/Sujets/Divers--cplusplus/SFINAE.html
 - https://www.fluentcpp.com/2018/05/15/make-sfinae-pretty-1-what-value-sfinae-brings-to-code/
 - https://www.fluentcpp.com/2018/05/18/make-sfinae-pretty-2-hidden-beauty-sfinae/
+- https://www.codeproject.com/Articles/36530/An-Introduction-to-Iterator-Traits

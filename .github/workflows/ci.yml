@@ -7,6 +7,16 @@ on:
     branches: [ master ]
 
 jobs:
+  compile-cpp98:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    steps:
+    - uses: actions/checkout@v2
+    - run: make
+
   unit-tests:
     runs-on: ${{ matrix.os }}
     strategy:
@@ -24,8 +34,6 @@ jobs:
             :
         fi
     - run: make -C tests
-    # - name: make check
-    #   run: make check -C tests
     - name: Run test
       run: |
         set -x

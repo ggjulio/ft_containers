@@ -17,4 +17,4 @@ namespace ft {
 
 } /* namespace ft */
 
-#endif MAP_HPP
+#endif /* MAP_HPP */

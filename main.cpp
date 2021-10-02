@@ -5,12 +5,24 @@
 	#include <map>
 	#include <stack>
 	#include <vector>
-	namespace ft = std;
+	// namespace ft = std;
+	namespace cn = std;
 #else
 	#include <map.hpp>
 	#include <stack.hpp>
 	#include <vector.hpp>
 #endif
+
+#include "iterator.hpp"
+#include "map.hpp"
+#include "queue.hpp"
+#include "stack.hpp"
+#include "rb_tree.hpp"
+#include "type_traits.hpp"
+#include "utility.hpp"
+#include "vector.hpp"
+
+
 
 #include <stdlib.h>
 
@@ -26,7 +38,7 @@ struct Buffer
 #define COUNT (MAX_RAM / (int)sizeof(Buffer))
 
 template<typename T>
-class MutantStack : public ft::stack<T>
+class MutantStack : public cn::stack<T>
 {
 public:
 	MutantStack() {}
@@ -38,7 +50,7 @@ public:
 	}
 	~MutantStack() {}
 
-	typedef typename ft::stack<T>::container_type::iterator iterator;
+	typedef typename cn::stack<T>::container_type::iterator iterator;
 
 	iterator begin() { return this->c.begin(); }
 	iterator end() { return this->c.end(); }
@@ -55,12 +67,12 @@ int main(int argc, char** argv) {
 	const int seed = atoi(argv[1]);
 	srand(seed);
 
-	ft::vector<std::string> vector_str;
-	ft::vector<int> vector_int;
-	ft::stack<int> stack_int;
-	ft::vector<Buffer> vector_buffer;
-	ft::stack<Buffer, std::deque<int> > stack_deq_buffer;
-	ft::map<int, int> map_int;
+	cn::vector<std::string> vector_str;
+	cn::vector<int> vector_int;
+	cn::stack<int> stack_int;
+	cn::vector<Buffer> vector_buffer;
+	cn::stack<Buffer, std::deque<int> > stack_deq_buffer;
+	cn::map<int, int> map_int;
 
 	for (int i = 0; i < COUNT; i++)
 	{
@@ -72,7 +84,7 @@ int main(int argc, char** argv) {
 		const int idx = rand() % COUNT;
 		vector_buffer[idx].idx = 5;
 	}
-	ft::vector<Buffer>().swap(vector_buffer);
+	cn::vector<Buffer>().swap(vector_buffer);
 
 	try
 	{
@@ -90,7 +102,7 @@ int main(int argc, char** argv) {
 	
 	for (int i = 0; i < COUNT; ++i)
 	{
-		map_int.insert(ft::make_pair(rand(), rand()));
+		map_int.insert(cn::make_pair(rand(), rand()));
 	}
 
 	int sum = 0;
@@ -102,7 +114,7 @@ int main(int argc, char** argv) {
 	std::cout << "should be constant with the same seed: " << sum << std::endl;
 
 	{
-		ft::map<int, int> copy = map_int;
+		cn::map<int, int> copy = map_int;
 	}
 	MutantStack<char> iterable_stack;
 	for (char letter = 'a'; letter <= 'z'; letter++)

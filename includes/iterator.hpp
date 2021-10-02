@@ -3,7 +3,7 @@
 
 namespace ft {
 
-
+typedef long int ptrdiff_t;
 
 ///  Marking input iterators.
 struct input_iterator_tag { };

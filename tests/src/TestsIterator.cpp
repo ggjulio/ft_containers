@@ -7,17 +7,22 @@
 
 namespace NS_NAME
 {
-	template<class T1, class T2>
-	std::ostream&	operator<<(std::ostream& os, const pair<T1, T2>& pair)
-	{
-		os << "pair<" << pair.first << ", " << pair.second << ">";
-		return os;
-	}
+	// std::ostream&	operator<<(std::ostream& os, const cn::& tag)
+	// {
+	// 	os << ;
+	// 	return os;
+	// }
 }
 
 
 TEST_CASE( "cn::it", "[iterator]" ) {
-  typedef std::iterator_traits<int*> traits;
-  CHECK( typeid(traits::iterator_category)==typeid(std::random_access_iterator_tag));
+	typedef cn::iterator_traits<int*> traitsIntPtr;
+	CHECK( typeid(traitsIntPtr::iterator_category).name() ==typeid(cn::random_access_iterator_tag).name());
+
+	typedef cn::iterator_traits<const int*> traitsConstIntPtr;
+	CHECK( typeid(traitsConstIntPtr::iterator_category).name() ==typeid(cn::random_access_iterator_tag).name());
+
+	// typedef cn::iterator_traits<std::())> traits;
+//   CHECK( typeid(traitsInt::iterator_category).name() ==typeid(cn::  ).name());
 
 }

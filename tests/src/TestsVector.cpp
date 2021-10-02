@@ -4,7 +4,7 @@
 #include <string>
 #include "vector.hpp"
 
-TEST_CASE( "vectors can be sized and resized", "[vector][template][size()][capacity]" ) {
+// TEST_CASE( "vectors can be sized and resized", "[vector][template][size()][capacity]" ) {
 
     // cn::vector<int> v( 5 );
     // REQUIRE( v.size() == 5 );
@@ -34,4 +34,4 @@ TEST_CASE( "vectors can be sized and resized", "[vector][template][size()][capac
     //     REQUIRE( v.size() == 5 );
     //     REQUIRE( v.capacity() >= 5 );
     // }
-}
+// }

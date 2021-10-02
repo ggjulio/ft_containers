@@ -68,6 +68,8 @@ SRC+= TestsVector.cpp TestsStack.cpp
 SRC+= TestsTypeTraits.cpp TestsUtility.cpp
 SRC+= TestsIterator.cpp
 
+SRC+= TestsRbTree.cpp
+
 
 OBJ = $(addprefix  $(OBJ_DIR)/,$(SRC:%.cpp=%.o))
 vpath %.cpp $(SRCS_DIR)

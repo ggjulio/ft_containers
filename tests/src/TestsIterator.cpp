@@ -17,10 +17,10 @@ namespace NS_NAME
 
 TEST_CASE( "cn::it", "[iterator]" ) {
 	typedef cn::iterator_traits<int*> traitsIntPtr;
-	CHECK( typeid(traitsIntPtr::iterator_category).name() ==typeid(cn::random_access_iterator_tag).name());
+	CHECK( typeid(traitsIntPtr::iterator_category).name() ==typeid(std::random_access_iterator_tag).name());
 
 	typedef cn::iterator_traits<const int*> traitsConstIntPtr;
-	CHECK( typeid(traitsConstIntPtr::iterator_category).name() ==typeid(cn::random_access_iterator_tag).name());
+	CHECK( typeid(traitsConstIntPtr::iterator_category).name() ==typeid(std::random_access_iterator_tag).name());
 
 	// typedef cn::iterator_traits<std::())> traits;
 //   CHECK( typeid(traitsInt::iterator_category).name() ==typeid(cn::  ).name());

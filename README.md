@@ -9,3 +9,6 @@
 - https://www.codeproject.com/Articles/36530/An-Introduction-to-Iterator-Traits
 - https://www.fluentcpp.com/2018/04/27/tag-dispatching/
 - https://tfetimes.com/wp-content/uploads/2015/11/Accelerated_C-_Practical_Programming_by_Example_-_Andrew_Koenig_Barbara_E._Moo_-_Addison-Wesley_-_2000.pdf (chapter 11 for memory and vector example)
+- https://cs.lmu.edu/~ray/notes/redblacktrees/
+- https://www.programiz.com/dsa/red-black-tree
+- https://www.cs.usfca.edu/~galles/visualization/RedBlack.html

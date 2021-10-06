@@ -20,7 +20,7 @@ public:
 	typedef _Alloc						allocator_type;
 
 private:
-	
+
 
 };
 

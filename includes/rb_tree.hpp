@@ -33,33 +33,52 @@ namespace ft
 
 enum color { kBlack = false,	kRed = true, };
 
-template <class T>
-struct node
+
+
+struct node_base
 {
+	typedef node_base		*base_ptr;
+	typedef const node_base *const_base_ptr;
+
 	enum color color;
-	struct node *parent;
-	struct node *left;
-	struct node *right;
-	T data;
+	base_ptr parent;
+	base_ptr left;
+	base_ptr right;
 
-	node(T data): parent(NULL), left(NULL), right(NULL), data(data) {}
-	T *getDataPtr() { return &data; }
-	const T *getDataPtr() const { return &data; }
-
-	node* minimum()
+	base_ptr minimum(base_ptr iterator)
 	{
-		node* iterator = this;
 		while (iterator->left)
 			iterator = iterator->left;
 		return iterator;
 	}
-	node* maximum()
+	base_ptr maximum(base_ptr iterator)
 	{
-		node* iterator = this;
 		while (iterator->right)
 			iterator = iterator->right;
 		return iterator;
 	}
+	const_base_ptr minimum(const_base_ptr iterator)
+	{
+		while (iterator->left)
+			iterator = iterator->left;
+		return iterator;
+	}
+	const_base_ptr maximum(const_base_ptr iterator)
+	{
+		while (iterator->right)
+			iterator = iterator->right;
+		return iterator;
+	}
+}; /* struct node_base */
+
+template <class T>
+struct node : public node_base
+{
+	typedef node<T> *Link_type;
+	T data;
+
+	T* dataPtr()		{return &data;}
+	const T* dataPtr() const 	{return &data;}
 }; /* struct node */
 
 
@@ -83,7 +102,7 @@ struct RbTree_iterator
 
 	reference operator*() const throw()
 	{
-		return *static_cast<Link_type>(_node)->getDataPtr();
+		return *static_cast<Link_type>(_node)->dataPtr();
 	}
 
 	pointer operator->() const throw()
@@ -177,177 +196,206 @@ private:
 
 }; /* struct RbTree_iterator */
 
+struct rbTree_header
+{
+	node_base _header;
+	size_t	_nodeCount;
 
+	rbTree_header() throw()
+	{
+		_header.color = kRed;
+		reset();
+	}
+
+	void reset() throw()
+	{
+		_header.parent = NULL;
+		_header.left = &_header;
+		_header.right = &_header;
+		_nodeCount = 0;
+	}
+
+};
 
 // template<typename _Key, typename _Val, typename _KeyOfValue,
 //        typename _Compare, typename _Alloc = std::allocator<_Val> >
-template <class T>
+template <class T>	
 class rbTree
 {
-	public:
-		typedef RbTree_iterator<T> iterator;
+public:
+	typedef RbTree_iterator<T> iterator;
 
-		rbTree() : _root(NULL) {}
-		~rbTree() {}
+protected:
+	typedef node_base		*base_ptr;
+	typedef const node_base *const_base_ptr;
 
-		iterator begin()	{ return _root->minimum();}
-		iterator end()		{ return _root->maximum();}
+public:
+	rbTree() {}
+	~rbTree() {}
 
-		void insert(const T &obj)
+	iterator begin()	{ return _header.left;}
+	iterator end()		{ return _header;}
+
+protected:
+	base_ptr _getRoot()			{ return _header.parent;}
+	const_base_ptr _getRoot()const	{ return _header.parent;}
+
+	void insert(const T &obj)
+	{
+		node<T> *newNode = new node<T>(obj);
+		newNode->data = obj;
+
+		if (_getRoot() == NULL)
 		{
-			node<T> *newNode = new node<T>(obj);
-			newNode->data = obj;
-
-			if (_root == NULL)
-			{
-				_root = newNode;
-				newNode->color = kRed;
-				return;
-			}
-
-			// find the position of new node
-			node<T> *current = _root;
-			while (current->left != NULL && current->right != NULL)
-				current = (_compare(obj, current->data) == -1) ? current->left : current->right;
-
-			// link it with the parent
-			newNode->parent = current;
-			if (_compare(obj, current->data) == -1)
-				current->left = newNode;
-			else
-				current->right = newNode;
-
-			_rebalance(current, newNode);
+			_header.parent = newNode;
+			newNode->color = kRed;
+			return;
 		}
-		// bool remove(const T& obj) {}
-		// bool search(const T& obj) {}
-		// void clear() {}
-		// void printTree() {}
-		// void getSize() {}
 
-	private:
-		void _rebalance(node<T> *current, node<T> *newNode)
+		// find the position of new node
+		base_ptr current = _getRoot();
+		while (current->left != NULL && current->right != NULL)
+			current = (_compare(obj, current->data) == -1) ? current->left : current->right;
+
+		// link it with the parent
+		newNode->parent = current;
+		if (_compare(obj, current->data) == -1)
+			current->left = newNode;
+		else
+			current->right = newNode;
+
+		_rebalance(current, newNode);
+	}
+	// bool remove(const T& obj) {}
+	// bool search(const T& obj) {}
+	// void clear() {}
+	// void printTree() {}
+	// void getSize() {}
+
+private:
+	void _rebalance(node<T> *current, node<T> *newNode)
+	{
+		while (current->color == kRed && current->parent != NULL)
 		{
-			while (current->color == kRed && current->parent != NULL)
-			{
-				bool isRight = (current == current->parent->right);
-				node<T> *uncle = isRight ? current->parent->left : current->parent->right;
+			bool isRight = (current == current->parent->right);
+			base_ptr uncle = isRight ? current->parent->left : current->parent->right;
 
-				if (uncle == NULL)
+			if (uncle == NULL)
+			{
+				current->color = kBlack;
+				current->parent->color = kRed;
+				if (uncle == current->parent->right)
 				{
-					current->color = kBlack;
-					current->parent->color = kRed;
-					if (uncle == current->parent->right)
-					{
-						_rightRotate(current->parent);
-					}
-					else
-					{
-						_leftRotate(current->parent);
-					}
-					break;
-				}
-				else if (uncle->color == kRed)
-				{
-					current->color = kBlack;
-					uncle->color = kBlack;
-					current->parent->color = kRed;
-					current = current->parent;
+					_rightRotate(current->parent);
 				}
 				else
 				{
-					current->color = kBlack;
-					current->parent->color = kRed;
-
-					if (isRight)
-					{
-						if (newNode == current->left)
-						{
-							_rightRotate(current);
-							current = newNode;
-						}
-						_leftRotate(current->parent);
-					}
-					else
-					{
-						if (newNode == current->right)
-						{
-							_leftRotate(current);
-							current = newNode;
-						}
-						_rightRotate(current->parent);
-					}
+					_leftRotate(current->parent);
 				}
-				_root->color = kBlack;
+				break;
 			}
-		}
-
-		/*      y   right rotate     x
-		/      / \  ------------>   / \ 
-		/     x	  c                 a   y 
-		/    / \     left rotate       / \ 
-		/   a   b   <------------     b   c
-		*/
-		void _leftRotate(node<T> *node)
-		{
-			assert(node->right != NULL);
-			ft::node<T> *tmp = node->right;
-
-			// update the two nodes
-			node->right = tmp->left;
-			if (tmp->left != NULL)
-				tmp->left->parent = node;
-			tmp->left = node;
-			tmp->parent = node->parent;
-			node->parent = tmp;
-
-			// update the parent
-			if (_root == node)
+			else if (uncle->color == kRed)
 			{
-				_root = tmp;
-				return;
+				current->color = kBlack;
+				uncle->color = kBlack;
+				current->parent->color = kRed;
+				current = current->parent;
 			}
-			if (tmp->parent->left == node)
-				tmp->parent->left = tmp;
 			else
-				tmp->parent->right = tmp;
-		}
-
-		void _rightRotate(node<T> *node)
-		{
-			assert( node->left != nullptr);
-			ft::node<T> *tmp = node->left;
-
-			// update the two nodes
-			node->left = tmp->right;
-			if (tmp->right != NULL)
-				tmp->right->parent = node;
-			tmp->right = node;
-			tmp->parent = node->parent;
-			node->parent = tmp;
-
-			// update the parent
-			if (_root == node)
 			{
-				_root = tmp;
-				return;
+				current->color = kBlack;
+				current->parent->color = kRed;
+
+				if (isRight)
+				{
+					if (newNode == current->left)
+					{
+						_rightRotate(current);
+						current = newNode;
+					}
+					_leftRotate(current->parent);
+				}
+				else
+				{
+					if (newNode == current->right)
+					{
+						_leftRotate(current);
+						current = newNode;
+					}
+					_rightRotate(current->parent);
+				}
 			}
-			if (tmp->parent->left == node)
-				tmp->parent->left = tmp;
-			else
-				tmp->parent->right = tmp;
+			_getRoot()->color = kBlack;
 		}
+	}
 
-		int _compare(const T &one, const T &two)
+	/*      y   right rotate     x
+	/      / \  ------------>   / \ 
+	/     x	  c                 a   y 
+	/    / \     left rotate       / \ 
+	/   a   b   <------------     b   c
+	*/
+	void _leftRotate(node<T> *node)
+	{
+		assert(node->right != NULL);
+		ft::node<T> *tmp = node->right;
+
+		// update the two nodes
+		node->right = tmp->left;
+		if (tmp->left != NULL)
+			tmp->left->parent = node;
+		tmp->left = node;
+		tmp->parent = node->parent;
+		node->parent = tmp;
+
+		// update the parent
+		if (_root() == node)
 		{
-			if (one < two)
-				return -1;
-			if (one > two)
-				return 1;
-			return 0;
+			_header.parent = tmp;
+			return;
 		}
+		if (tmp->parent->left == node)
+			tmp->parent->left = tmp;
+		else
+			tmp->parent->right = tmp;
+	}
 
-		node<T> *_root;
+	void _rightRotate(node<T> *node)
+	{
+		assert( node->left != nullptr);
+		// ft::node<T> *tmp = node->left;
+		base_ptr tmp = node->left;
+
+		// update the two nodes
+		node->left = tmp->right;
+		if (tmp->right != NULL)
+			tmp->right->parent = node;
+		tmp->right = node;
+		tmp->parent = node->parent;
+		node->parent = tmp;
+
+		// update the parent
+		if (_root == node)
+		{
+			_root = tmp;
+			return;
+		}
+		if (tmp->parent->left == node)
+			tmp->parent->left = tmp;
+		else
+			tmp->parent->right = tmp;
+	}
+
+	int _compare(const T &one, const T &two)
+	{
+		if (one < two)
+			return -1;
+		if (one > two)
+			return 1;
+		return 0;
+	}
+
+	node_base _header;
 }; /* class rbTree */
 
 

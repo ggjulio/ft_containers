@@ -74,7 +74,7 @@ struct node_base
 template <class T>
 struct node : public node_base
 {
-	typedef node<T> *Link_type;
+	typedef node<T> *link_type;
 	T data;
 
 	T* dataPtr()		{return &data;}
@@ -94,20 +94,20 @@ struct RbTree_iterator
 	typedef std::ptrdiff_t difference_type;
 
 	typedef RbTree_iterator<T> Self;
-	typedef node<T> *Link_type;
+	typedef node<T> *link_type;
 
 	RbTree_iterator() : _node() {}
 
-	RbTree_iterator(Link_type ptr) throw() : _node(ptr) {}
+	RbTree_iterator(link_type ptr) throw() : _node(ptr) {}
 
 	reference operator*() const throw()
 	{
-		return *static_cast<Link_type>(_node)->dataPtr();
+		return *static_cast<link_type>(_node)->dataPtr();
 	}
 
 	pointer operator->() const throw()
 	{
-		return static_cast<Link_type>(_node)->getDataPtr();
+		return static_cast<link_type>(_node)->getDataPtr();
 	}
 
 	Self &operator++() throw()
@@ -145,10 +145,10 @@ struct RbTree_iterator
 		return !(x._node == y._node);
 	}
 
-	Link_type _node;
+	link_type _node;
 
 private:
-	Link_type _increment(Link_type x)
+	link_type _increment(link_type x)
 	{
 		if (x->right != 0)
 		{
@@ -158,7 +158,7 @@ private:
 		}
 		else
 		{
-			Link_type y = x->parent;
+			link_type y = x->parent;
 			while (x == y->right)
 			{
 				x = y;
@@ -170,20 +170,20 @@ private:
 		return x;
 	}
 
-	Link_type _decrement(Link_type x)
+	link_type _decrement(link_type x)
 	{
 		if (x->_M_color == kRed && x->parent->parent == x)
 			x = x->right;
 		else if (x->left != 0)
 		{
-			Link_type y = x->left;
+			link_type y = x->left;
 			while (y->right != 0)
 				y = y->right;
 			x = y;
 		}
 		else
 		{
-			Link_type y = x->parent;
+			link_type y = x->parent;
 			while (x == y->left)
 			{
 				x = y;
@@ -217,17 +217,31 @@ struct rbTree_header
 
 };
 
-// template<typename _Key, typename _Val, typename _KeyOfValue,
-//        typename _Compare, typename _Alloc = std::allocator<_Val> >
-template <class T>	
+template<typename _Key, typename _Val, typename _KeyOfValue,
+       typename _Compare, typename _Alloc = std::allocator<_Val> >
 class rbTree
 {
 public:
-	typedef RbTree_iterator<T> iterator;
 
+
+	typedef _Key 				key_type;
+	typedef _Val 				value_type;
+	typedef value_type			*pointer;
+	typedef const value_type	*const_pointer;
+	typedef value_type			&reference;
+	typedef const value_type	&const_reference;
+	typedef size_t				size_type;
+	typedef ptrdiff_t			difference_type;
+	typedef _Alloc				allocator_type;
+	
+	typedef RbTree_iterator<value_type> iterator;
+	// typedef RbTree_const_iterator<value_type> const_iterator;
 protected:
-	typedef node_base		*base_ptr;
-	typedef const node_base *const_base_ptr;
+	typedef node_base			*base_ptr;
+	typedef const node_base 	*const_base_ptr;
+
+	typedef node<_Val>			*link_type;
+	typedef const node<_Val>	*const_link_type;
 
 public:
 	rbTree() {}
@@ -236,13 +250,15 @@ public:
 	iterator begin()	{ return _header.left;}
 	iterator end()		{ return _header;}
 
+	allocator_type get_allocator() const throw(){ return allocator_type();}
 protected:
-	base_ptr _getRoot()			{ return _header.parent;}
-	const_base_ptr _getRoot()const	{ return _header.parent;}
+	base_ptr _get_root()			{ return _header.parent;}
+	const_base_ptr _get_root()const	{ return _header.parent;}
 
 	void insert(const T &obj)
 	{
-		node<T> *newNode = new node<T>(obj);
+		// node<T> *newNode = new node<T>(obj);
+		link_type  newNode = get_allocator()
 		newNode->data = obj;
 
 		if (_getRoot() == NULL)
@@ -264,7 +280,7 @@ protected:
 		else
 			current->right = newNode;
 
-		_rebalance(current, newNode);
+		// _rebalance(current, newNode);
 	}
 	// bool remove(const T& obj) {}
 	// bool search(const T& obj) {}
@@ -273,61 +289,61 @@ protected:
 	// void getSize() {}
 
 private:
-	void _rebalance(node<T> *current, node<T> *newNode)
-	{
-		while (current->color == kRed && current->parent != NULL)
-		{
-			bool isRight = (current == current->parent->right);
-			base_ptr uncle = isRight ? current->parent->left : current->parent->right;
+	// void _rebalance(node<T> *current, node<T> *newNode)
+	// {
+	// 	while (current->color == kRed && current->parent != NULL)
+	// 	{
+	// 		bool isRight = (current == current->parent->right);
+	// 		base_ptr uncle = isRight ? current->parent->left : current->parent->right;
 
-			if (uncle == NULL)
-			{
-				current->color = kBlack;
-				current->parent->color = kRed;
-				if (uncle == current->parent->right)
-				{
-					_rightRotate(current->parent);
-				}
-				else
-				{
-					_leftRotate(current->parent);
-				}
-				break;
-			}
-			else if (uncle->color == kRed)
-			{
-				current->color = kBlack;
-				uncle->color = kBlack;
-				current->parent->color = kRed;
-				current = current->parent;
-			}
-			else
-			{
-				current->color = kBlack;
-				current->parent->color = kRed;
+	// 		if (uncle == NULL)
+	// 		{
+	// 			current->color = kBlack;
+	// 			current->parent->color = kRed;
+	// 			if (uncle == current->parent->right)
+	// 			{
+	// 				_rightRotate(current->parent);
+	// 			}
+	// 			else
+	// 			{
+	// 				_leftRotate(current->parent);
+	// 			}
+	// 			break;
+	// 		}
+	// 		else if (uncle->color == kRed)
+	// 		{
+	// 			current->color = kBlack;
+	// 			uncle->color = kBlack;
+	// 			current->parent->color = kRed;
+	// 			current = current->parent;
+	// 		}
+	// 		else
+	// 		{
+	// 			current->color = kBlack;
+	// 			current->parent->color = kRed;
 
-				if (isRight)
-				{
-					if (newNode == current->left)
-					{
-						_rightRotate(current);
-						current = newNode;
-					}
-					_leftRotate(current->parent);
-				}
-				else
-				{
-					if (newNode == current->right)
-					{
-						_leftRotate(current);
-						current = newNode;
-					}
-					_rightRotate(current->parent);
-				}
-			}
-			_getRoot()->color = kBlack;
-		}
-	}
+	// 			if (isRight)
+	// 			{
+	// 				if (newNode == current->left)
+	// 				{
+	// 					_rightRotate(current);
+	// 					current = newNode;
+	// 				}
+	// 				_leftRotate(current->parent);
+	// 			}
+	// 			else
+	// 			{
+	// 				if (newNode == current->right)
+	// 				{
+	// 					_leftRotate(current);
+	// 					current = newNode;
+	// 				}
+	// 				_rightRotate(current->parent);
+	// 			}
+	// 		}
+	// 		_getRoot()->color = kBlack;
+	// 	}
+	// }
 
 	/*      y   right rotate     x
 	/      / \  ------------>   / \ 
@@ -335,56 +351,56 @@ private:
 	/    / \     left rotate       / \ 
 	/   a   b   <------------     b   c
 	*/
-	void _leftRotate(node<T> *node)
-	{
-		assert(node->right != NULL);
-		ft::node<T> *tmp = node->right;
+	// void _leftRotate(node<T> *node)
+	// {
+	// 	assert(node->right != NULL);
+	// 	ft::node<T> *tmp = node->right;
 
-		// update the two nodes
-		node->right = tmp->left;
-		if (tmp->left != NULL)
-			tmp->left->parent = node;
-		tmp->left = node;
-		tmp->parent = node->parent;
-		node->parent = tmp;
+	// 	// update the two nodes
+	// 	node->right = tmp->left;
+	// 	if (tmp->left != NULL)
+	// 		tmp->left->parent = node;
+	// 	tmp->left = node;
+	// 	tmp->parent = node->parent;
+	// 	node->parent = tmp;
 
-		// update the parent
-		if (_root() == node)
-		{
-			_header.parent = tmp;
-			return;
-		}
-		if (tmp->parent->left == node)
-			tmp->parent->left = tmp;
-		else
-			tmp->parent->right = tmp;
-	}
+	// 	// update the parent
+	// 	if (_root() == node)
+	// 	{
+	// 		_header.parent = tmp;
+	// 		return;
+	// 	}
+	// 	if (tmp->parent->left == node)
+	// 		tmp->parent->left = tmp;
+	// 	else
+	// 		tmp->parent->right = tmp;
+	// }
 
-	void _rightRotate(node<T> *node)
-	{
-		assert( node->left != nullptr);
-		// ft::node<T> *tmp = node->left;
-		base_ptr tmp = node->left;
+	// void _rightRotate(node<T> *node)
+	// {
+	// 	assert( node->left != nullptr);
+	// 	// ft::node<T> *tmp = node->left;
+	// 	base_ptr tmp = node->left;
 
-		// update the two nodes
-		node->left = tmp->right;
-		if (tmp->right != NULL)
-			tmp->right->parent = node;
-		tmp->right = node;
-		tmp->parent = node->parent;
-		node->parent = tmp;
+	// 	// update the two nodes
+	// 	node->left = tmp->right;
+	// 	if (tmp->right != NULL)
+	// 		tmp->right->parent = node;
+	// 	tmp->right = node;
+	// 	tmp->parent = node->parent;
+	// 	node->parent = tmp;
 
-		// update the parent
-		if (_root == node)
-		{
-			_root = tmp;
-			return;
-		}
-		if (tmp->parent->left == node)
-			tmp->parent->left = tmp;
-		else
-			tmp->parent->right = tmp;
-	}
+	// 	// update the parent
+	// 	if (_root == node)
+	// 	{
+	// 		_root = tmp;
+	// 		return;
+	// 	}
+	// 	if (tmp->parent->left == node)
+	// 		tmp->parent->left = tmp;
+	// 	else
+	// 		tmp->parent->right = tmp;
+	// }
 
 	int _compare(const T &one, const T &two)
 	{

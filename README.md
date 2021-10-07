@@ -13,7 +13,10 @@
 - https://www.programiz.com/dsa/red-black-tree
 - https://www.cs.usfca.edu/~galles/visualization/RedBlack.html
 
-The size type seem to depend on the implementation (23.4.4.1 Class template map overview) :
+- Best ressource ever ? : http://www.open-std.org/JTC1/SC22/WG21/docs/papers/2011/n3242.pdf#page=731&zoom=100,96,712
+ 
+
+- The size type seem to depend on the implementation (23.4.4.1 Class template map overview) :
 ```c++
 public:
 // types:

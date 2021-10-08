@@ -7,28 +7,29 @@
 
 namespace ft
 {
-template <class _Key,												// map::key_type
-			class _T,													// map::mapped_type
-			class _Compare = std::less<_Key>,							// map::key_compare
-			class _Alloc = std::allocator<std::pair<const _Key, _T> > // map::allocator_type
-			>
+template <
+	class _Key,													// map::key_type
+	class _T,													// map::mapped_type
+	class _Compare = std::less<_Key>,							// map::key_compare
+	class _Alloc = std::allocator<std::pair<const _Key, _T> > // map::allocator_type
+	>
 class map
 {
 public:
 	// types:
-	typedef _Key key_type;
-	typedef _T mapped_type;
-	typedef pair<const _Key, _T> value_type;
-	typedef _Compare key_compare;
-	typedef _Alloc allocator_type;
-	typedef value_type& reference;
-	typedef const value_type& const_reference;
-	typedef implementation-defined iterator; // see 23.2
-	typedef implementation-defined const_iterator; // see 23.2
+	typedef _Key					key_type;
+	typedef _T						mapped_type;
+	typedef pair<const _Key, _T>	value_type;
+	typedef _Compare				key_compare;
+	typedef _Alloc					allocator_type;
+	typedef value_type&				reference;
+	typedef const value_type&		const_reference;
+	// typedef implementation-defined	iterator; // see 23.2
+	// typedef implementation-defined	const_iterator; // see 23.2
 	// typedef implementation-defined size_type; // see 23.2
 	// typedef implementation-defined difference_type;// see 23.2
-	typedef typename allocator_traits<Allocator>::pointer pointer;
-	typedef typename allocator_traits<Allocator>::const_pointer const_pointer;
+	typedef typename allocator_traits<Allocator>::pointer		pointer;
+	typedef typename allocator_traits<Allocator>::const_pointer	const_pointer;
 	typedef reverse_iterator<iterator> reverse_iterator;
 	typedef reverse_iterator<const_iterator> const_reverse_iterator;
 

@@ -28,6 +28,8 @@
  *
  */
 
+#include <memory>
+
 namespace ft
 {
 
@@ -217,12 +219,13 @@ struct rbTree_header
 
 };
 
-template<typename _Key, typename _Val, typename _KeyOfValue,
-       typename _Compare, typename _Alloc = std::allocator<_Val> >
+// template<typename _Key, typename _Val, typename _KeyOfValue,
+//        typename _Compare, typename _Alloc = ::std::allocator<_Val> >
+template<typename _Key, typename _Val,
+       typename _Compare, typename _Alloc = ::std::allocator<_Val> >
 class rbTree
 {
 public:
-
 
 	typedef _Key 				key_type;
 	typedef _Val 				value_type;
@@ -255,33 +258,33 @@ protected:
 	base_ptr _get_root()			{ return _header.parent;}
 	const_base_ptr _get_root()const	{ return _header.parent;}
 
-	void insert(const T &obj)
-	{
-		// node<T> *newNode = new node<T>(obj);
-		link_type  newNode = get_allocator()
-		newNode->data = obj;
+	// void insert(const T &obj)
+	// {
+	// 	node<T> *newNode = new node<T>(obj);
+	// 	link_type  newNode = get_allocator()
+	// 	newNode->data = obj;
 
-		if (_getRoot() == NULL)
-		{
-			_header.parent = newNode;
-			newNode->color = kRed;
-			return;
-		}
+	// 	if (_getRoot() == NULL)
+	// 	{
+	// 		_header.parent = newNode;
+	// 		newNode->color = kRed;
+	// 		return;
+	// 	}
 
-		// find the position of new node
-		base_ptr current = _getRoot();
-		while (current->left != NULL && current->right != NULL)
-			current = (_compare(obj, current->data) == -1) ? current->left : current->right;
+	// 	// find the position of new node
+	// 	base_ptr current = _getRoot();
+	// 	while (current->left != NULL && current->right != NULL)
+	// 		current = (_compare(obj, current->data) == -1) ? current->left : current->right;
 
-		// link it with the parent
-		newNode->parent = current;
-		if (_compare(obj, current->data) == -1)
-			current->left = newNode;
-		else
-			current->right = newNode;
+	// 	// link it with the parent
+	// 	newNode->parent = current;
+	// 	if (_compare(obj, current->data) == -1)
+	// 		current->left = newNode;
+	// 	else
+	// 		current->right = newNode;
 
-		// _rebalance(current, newNode);
-	}
+	// 	// _rebalance(current, newNode);
+	// }
 	// bool remove(const T& obj) {}
 	// bool search(const T& obj) {}
 	// void clear() {}
@@ -402,14 +405,14 @@ private:
 	// 		tmp->parent->right = tmp;
 	// }
 
-	int _compare(const T &one, const T &two)
-	{
-		if (one < two)
-			return -1;
-		if (one > two)
-			return 1;
-		return 0;
-	}
+	// int _compare(const T &one, const T &two)
+	// {
+	// 	if (one < two)
+	// 		return -1;
+	// 	if (one > two)
+	// 		return 1;
+	// 	return 0;
+	// }
 
 	node_base _header;
 }; /* class rbTree */

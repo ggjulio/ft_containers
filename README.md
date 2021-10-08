@@ -38,3 +38,8 @@ typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
 ```
 
 - http://www.open-std.org/JTC1/SC22/WG21/docs/papers/2011/n3242.pdf#page=789&zoom=100,96,712 (the size type depend on the implementation)
+
+
+- https://stackoverflow.com/questions/2127612/is-there-a-readable-implementation-of-the-stl
+- http://stepanovpapers.com/butler.hpl.hp/stl/stl/
+- https://github.com/gcc-mirror/gcc/blob/master/libstdc%2B%2B-v3/include/bits/stl_set.h

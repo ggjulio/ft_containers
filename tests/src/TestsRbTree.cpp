@@ -10,7 +10,7 @@ TEST_CASE( "rb tree", "[rb_tree]" )
 	ft::rbTree<int, int, ft::_Identity<int>> tree;
 
 
-	// tree.insert(5);
+	tree.insert(5);
 	// tree.insert(7);
 	// tree.insert(3);
 	// tree.insert(6);

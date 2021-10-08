@@ -84,7 +84,6 @@ struct node : public node_base
 }; /* struct node */
 
 
-
 template <typename T>
 struct RbTree_iterator
 {
@@ -198,23 +197,23 @@ private:
 
 }; /* struct RbTree_iterator */
 
-struct rbTree_header
+struct rb_tree_header
 {
-	node_base _header;
-	size_t	_nodeCount;
+	node_base header;
+	size_t	nodeCount;
 
-	rbTree_header() throw()
+	rb_tree_header() throw()
 	{
-		_header.color = kRed;
+		header.color = kRed;
 		reset();
 	}
 
 	void reset() throw()
 	{
-		_header.parent = NULL;
-		_header.left = &_header;
-		_header.right = &_header;
-		_nodeCount = 0;
+		header.parent = NULL;
+		header.left = &header;
+		header.right = &header;
+		nodeCount = 0;
 	}
 
 };
@@ -222,23 +221,29 @@ struct rbTree_header
 // template<typename _Key, typename _Val, typename _KeyOfValue,
 //        typename _Compare, typename _Alloc = ::std::allocator<_Val> >
 template<typename _Key, typename _Val,
-       typename _Compare, typename _Alloc = ::std::allocator<_Val> >
-class rbTree
+       typename _Compare, typename _Alloc = std::allocator<_Val> >
+class rbTree : public rb_tree_header
 {
 public:
-
-	typedef _Key 				key_type;
 	typedef _Val 				value_type;
-	typedef value_type			*pointer;
-	typedef const value_type	*const_pointer;
-	typedef value_type			&reference;
-	typedef const value_type	&const_reference;
-	typedef size_t				size_type;
-	typedef ptrdiff_t			difference_type;
+	typedef _Val 				value_compare;
 	typedef _Alloc				allocator_type;
+private:
+    typedef std::allocator_traits<allocator_type>      _alloc_traits;
+public:
+	typedef _Key 									key_type;
+
+	typedef typename _alloc_traits::pointer			*pointer;
+	typedef typename _alloc_traits::const_pointer	*const_pointer;
+	typedef typename _alloc_traits::size_type		size_type;
+	typedef typename _alloc_traits::difference_type	difference_type;
+
+	typedef value_type								&reference;
+	typedef const value_type						&const_reference;
 	
 	typedef RbTree_iterator<value_type> iterator;
 	// typedef RbTree_const_iterator<value_type> const_iterator;
+
 protected:
 	typedef node_base			*base_ptr;
 	typedef const node_base 	*const_base_ptr;
@@ -246,52 +251,63 @@ protected:
 	typedef node<_Val>			*link_type;
 	typedef const node<_Val>	*const_link_type;
 
+	typedef typename _Alloc::template rebind<link_type>				node_allocator;
+    typedef std::allocator_traits<node_allocator>      node_traits;
+
 public:
+
+
 	rbTree() {}
 	~rbTree() {}
 
-	iterator begin()	{ return _header.left;}
-	iterator end()		{ return _header;}
+	iterator begin()	{ return header.left;}
+	iterator end()		{ return header;}
+
+
+
 
 	allocator_type get_allocator() const throw(){ return allocator_type();}
+
+	void insert(const value_type& v)
+	{
+		(void)v;
+		// _insert(root(), header, v);
+	}
+
 protected:
-	base_ptr _get_root()			{ return _header.parent;}
-	const_base_ptr _get_root()const	{ return _header.parent;}
+	base_ptr root()			{ return header.parent;}
+	const_base_ptr root()const	{ return header.parent;}
 
-	// void insert(const T &obj)
-	// {
-	// 	node<T> *newNode = new node<T>(obj);
-	// 	link_type  newNode = get_allocator()
-	// 	newNode->data = obj;
+	void _insert(base_ptr x, base_ptr y, const value_type& v)
+	{
+		(void)x;
+		(void)y;
+		(void)v;
+		// link_type toInsert = allocator_type::allocate(1);
+		// allocator_type::allocate(toInsert, v);
+		
+		// if (root() == NULL)
+		// {
+		// 	header.parent = toInsert;
+		// 	toInsert->color = kRed;
+		// 	return;
+		// }
 
-	// 	if (_getRoot() == NULL)
-	// 	{
-	// 		_header.parent = newNode;
-	// 		newNode->color = kRed;
-	// 		return;
-	// 	}
+		// // find the position of new node
+		// base_ptr current = root();
+		// while (current->left != NULL && current->right != NULL)
+		// 	current = (_compare(obj, current->data) == -1) ? current->left : current->right;
 
-	// 	// find the position of new node
-	// 	base_ptr current = _getRoot();
-	// 	while (current->left != NULL && current->right != NULL)
-	// 		current = (_compare(obj, current->data) == -1) ? current->left : current->right;
+		// // link it with the parent
+		// newNode->parent = current;
+		// if (_compare(obj, current->data) == -1)
+		// 	current->left = newNode;
+		// else
+		// 	current->right = newNode;
 
-	// 	// link it with the parent
-	// 	newNode->parent = current;
-	// 	if (_compare(obj, current->data) == -1)
-	// 		current->left = newNode;
-	// 	else
-	// 		current->right = newNode;
+		// _rebalance(current, newNode);
+	}
 
-	// 	// _rebalance(current, newNode);
-	// }
-	// bool remove(const T& obj) {}
-	// bool search(const T& obj) {}
-	// void clear() {}
-	// void printTree() {}
-	// void getSize() {}
-
-private:
 	// void _rebalance(node<T> *current, node<T> *newNode)
 	// {
 	// 	while (current->color == kRed && current->parent != NULL)
@@ -370,7 +386,7 @@ private:
 	// 	// update the parent
 	// 	if (_root() == node)
 	// 	{
-	// 		_header.parent = tmp;
+	// 		header.parent = tmp;
 	// 		return;
 	// 	}
 	// 	if (tmp->parent->left == node)
@@ -405,6 +421,19 @@ private:
 	// 		tmp->parent->right = tmp;
 	// }
 
+
+}; /* class rbTree */
+
+
+} /* namespace ft */
+#endif /* RB_TREE */
+
+
+
+
+
+
+
 	// int _compare(const T &one, const T &two)
 	// {
 	// 	if (one < two)
@@ -414,10 +443,3 @@ private:
 	// 	return 0;
 	// }
 
-	node_base _header;
-}; /* class rbTree */
-
-
-} /* namespace ft */
-
-#endif /* RB_TREE */

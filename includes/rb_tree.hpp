@@ -255,7 +255,7 @@ protected:
     typedef std::allocator_traits<node_allocator>      node_traits;
 
 public:
-
+	static node_allocator nodeAlloc;
 
 	rbTree() {}
 	~rbTree() {}
@@ -280,18 +280,19 @@ protected:
 
 	void _insert(base_ptr x, base_ptr y, const value_type& v)
 	{
+		++nodeCount;
 		(void)x;
 		(void)y;
-		(void)v;
-		// link_type toInsert = allocator_type::allocate(1);
-		// allocator_type::allocate(toInsert, v);
 		
-		// if (root() == NULL)
-		// {
-		// 	header.parent = toInsert;
-		// 	toInsert->color = kRed;
-		// 	return;
-		// }
+		link_type toInsert = nodeAlloc.allocate(1);
+		nodeAlloc.allocate(toInsert, v);
+		
+		if (root() == NULL)
+		{
+			header.parent = toInsert;
+			toInsert->color = kRed;
+			return;
+		}
 
 		// // find the position of new node
 		// base_ptr current = root();

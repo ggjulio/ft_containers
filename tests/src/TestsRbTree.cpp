@@ -11,6 +11,8 @@ TEST_CASE( "rb tree", "[rb_tree]" )
 
 
 	tree.insert(5);
+	CHECK( tree.size() == 1);
+
 	// tree.insert(7);
 	// tree.insert(3);
 	// tree.insert(6);

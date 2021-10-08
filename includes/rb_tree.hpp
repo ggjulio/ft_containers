@@ -251,8 +251,8 @@ protected:
 	typedef node<_Val>			*link_type;
 	typedef const node<_Val>	*const_link_type;
 
-	typedef typename _Alloc::template rebind<link_type>				node_allocator;
-    typedef std::allocator_traits<node_allocator>      node_traits;
+	typedef typename _Alloc::template rebind<link_type>		node_allocator;
+    typedef std::allocator_traits<node_allocator>     		node_traits;
 
 public:
 	static node_allocator nodeAlloc;
@@ -263,15 +263,17 @@ public:
 	iterator begin()	{ return header.left;}
 	iterator end()		{ return header;}
 
+	bool		empty() const	{ return nodeCount == 0; }
+	size_type	size() const	{ return nodeCount; }
 
-
+	size_type	max_size() const throw() { return nodeAlloc.max_size(); }
 
 	allocator_type get_allocator() const throw(){ return allocator_type();}
 
 	void insert(const value_type& v)
 	{
 		(void)v;
-		// _insert(root(), header, v);
+		_insert(root(), header, v);
 	}
 
 protected:

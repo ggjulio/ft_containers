@@ -199,29 +199,30 @@ private:
 
 struct rb_tree_header
 {
-	node_base header;
-	size_t	nodeCount;
+	node_base _header;
+	size_t	_nodeCount;
 
 	rb_tree_header() throw()
 	{
-		header.color = kRed;
+		_header.color = kRed;
 		reset();
 	}
 
 	void reset() throw()
 	{
-		header.parent = NULL;
-		header.left = &header;
-		header.right = &header;
-		nodeCount = 0;
+		_header.parent = NULL;
+		_header.left = &_header;
+		_header.right = &_header;
+		_nodeCount = 0;
 	}
 
 };
 
-// template<typename _Key, typename _Val, typename _KeyOfValue,
-//        typename _Compare, typename _Alloc = ::std::allocator<_Val> >
-template<typename _Key, typename _Val,
-       typename _Compare, typename _Alloc = std::allocator<_Val> >
+template<typename _Key, typename _Val, typename _KeyOfValue,
+       typename _Compare = std::less<_Key>,
+	   typename _Alloc = ::std::allocator<_Val> >
+// template<typename _Key, typename _Val,
+//        typename _Compare, typename _Alloc = std::allocator<_Val> >
 class rbTree : public rb_tree_header
 {
 public:
@@ -251,7 +252,7 @@ protected:
 	typedef node<_Val>			*link_type;
 	typedef const node<_Val>	*const_link_type;
 
-	typedef typename _Alloc::template rebind<link_type>		node_allocator;
+	typedef typename _Alloc::template rebind<link_type>::other		node_allocator;
     typedef std::allocator_traits<node_allocator>     		node_traits;
 
 public:
@@ -260,11 +261,11 @@ public:
 	rbTree() {}
 	~rbTree() {}
 
-	iterator begin()	{ return header.left;}
-	iterator end()		{ return header;}
+	iterator begin()	{ return _header.left;}
+	iterator end()		{ return _header;}
 
-	bool		empty() const	{ return nodeCount == 0; }
-	size_type	size() const	{ return nodeCount; }
+	bool		empty() const	{ return _nodeCount == 0; }
+	size_type	size() const	{ return _nodeCount; }
 
 	size_type	max_size() const throw() { return nodeAlloc.max_size(); }
 
@@ -273,16 +274,17 @@ public:
 	void insert(const value_type& v)
 	{
 		(void)v;
-		_insert(root(), header, v);
+		_insert(root(), headers(), v);
 	}
 
 protected:
-	base_ptr root()			{ return header.parent;}
-	const_base_ptr root()const	{ return header.parent;}
+	base_ptr root()				{ return _header.parent;}
+	const_base_ptr root()const	{ return _header.parent;}
 
+	base_ptr headers()			{ return _header;}
 	void _insert(base_ptr x, base_ptr y, const value_type& v)
 	{
-		++nodeCount;
+		++_nodeCount;
 		(void)x;
 		(void)y;
 		
@@ -291,7 +293,7 @@ protected:
 		
 		if (root() == NULL)
 		{
-			header.parent = toInsert;
+			_header.parent = toInsert;
 			toInsert->color = kRed;
 			return;
 		}

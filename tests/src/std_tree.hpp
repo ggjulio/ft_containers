@@ -1696,7 +1696,10 @@ namespace std _GLIBCXX_VISIBILITY(default)
 	_Rb_tree<_Key, _Val, _KeyOfValue, _Compare, _Alloc>::__rb_verify() const
 	{
 		if (_M_impl._M_node_count == 0 || begin() == end())
-			return _M_impl._M_node_count == 0 && begin() == end() && this->_M_impl._M_header._M_left == _M_end() && this->_M_impl._M_header._M_right == _M_end();
+			return _M_impl._M_node_count == 0
+					&& begin() == end()
+					&& this->_M_impl._M_header._M_left == _M_end()
+					&& this->_M_impl._M_header._M_right == _M_end();
 
 		unsigned int __len = _Rb_tree_black_count(_M_leftmost(), _M_root());
 		for (const_iterator __it = begin(); __it != end(); ++__it)

@@ -29,6 +29,7 @@
  */
 
 #include <memory>
+#include <functional>
 
 namespace ft
 {
@@ -79,6 +80,7 @@ struct node : public node_base
 	typedef node<T> *link_type;
 	T data;
 
+	node(const T& val): data(val){}
 	T* dataPtr()		{return &data;}
 	const T* dataPtr() const 	{return &data;}
 }; /* struct node */
@@ -219,20 +221,17 @@ struct rb_tree_header
 };
 
 template<typename _Key, typename _Val, typename _KeyOfValue,
-       typename _Compare = std::less<_Key>,
-	   typename _Alloc = ::std::allocator<_Val> >
-// template<typename _Key, typename _Val,
-//        typename _Compare, typename _Alloc = std::allocator<_Val> >
+       typename _Compare = std::less<_Key>, typename _Alloc = ::std::allocator<_Val> >
 class rbTree : public rb_tree_header
 {
 public:
 	typedef _Val 				value_type;
-	typedef _Val 				value_compare;
+	typedef _Compare 				value_compare;
 	typedef _Alloc				allocator_type;
 private:
     typedef std::allocator_traits<allocator_type>      _alloc_traits;
 public:
-	typedef _Key 									key_type;
+	// typedef _Key 									key_type;
 
 	typedef typename _alloc_traits::pointer			*pointer;
 	typedef typename _alloc_traits::const_pointer	*const_pointer;
@@ -252,7 +251,7 @@ protected:
 	typedef node<_Val>			*link_type;
 	typedef const node<_Val>	*const_link_type;
 
-	typedef typename _Alloc::template rebind<link_type>::other		node_allocator;
+	typedef typename _Alloc::template rebind<node<_Val>>::other		node_allocator;
     typedef std::allocator_traits<node_allocator>     		node_traits;
 
 public:
@@ -261,27 +260,45 @@ public:
 	rbTree() {}
 	~rbTree() {}
 
-	iterator begin()	{ return _header.left;}
-	iterator end()		{ return _header;}
+	iterator				begin()	{ return iterator(_header.left);}
+	// const_iterator			begin()	{ return const_iterator(_header.left);}
+	iterator 				end()	{ return iterator(_header);}
+	// const_iterator			end()	{ return const_iterator(_header);}
+	// reverse_iterator		rbegin(){ return reverse_iterator(end()); }
+	// const_reverse_iterator	rbegin(){ return const_reverse_iterator(end()); }
+	// reverse_iterator		rend() 	{ return reverse_iterator(begin()); }
+	// const_reverse_iterator	rend() 	{ return const_reverse_iterator(begin()); }
 
-	bool		empty() const	{ return _nodeCount == 0; }
-	size_type	size() const	{ return _nodeCount; }
-
-	size_type	max_size() const throw() { return nodeAlloc.max_size(); }
+	bool		empty() const				{ return _nodeCount == 0; }
+	size_type	size() const				{ return _nodeCount; }
+	size_type	max_size() const throw()	{ return nodeAlloc.max_size(); }
 
 	allocator_type get_allocator() const throw(){ return allocator_type();}
 
 	void insert(const value_type& v)
 	{
 		(void)v;
-		_insert(root(), headers(), v);
+		_insert(_m_root(), _m_header(), v);
 	}
 
 protected:
-	base_ptr root()				{ return _header.parent;}
-	const_base_ptr root()const	{ return _header.parent;}
+	base_ptr		_m_root()			{ return _header.parent;}
+	const_base_ptr	_m_root()const		{ return _header.parent;}
+	
+	base_ptr		_m_leftmost()		{ return _header.parent->left;}
+	const_base_ptr	_m_leftmost()const	{ return _header.parent->left;}
+	
+	base_ptr		_m_rightmost()		{ return _header.parent->right;}
+	const_base_ptr	_m_rightmost()const	{ return _header.parent->right;}
+	
+	link_type		_m_begin()			{ return _header.left;}
+	const_link_type	_m_begin()const		{ return _header.left;}
 
-	base_ptr headers()			{ return _header;}
+	link_type		_m_end()			{ return _header;}
+	const_link_type	_m_end()const 		{ return _header;}
+
+	base_ptr		_m_header()	{ return &_header;} // remove at the end ???
+
 	void _insert(base_ptr x, base_ptr y, const value_type& v)
 	{
 		++_nodeCount;
@@ -289,9 +306,10 @@ protected:
 		(void)y;
 		
 		link_type toInsert = nodeAlloc.allocate(1);
-		nodeAlloc.allocate(toInsert, v);
+		nodeAlloc.construct(toInsert, v);
+		(void )v;
 		
-		if (root() == NULL)
+		if (_m_root() == NULL)
 		{
 			_header.parent = toInsert;
 			toInsert->color = kRed;
@@ -426,9 +444,40 @@ protected:
 	// 		tmp->parent->right = tmp;
 	// }
 
+	bool __rb_verify() const
+	{
+		if (_nodeCount == 0 || begin() == end())
+			return _nodeCount == 0 && begin() == end()
+				&& _m_header()->left == _m_end() && _m_header()->right == _m_end();
+
+		// size_t len = _rb_tree_black_count(header());
+		return true;
+	}
 
 }; /* class rbTree */
 
+
+size_t _rb_tree_black_count(const node_base *node, const node_base *root) throw()
+{
+	size_t len = 0;
+	if (node != NULL)
+		while (node != root)
+		{
+			if (node->color == kBlack)
+				++len;
+			node = node->parent;
+		}
+	return len;
+}
+
+
+
+
+
+
+template<typename _Key, typename _Val, typename _KeyOfValue, typename _Compare, typename _Alloc >
+typename	rbTree<_Key, _Val, _KeyOfValue, _Compare, _Alloc>::node_allocator 
+			rbTree<_Key, _Val, _KeyOfValue, _Compare, _Alloc>::nodeAlloc;
 
 } /* namespace ft */
 #endif /* RB_TREE */
@@ -447,4 +496,3 @@ protected:
 	// 		return 1;
 	// 	return 0;
 	// }
-

@@ -7,7 +7,7 @@
 
 TEST_CASE( "rb tree", "[rb_tree]" )
 {
-	ft::rbTree<int, int, ft::_Identity<int>> tree;
+	ft::rbTree<int, int, int> tree;
 
 
 	tree.insert(5);

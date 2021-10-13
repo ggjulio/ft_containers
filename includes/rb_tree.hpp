@@ -85,6 +85,99 @@ struct node : public node_base
 	const T*	_m_dataPtr() const 	{ return &data;}
 }; /* struct node */
 
+node_base*			_rb_tree_increment(node_base * x) throw();
+const node_base*	_rb_tree_increment(const node_base *x) throw();
+node_base*			_rb_tree_decrement(node_base * __x) throw();
+const node_base *	_rb_tree_decrement(const node_base *__x) throw();
+
+node_base*			_rb_tree_increment(node_base * x) throw()
+{
+	if (x->right != 0)
+	{
+		x = x->right;
+		while (x->left != 0)
+			x = x->left;
+	}
+	else
+	{
+		node_base* y = x->parent;
+		while (x == y->right)
+		{
+			x = y;
+			y = y->parent;
+		}
+		if (x->right != y)
+			x = y;
+	}
+	return x;
+}
+const node_base*	_rb_tree_increment(const node_base *x) throw()
+{
+	if (x->right != 0)
+	{
+		x = x->right;
+		while (x->left != 0)
+			x = x->left;
+	}
+	else
+	{
+		node_base* y = x->parent;
+		while (x == y->right)
+		{
+			x = y;
+			y = y->parent;
+		}
+		if (x->right != y)
+			x = y;
+	}
+	return x;
+}
+node_base*			_rb_tree_decrement(node_base * x) throw()
+{
+	if (x->color == kRed && x->parent->parent == x)
+		x = x->right;
+	else if (x->left != 0)
+	{
+		node_base* y = x->left;
+		while (y->right != 0)
+			y = y->right;
+		x = y;
+	}
+	else
+	{
+		node_base* y = x->parent;
+		while (x == y->left)
+		{
+			x = y;
+			y = y->parent;
+		}
+		x = y;
+	}
+	return x;
+}
+const node_base *	_rb_tree_decrement(const node_base *x) throw()
+{
+	if (x->color == kRed && x->parent->parent == x)
+		x = x->right;
+	else if (x->left != 0)
+	{
+		node_base* y = x->left;
+		while (y->right != 0)
+			y = y->right;
+		x = y;
+	}
+	else
+	{
+		node_base* y = x->parent;
+		while (x == y->left)
+		{
+			x = y;
+			y = y->parent;
+		}
+		x = y;
+	}
+	return x;
+}
 
 template <typename T>
 struct RbTree_iterator
@@ -97,11 +190,12 @@ struct RbTree_iterator
 	typedef std::ptrdiff_t difference_type;
 
 	typedef RbTree_iterator<T> Self;
+	typedef node_base::base_ptr base_ptr;
 	typedef node<T> *link_type;
 
 	RbTree_iterator() : _node() {}
 
-	RbTree_iterator(link_type ptr) throw() : _node(ptr) {}
+	RbTree_iterator(base_ptr ptr) throw() : _node(ptr) {}
 
 	reference operator*() const throw()
 	{
@@ -115,27 +209,27 @@ struct RbTree_iterator
 
 	Self &operator++() throw()
 	{
-		_node = _increment(_node);
+		_node = _rb_tree_increment(_node);
 		return *this;
 	}
 
 	Self operator++(int) throw()
 	{
 		Self tmp = *this;
-		_node = _increment(_node);
+		_node = _rb_tree_increment(_node);
 		return tmp;
 	}
 
 	Self &operator--() throw()
 	{
-		_node = _decrement(_node);
+		_node = _rb_tree_decrement(_node);
 		return *this;
 	}
 
 	Self operator--(int) throw()
 	{
 		Self __tmp = *this;
-		_node = _decrement(_node);
+		_node = _rb_tree_decrement(_node);
 		return __tmp;
 	}
 
@@ -149,55 +243,73 @@ struct RbTree_iterator
 	}
 
 	link_type _node;
-
-private:
-	link_type _increment(link_type x)
-	{
-		if (x->right != 0)
-		{
-			x = x->right;
-			while (x->left != 0)
-				x = x->left;
-		}
-		else
-		{
-			link_type y = x->parent;
-			while (x == y->right)
-			{
-				x = y;
-				y = y->parent;
-			}
-			if (x->right != y)
-				x = y;
-		}
-		return x;
-	}
-
-	link_type _decrement(link_type x)
-	{
-		if (x->_M_color == kRed && x->parent->parent == x)
-			x = x->right;
-		else if (x->left != 0)
-		{
-			link_type y = x->left;
-			while (y->right != 0)
-				y = y->right;
-			x = y;
-		}
-		else
-		{
-			link_type y = x->parent;
-			while (x == y->left)
-			{
-				x = y;
-				y = y->parent;
-			}
-			x = y;
-		}
-		return x;
-	}
-
 }; /* struct RbTree_iterator */
+
+template <typename T>
+struct RbTree_const_iterator
+{
+	typedef T value_type;
+	typedef const T &reference;
+	typedef const T *pointer;
+
+	typedef std::bidirectional_iterator_tag iterator_category;
+	typedef std::ptrdiff_t difference_type;
+
+	typedef RbTree_const_iterator<T> Self;
+	typedef node_base::const_base_ptr base_ptr;
+	typedef const node<T> *link_type;
+
+	RbTree_const_iterator() : _node() {}
+
+	RbTree_const_iterator(base_ptr ptr) throw() : _node(ptr) {}
+
+	reference operator*() const throw()
+	{
+		return *static_cast<link_type>(_node)->dataPtr();
+	}
+
+	pointer operator->() const throw()
+	{
+		return static_cast<link_type>(_node)->getDataPtr();
+	}
+
+	Self &operator++() throw()
+	{
+		_node = _rb_tree_increment(_node);
+		return *this;
+	}
+
+	Self operator++(int) throw()
+	{
+		Self tmp = *this;
+		_node = _rb_tree_increment(_node);
+		return tmp;
+	}
+
+	Self &operator--() throw()
+	{
+		_node = _rb_tree_decrement(_node);
+		return *this;
+	}
+
+	Self operator--(int) throw()
+	{
+		Self __tmp = *this;
+		_node = _rb_tree_decrement(_node);
+		return __tmp;
+	}
+
+	friend bool operator==(const Self &x, const Self &y) throw()
+	{
+		return x._node == y._node;
+	}
+	friend bool operator!=(const Self &x, const Self &y) throw()
+	{
+		return !(x._node == y._node);
+	}
+
+	link_type _node;
+}; /* struct RbTree_const_iterator */
 
 struct rb_tree_header
 {
@@ -253,7 +365,7 @@ public:
 	typedef const value_type						&const_reference;
 	
 	typedef RbTree_iterator<value_type> iterator;
-	// typedef RbTree_const_iterator<value_type> const_iterator;
+	typedef RbTree_const_iterator<value_type> const_iterator;
 
 protected:
 	typedef node_base			*base_ptr;
@@ -271,10 +383,10 @@ public:
 	rbTree() {}
 	~rbTree() {}
 
-	iterator				begin()	{ return iterator(_header.left);}
-	// const_iterator			begin()	{ return const_iterator(_header.left);}
-	iterator 				end()	{ return iterator(_header);}
-	// const_iterator			end()	{ return const_iterator(_header);}
+	iterator				begin()		  throw() { return iterator(_header.left);}
+	const_iterator			begin() const throw() { return const_iterator(_header.left);}
+	iterator 				end()		  throw() { return iterator(_header);}
+	const_iterator			end() const	  throw() { return const_iterator(_header);}
 	// reverse_iterator		rbegin(){ return reverse_iterator(end()); }
 	// const_reverse_iterator	rbegin(){ return const_reverse_iterator(end()); }
 	// reverse_iterator		rend() 	{ return reverse_iterator(begin()); }
@@ -475,12 +587,11 @@ public:
 	{
 		if (_nodeCount == 0 || begin() == end())
 			return _nodeCount == 0 && begin() == end()
-				&& _m_header()->left == _m_end() && _m_header()->right == _m_end();
+				&& _header.left == _m_end() && _header.right == _m_end();
 
 		size_t len = _rb_tree_black_count(_m_leftmost(), _m_root());
-		iterator it = begin();
-		iterator end = end();
-		while (it != end)
+		const_iterator it = begin();
+		while (it != end())
 		{
 			const_link_type x = it._node;
 			const_link_type left = _s_left(x);
@@ -495,14 +606,15 @@ public:
 					return false;
 			}
 			// check parent and child order is okay
-			if (left && _m_key_compare(_s_key(x), _s_key(left)))
+			if (left && this->_m_key_compare(_s_key(x), _s_key(left)))
 				return false;
-			if (right && _m_key_compare(_s_key(right), _s_key(x)))
+			if (right && this->_m_key_compare(_s_key(right), _s_key(x)))
 				return false;
 
 			// check if number of black nodes are equal no matter the node we're in
 			if (!left && !right && _rb_tree_black_count(x, _m_root()) != len)
 				return false;
+			// ++it;
 		}
 		// check if leftmost and rightmost correspond to min/max of root node
 		if (_m_leftmost() != node_base::_s_minimum(_m_root()) )

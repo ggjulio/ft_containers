@@ -48,25 +48,25 @@ struct node_base
 	base_ptr left;
 	base_ptr right;
 
-	base_ptr minimum(base_ptr iterator)
+	static base_ptr _s_minimum(base_ptr iterator)
 	{
 		while (iterator->left)
 			iterator = iterator->left;
 		return iterator;
 	}
-	base_ptr maximum(base_ptr iterator)
+	static const_base_ptr _s_minimum(const_base_ptr iterator)
+	{
+		while (iterator->left)
+			iterator = iterator->left;
+		return iterator;
+	}
+	static base_ptr _s_maximum(base_ptr iterator)
 	{
 		while (iterator->right)
 			iterator = iterator->right;
 		return iterator;
 	}
-	const_base_ptr minimum(const_base_ptr iterator)
-	{
-		while (iterator->left)
-			iterator = iterator->left;
-		return iterator;
-	}
-	const_base_ptr maximum(const_base_ptr iterator)
+	static const_base_ptr _s_maximum(const_base_ptr iterator)
 	{
 		while (iterator->right)
 			iterator = iterator->right;
@@ -81,8 +81,8 @@ struct node : public node_base
 	T data;
 
 	node(const T& val): data(val){}
-	T* dataPtr()		{return &data;}
-	const T* dataPtr() const 	{return &data;}
+	T*			_m_dataPtr()		{ return &data;}
+	const T*	_m_dataPtr() const 	{ return &data;}
 }; /* struct node */
 
 
@@ -282,20 +282,32 @@ public:
 	}
 
 protected:
-	base_ptr		_m_root()			{ return _header.parent;}
-	const_base_ptr	_m_root()const		{ return _header.parent;}
+	base_ptr				_m_root()					throw() { return _header.parent;}
+	const_base_ptr			_m_root()const				throw() { return _header.parent;}
 	
-	base_ptr		_m_leftmost()		{ return _header.parent->left;}
-	const_base_ptr	_m_leftmost()const	{ return _header.parent->left;}
+	base_ptr				_m_leftmost()				throw() { return _header.parent->left;}
+	const_base_ptr			_m_leftmost()const			throw() { return _header.parent->left;}
 	
-	base_ptr		_m_rightmost()		{ return _header.parent->right;}
-	const_base_ptr	_m_rightmost()const	{ return _header.parent->right;}
+	base_ptr				_m_rightmost()				throw() { return _header.parent->right;}
+	const_base_ptr			_m_rightmost()const			throw() { return _header.parent->right;}
 	
-	link_type		_m_begin()			{ return _header.left;}
-	const_link_type	_m_begin()const		{ return _header.left;}
+	link_type				_m_begin()					throw() { return _header.left;}
+	const_link_type			_m_begin()const				throw() { return _header.left;}
+	
+	link_type				_m_end()					throw() { return _header;}
+	const_link_type			_m_end()const 				throw() { return _header;}
 
-	link_type		_m_end()			{ return _header;}
-	const_link_type	_m_end()const 		{ return _header;}
+	static const _Key&		_s_key(const_link_type x) 	throw()	{ return x->_m_dataPtr();}
+	static const _Key&		_s_key(const_base_ptr x)  	throw()	{ return _s_key(x) ;}
+
+	static link_type		_s_left(base_ptr x)		 	throw() { return x->left;}
+	static const_link_type	_s_left(const_base_ptr x)	throw() { return x->left;}
+
+	static link_type		_s_right(base_ptr x)		throw()	{ return x->right;}
+	static const_link_type	_s_right(const_base_ptr x)	throw()	{ return x->right;}
+
+	static base_ptr 		_s_minimum(base_ptr x)		throw()	{ return node_base::_s_minimum(x); }
+	static const_base_ptr 	_s_minimum(const_base_ptr x)throw()	{ return node_base::_s_minimum(x); }
 
 	base_ptr		_m_header()	{ return &_header;} // remove at the end ???
 

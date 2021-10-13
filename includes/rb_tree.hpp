@@ -220,9 +220,20 @@ struct rb_tree_header
 
 };
 
+template <typename _Compare>
+struct rb_tree_key_compare
+{
+	_Compare _m_key_compare;
+
+	rb_tree_key_compare()
+		: _m_key_compare() {}
+	rb_tree_key_compare(const _Compare& compare)
+		: _m_key_compare(compare) {}
+};
+
 template<typename _Key, typename _Val, typename _KeyOfValue,
        typename _Compare = std::less<_Key>, typename _Alloc = ::std::allocator<_Val> >
-class rbTree : public rb_tree_header
+class rbTree : public rb_tree_header, public rb_tree_key_compare<_Compare>
 {
 public:
 	typedef _Val 				value_type;
@@ -308,6 +319,9 @@ protected:
 
 	static base_ptr 		_s_minimum(base_ptr x)		throw()	{ return node_base::_s_minimum(x); }
 	static const_base_ptr 	_s_minimum(const_base_ptr x)throw()	{ return node_base::_s_minimum(x); }
+
+	static base_ptr 		_s_maximum(base_ptr x)		throw()	{ return node_base::_s_maximum(x); }
+	static const_base_ptr 	_s_maximum(const_base_ptr x)throw()	{ return node_base::_s_maximum(x); }
 
 	base_ptr		_m_header()	{ return &_header;} // remove at the end ???
 
@@ -456,13 +470,45 @@ protected:
 	// 		tmp->parent->right = tmp;
 	// }
 
+public:
 	bool __rb_verify() const
 	{
 		if (_nodeCount == 0 || begin() == end())
 			return _nodeCount == 0 && begin() == end()
 				&& _m_header()->left == _m_end() && _m_header()->right == _m_end();
 
-		// size_t len = _rb_tree_black_count(header());
+		size_t len = _rb_tree_black_count(_m_leftmost(), _m_root());
+		iterator it = begin();
+		iterator end = end();
+		while (it != end)
+		{
+			const_link_type x = it._node;
+			const_link_type left = _s_left(x);
+			const_link_type right = _s_right(x);
+
+			// check if adjacent nodes are not red when parent is already red
+			if (x->color == kRed)
+			{
+				if (left && left->color == kRed)
+					return false;
+				if (right && right->color == kRed)
+					return false;
+			}
+			// check parent and child order is okay
+			if (left && _m_key_compare(_s_key(x), _s_key(left)))
+				return false;
+			if (right && _m_key_compare(_s_key(right), _s_key(x)))
+				return false;
+
+			// check if number of black nodes are equal no matter the node we're in
+			if (!left && !right && _rb_tree_black_count(x, _m_root()) != len)
+				return false;
+		}
+		// check if leftmost and rightmost correspond to min/max of root node
+		if (_m_leftmost() != node_base::_s_minimum(_m_root()) )
+				return false;
+		if (_m_rightmost() != node_base::_s_maximum(_m_root()) )
+				return false;
 		return true;
 	}
 

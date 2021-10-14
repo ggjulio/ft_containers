@@ -8,12 +8,10 @@
 TEST_CASE( "rb tree", "[rb_tree]" )
 {
 	ft::rbTree<int, int, int> tree;
-
+	CHECK( tree.size() == 0);	
+	REQUIRE( tree.__rb_verify());
 
 	tree.insert(5);
-	CHECK( tree.size() == 1);
-	
-	CHECK( tree.__rb_verify());
 
 	// tree.insert(7);
 	// tree.insert(3);

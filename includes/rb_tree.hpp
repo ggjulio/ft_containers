@@ -226,17 +226,17 @@ struct RbTree_const_iterator
 	typedef node_base::const_base_ptr base_ptr;
 	typedef const node<T> *link_type;
 
-	RbTree_const_iterator() : _node() {}
-	RbTree_const_iterator(base_ptr ptr) throw() : _node(ptr) {}
+	RbTree_const_iterator()						: _node() {}
+	RbTree_const_iterator(base_ptr ptr) throw()	: _node(ptr) {}
 
 	reference operator*() const throw() { return *static_cast<link_type>(_node)->dataPtr(); }
 	pointer operator->() const throw()	{ return static_cast<link_type>(_node)->getDataPtr(); }
 
-	Self &operator++() throw()	{ _node = _rb_tree_increment(_node);	return *this; }
+	Self &operator++() throw()	{ _node = _rb_tree_increment(_node); return *this; }
 	Self operator++(int) throw(){ Self tmp = *this; _node = _rb_tree_increment(_node); return tmp; }
 
-	Self &operator--() throw() { _node = _rb_tree_decrement(_node); return *this; }
-	Self operator--(int) throw() { Self __tmp = *this; _node = _rb_tree_decrement(_node); return __tmp; }
+	Self &operator--() throw()	{ _node = _rb_tree_decrement(_node); return *this; }
+	Self operator--(int) throw(){ Self __tmp = *this; _node = _rb_tree_decrement(_node); return __tmp; }
 
 	friend bool operator==(const Self &x, const Self &y) throw() { return x._node == y._node; }
 	friend bool operator!=(const Self &x, const Self &y) throw() { return !(x._node == y._node); }
@@ -312,9 +312,9 @@ public:
 	~rbTree() {}
 
 	iterator				begin()		  throw() { return iterator(_header.left);}
-	const_iterator			begin() const throw() { return const_iterator(static_cast<base_ptr>(_header.left));}
-	// iterator 				end()		  throw() { return iterator(_header);}
-	// const_iterator			end() const	  throw() { return const_iterator(_header);}
+	const_iterator			begin() const throw() { return const_iterator(_header.left);}
+	iterator 				end()		  throw() { return iterator(&_header);}
+	const_iterator			end() const	  throw() { return const_iterator(&_header);}
 	// reverse_iterator		rbegin(){ return reverse_iterator(end()); }
 	// const_reverse_iterator	rbegin(){ return const_reverse_iterator(end()); }
 	// reverse_iterator		rend() 	{ return reverse_iterator(begin()); }
@@ -345,17 +345,17 @@ protected:
 	link_type				_m_begin()					throw() { return _header.left;}
 	const_link_type			_m_begin()const				throw() { return _header.left;}
 	
-	link_type				_m_end()					throw() { return _header;}
-	const_link_type			_m_end()const 				throw() { return _header;}
+	link_type				_m_end()					throw() { return static_cast<link_type>(&_header);}
+	const_link_type			_m_end()const 				throw() { return static_cast<const_link_type>(&_header);}
 
-	static const _Key&		_s_key(const_link_type x) 	throw()	{ return x->_m_dataPtr();}
+	static const _Key&		_s_key(const_link_type x) 	throw()	{ return *x->_m_dataPtr();}
 	static const _Key&		_s_key(const_base_ptr x)  	throw()	{ return _s_key(x) ;}
 
-	static link_type		_s_left(base_ptr x)		 	throw() { return x->left;}
-	static const_link_type	_s_left(const_base_ptr x)	throw() { return x->left;}
+	static link_type		_s_left(base_ptr x)		 	throw() { return static_cast<link_type>(x->left);}
+	static const_link_type	_s_left(const_base_ptr x)	throw() { return static_cast<const_link_type>(x->left);}
 
-	static link_type		_s_right(base_ptr x)		throw()	{ return x->right;}
-	static const_link_type	_s_right(const_base_ptr x)	throw()	{ return x->right;}
+	static link_type		_s_right(base_ptr x)		throw()	{ return static_cast<link_type>(x->right);}
+	static const_link_type	_s_right(const_base_ptr x)	throw()	{ return static_cast<const_link_type>(x->right);}
 
 	static base_ptr 		_s_minimum(base_ptr x)		throw()	{ return node_base::_s_minimum(x); }
 	static const_base_ptr 	_s_minimum(const_base_ptr x)throw()	{ return node_base::_s_minimum(x); }
@@ -511,46 +511,46 @@ protected:
 	// }
 
 public:
-	// bool __rb_verify() const
-	// {
-	// 	if (_nodeCount == 0 || begin() == end())
-	// 		return _nodeCount == 0 && begin() == end()
-	// 			&& _header.left == _m_end() && _header.right == _m_end();
+	bool __rb_verify() const
+	{
+		if (_nodeCount == 0 || begin() == end())
+			return _nodeCount == 0 && begin() == end()
+				&& _header.left == _m_end() && _header.right == _m_end();
 
-	// 	size_t len = _rb_tree_black_count(_m_leftmost(), _m_root());
-	// 	const_iterator it = begin();
-	// 	while (it != end())
-	// 	{
-	// 		const_link_type x = it._node;
-	// 		const_link_type left = _s_left(x);
-	// 		const_link_type right = _s_right(x);
+		size_t len = _rb_tree_black_count(_m_leftmost(), _m_root());
+		const_iterator it = begin();
+		while (it != end())
+		{
+			const_link_type x = static_cast<const_link_type>(it._node);
+			const_link_type left = _s_left(x->left);
+			const_link_type right = _s_right(x->right);
 
-	// 		// check if adjacent nodes are not red when parent is already red
-	// 		if (x->color == kRed)
-	// 		{
-	// 			if (left && left->color == kRed)
-	// 				return false;
-	// 			if (right && right->color == kRed)
-	// 				return false;
-	// 		}
-	// 		// check parent and child order is okay
-	// 		if (left && this->_m_key_compare(_s_key(x), _s_key(left)))
-	// 			return false;
-	// 		if (right && this->_m_key_compare(_s_key(right), _s_key(x)))
-	// 			return false;
+			// check if adjacent nodes are not red when parent is already red
+			if (x->color == kRed)
+			{
+				if (left && left->color == kRed)
+					return false;
+				if (right && right->color == kRed)
+					return false;
+			}
+			// check parent and child order is okay
+			if (left && this->_m_key_compare(_s_key(x), _s_key(left)))
+				return false;
+			if (right && this->_m_key_compare(_s_key(right), _s_key(x)))
+				return false;
 
-	// 		// check if number of black nodes are equal no matter the node we're in
-	// 		if (!left && !right && _rb_tree_black_count(x, _m_root()) != len)
-	// 			return false;
-	// 		// ++it;
-	// 	}
-	// 	// check if leftmost and rightmost correspond to min/max of root node
-	// 	if (_m_leftmost() != node_base::_s_minimum(_m_root()) )
-	// 			return false;
-	// 	if (_m_rightmost() != node_base::_s_maximum(_m_root()) )
-	// 			return false;
-	// 	return true;
-	// }
+			// check if number of black nodes are equal no matter the node we're in
+			if (!left && !right && _rb_tree_black_count(x, _m_root()) != len)
+				return false;
+			++it;
+		}
+		// check if leftmost and rightmost correspond to min/max of root node
+		if (_m_leftmost() != node_base::_s_minimum(_m_root()) )
+				return false;
+		if (_m_rightmost() != node_base::_s_maximum(_m_root()) )
+				return false;
+		return true;
+	}
 
 }; /* class rbTree */
 

@@ -302,7 +302,7 @@ protected:
 	typedef node<_Val>			*link_type;
 	typedef const node<_Val>	*const_link_type;
 
-	typedef typename _Alloc::template rebind<node<_Val>>::other		node_allocator;
+	typedef typename _Alloc::template rebind< node<_Val> >::other		node_allocator;
     typedef std::allocator_traits<node_allocator>     		node_traits;
 
 public:

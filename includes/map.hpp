@@ -5,6 +5,7 @@
 #include <utility>
 #include <map>
 
+#include "utility.hpp"
 namespace ft
 {
 template <
@@ -28,28 +29,28 @@ public:
 	// typedef implementation-defined	const_iterator; // see 23.2
 	// typedef implementation-defined size_type; // see 23.2
 	// typedef implementation-defined difference_type;// see 23.2
-	typedef typename allocator_traits<Allocator>::pointer		pointer;
-	typedef typename allocator_traits<Allocator>::const_pointer	const_pointer;
-	typedef reverse_iterator<iterator> reverse_iterator;
-	typedef reverse_iterator<const_iterator> const_reverse_iterator;
+	typedef typename std::allocator_traits<_Alloc>::pointer		pointer;
+	typedef typename std::allocator_traits<_Alloc>::const_pointer	const_pointer;
+	// typedef reverse_iterator<iterator> reverse_iterator;
+	// typedef reverse_iterator<const_iterator> const_reverse_iterator;
 
-	class value_compare
-	{
-		friend class map;
+	// class value_compare
+	// {
+	// 	friend class map;
 
-	protected:
-		Compare comp;
-		value_compare(Compare c) : comp(c) {}
+	// protected:
+	// 	_Compare comp;
+	// 	value_compare(Compare c) : comp(c) {}
 
-	public:
-		typedef bool result_type;
-		typedef value_type first_argument_type;
-		typedef value_type second_argument_type;
-		bool operator()(const value_type &x, const value_type &y) const
-		{
-			return comp(x.first, y.first);
-		}
-	};
+	// public:
+	// 	typedef bool result_type;
+	// 	typedef value_type first_argument_type;
+	// 	typedef value_type second_argument_type;
+	// 	bool operator()(const value_type &x, const value_type &y) const
+	// 	{
+	// 		return comp(x.first, y.first);
+	// 	}
+	// };
 
 	private:
 	};

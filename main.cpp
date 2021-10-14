@@ -71,7 +71,7 @@ int main(int argc, char** argv) {
 	cn::vector<int> vector_int;
 	cn::stack<int> stack_int;
 	cn::vector<Buffer> vector_buffer;
-	cn::stack<Buffer, std::deque<int> > stack_deq_buffer;
+	cn::stack<Buffer, std::deque<Buffer> > stack_deq_buffer;
 	cn::map<int, int> map_int;
 
 	for (int i = 0; i < COUNT; i++)

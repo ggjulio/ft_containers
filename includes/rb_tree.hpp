@@ -40,8 +40,8 @@ enum color { kBlack = false,	kRed = true, };
 
 struct node_base
 {
-	typedef node_base		*base_ptr;
-	typedef const node_base *const_base_ptr;
+	typedef node_base*			base_ptr;
+	typedef const node_base*	const_base_ptr;
 
 	enum color color;
 	base_ptr parent;
@@ -77,7 +77,8 @@ struct node_base
 template <class T>
 struct node : public node_base
 {
-	typedef node<T> *link_type;
+	typedef node<T>* link_type;
+
 	T data;
 
 	node(const T& val): data(val){}
@@ -193,56 +194,22 @@ struct RbTree_iterator
 	typedef node_base::base_ptr base_ptr;
 	typedef node<T> *link_type;
 
-	RbTree_iterator() : _node() {}
+	RbTree_iterator()						: _node() {}
+	RbTree_iterator(base_ptr ptr) throw()	: _node(ptr) {}
 
-	RbTree_iterator(base_ptr ptr) throw() : _node(ptr) {}
+	reference operator*() const throw() { return *static_cast<link_type>(_node)->dataPtr(); }
+	pointer operator->() const throw()	{ return static_cast<link_type>(_node)->getDataPtr(); }
 
-	reference operator*() const throw()
-	{
-		return *static_cast<link_type>(_node)->dataPtr();
-	}
+	Self &operator++() throw()	{ _node = _rb_tree_increment(_node); return *this; }
+	Self operator++(int) throw(){ Self tmp = *this; _node = _rb_tree_increment(_node); return tmp; }
 
-	pointer operator->() const throw()
-	{
-		return static_cast<link_type>(_node)->getDataPtr();
-	}
+	Self &operator--() throw()	{ _node = _rb_tree_decrement(_node); return *this; }
+	Self operator--(int) throw(){ Self __tmp = *this; _node = _rb_tree_decrement(_node); return __tmp; }
 
-	Self &operator++() throw()
-	{
-		_node = _rb_tree_increment(_node);
-		return *this;
-	}
+	friend bool operator==(const Self &x, const Self &y) throw() { return x._node == y._node; }
+	friend bool operator!=(const Self &x, const Self &y) throw() { return !(x._node == y._node); }
 
-	Self operator++(int) throw()
-	{
-		Self tmp = *this;
-		_node = _rb_tree_increment(_node);
-		return tmp;
-	}
-
-	Self &operator--() throw()
-	{
-		_node = _rb_tree_decrement(_node);
-		return *this;
-	}
-
-	Self operator--(int) throw()
-	{
-		Self __tmp = *this;
-		_node = _rb_tree_decrement(_node);
-		return __tmp;
-	}
-
-	friend bool operator==(const Self &x, const Self &y) throw()
-	{
-		return x._node == y._node;
-	}
-	friend bool operator!=(const Self &x, const Self &y) throw()
-	{
-		return !(x._node == y._node);
-	}
-
-	link_type _node;
+	base_ptr _node;
 }; /* struct RbTree_iterator */
 
 template <typename T>
@@ -260,55 +227,21 @@ struct RbTree_const_iterator
 	typedef const node<T> *link_type;
 
 	RbTree_const_iterator() : _node() {}
-
 	RbTree_const_iterator(base_ptr ptr) throw() : _node(ptr) {}
 
-	reference operator*() const throw()
-	{
-		return *static_cast<link_type>(_node)->dataPtr();
-	}
+	reference operator*() const throw() { return *static_cast<link_type>(_node)->dataPtr(); }
+	pointer operator->() const throw()	{ return static_cast<link_type>(_node)->getDataPtr(); }
 
-	pointer operator->() const throw()
-	{
-		return static_cast<link_type>(_node)->getDataPtr();
-	}
+	Self &operator++() throw()	{ _node = _rb_tree_increment(_node);	return *this; }
+	Self operator++(int) throw(){ Self tmp = *this; _node = _rb_tree_increment(_node); return tmp; }
 
-	Self &operator++() throw()
-	{
-		_node = _rb_tree_increment(_node);
-		return *this;
-	}
+	Self &operator--() throw() { _node = _rb_tree_decrement(_node); return *this; }
+	Self operator--(int) throw() { Self __tmp = *this; _node = _rb_tree_decrement(_node); return __tmp; }
 
-	Self operator++(int) throw()
-	{
-		Self tmp = *this;
-		_node = _rb_tree_increment(_node);
-		return tmp;
-	}
+	friend bool operator==(const Self &x, const Self &y) throw() { return x._node == y._node; }
+	friend bool operator!=(const Self &x, const Self &y) throw() { return !(x._node == y._node); }
 
-	Self &operator--() throw()
-	{
-		_node = _rb_tree_decrement(_node);
-		return *this;
-	}
-
-	Self operator--(int) throw()
-	{
-		Self __tmp = *this;
-		_node = _rb_tree_decrement(_node);
-		return __tmp;
-	}
-
-	friend bool operator==(const Self &x, const Self &y) throw()
-	{
-		return x._node == y._node;
-	}
-	friend bool operator!=(const Self &x, const Self &y) throw()
-	{
-		return !(x._node == y._node);
-	}
-
-	link_type _node;
+	base_ptr _node;
 }; /* struct RbTree_const_iterator */
 
 struct rb_tree_header
@@ -316,11 +249,7 @@ struct rb_tree_header
 	node_base _header;
 	size_t	_nodeCount;
 
-	rb_tree_header() throw()
-	{
-		_header.color = kRed;
-		reset();
-	}
+	rb_tree_header() throw() { _header.color = kRed; reset(); }
 
 	void reset() throw()
 	{
@@ -329,7 +258,6 @@ struct rb_tree_header
 		_header.right = &_header;
 		_nodeCount = 0;
 	}
-
 };
 
 template <typename _Compare>
@@ -349,7 +277,7 @@ class rbTree : public rb_tree_header, public rb_tree_key_compare<_Compare>
 {
 public:
 	typedef _Val 				value_type;
-	typedef _Compare 				value_compare;
+	typedef _Compare 			value_compare;
 	typedef _Alloc				allocator_type;
 private:
     typedef std::allocator_traits<allocator_type>      _alloc_traits;
@@ -384,9 +312,9 @@ public:
 	~rbTree() {}
 
 	iterator				begin()		  throw() { return iterator(_header.left);}
-	const_iterator			begin() const throw() { return const_iterator(_header.left);}
-	iterator 				end()		  throw() { return iterator(_header);}
-	const_iterator			end() const	  throw() { return const_iterator(_header);}
+	const_iterator			begin() const throw() { return const_iterator(static_cast<base_ptr>(_header.left));}
+	// iterator 				end()		  throw() { return iterator(_header);}
+	// const_iterator			end() const	  throw() { return const_iterator(_header);}
 	// reverse_iterator		rbegin(){ return reverse_iterator(end()); }
 	// const_reverse_iterator	rbegin(){ return const_reverse_iterator(end()); }
 	// reverse_iterator		rend() 	{ return reverse_iterator(begin()); }
@@ -583,46 +511,46 @@ protected:
 	// }
 
 public:
-	bool __rb_verify() const
-	{
-		if (_nodeCount == 0 || begin() == end())
-			return _nodeCount == 0 && begin() == end()
-				&& _header.left == _m_end() && _header.right == _m_end();
+	// bool __rb_verify() const
+	// {
+	// 	if (_nodeCount == 0 || begin() == end())
+	// 		return _nodeCount == 0 && begin() == end()
+	// 			&& _header.left == _m_end() && _header.right == _m_end();
 
-		size_t len = _rb_tree_black_count(_m_leftmost(), _m_root());
-		const_iterator it = begin();
-		while (it != end())
-		{
-			const_link_type x = it._node;
-			const_link_type left = _s_left(x);
-			const_link_type right = _s_right(x);
+	// 	size_t len = _rb_tree_black_count(_m_leftmost(), _m_root());
+	// 	const_iterator it = begin();
+	// 	while (it != end())
+	// 	{
+	// 		const_link_type x = it._node;
+	// 		const_link_type left = _s_left(x);
+	// 		const_link_type right = _s_right(x);
 
-			// check if adjacent nodes are not red when parent is already red
-			if (x->color == kRed)
-			{
-				if (left && left->color == kRed)
-					return false;
-				if (right && right->color == kRed)
-					return false;
-			}
-			// check parent and child order is okay
-			if (left && this->_m_key_compare(_s_key(x), _s_key(left)))
-				return false;
-			if (right && this->_m_key_compare(_s_key(right), _s_key(x)))
-				return false;
+	// 		// check if adjacent nodes are not red when parent is already red
+	// 		if (x->color == kRed)
+	// 		{
+	// 			if (left && left->color == kRed)
+	// 				return false;
+	// 			if (right && right->color == kRed)
+	// 				return false;
+	// 		}
+	// 		// check parent and child order is okay
+	// 		if (left && this->_m_key_compare(_s_key(x), _s_key(left)))
+	// 			return false;
+	// 		if (right && this->_m_key_compare(_s_key(right), _s_key(x)))
+	// 			return false;
 
-			// check if number of black nodes are equal no matter the node we're in
-			if (!left && !right && _rb_tree_black_count(x, _m_root()) != len)
-				return false;
-			// ++it;
-		}
-		// check if leftmost and rightmost correspond to min/max of root node
-		if (_m_leftmost() != node_base::_s_minimum(_m_root()) )
-				return false;
-		if (_m_rightmost() != node_base::_s_maximum(_m_root()) )
-				return false;
-		return true;
-	}
+	// 		// check if number of black nodes are equal no matter the node we're in
+	// 		if (!left && !right && _rb_tree_black_count(x, _m_root()) != len)
+	// 			return false;
+	// 		// ++it;
+	// 	}
+	// 	// check if leftmost and rightmost correspond to min/max of root node
+	// 	if (_m_leftmost() != node_base::_s_minimum(_m_root()) )
+	// 			return false;
+	// 	if (_m_rightmost() != node_base::_s_maximum(_m_root()) )
+	// 			return false;
+	// 	return true;
+	// }
 
 }; /* class rbTree */
 

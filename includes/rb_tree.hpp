@@ -31,6 +31,8 @@
 #include <memory>
 #include <functional>
 
+#include "iterator.hpp"
+
 namespace ft
 {
 
@@ -292,8 +294,10 @@ public:
 	typedef value_type								&reference;
 	typedef const value_type						&const_reference;
 	
-	typedef RbTree_iterator<value_type> iterator;
-	typedef RbTree_const_iterator<value_type> const_iterator;
+	typedef RbTree_iterator<value_type>				iterator;
+	typedef RbTree_const_iterator<value_type>		const_iterator;
+	typedef ft::reverse_iterator<iterator>			reverse_iterator;
+	typedef ft::reverse_iterator<const_iterator>	const_reverse_iterator;
 
 protected:
 	typedef node_base			*base_ptr;
@@ -303,7 +307,8 @@ protected:
 	typedef const node<_Val>	*const_link_type;
 
 	typedef typename _Alloc::template rebind< node<_Val> >::other		node_allocator;
-    typedef std::allocator_traits<node_allocator>     		node_traits;
+    typedef std::allocator_traits<node_allocator>     					node_traits;
+
 
 public:
 	static node_allocator nodeAlloc;
@@ -311,18 +316,18 @@ public:
 	rbTree() {}
 	~rbTree() {}
 
-	iterator				begin()		  throw() { return iterator(_header.left);}
-	const_iterator			begin() const throw() { return const_iterator(_header.left);}
-	iterator 				end()		  throw() { return iterator(&_header);}
-	const_iterator			end() const	  throw() { return const_iterator(&_header);}
-	// reverse_iterator		rbegin(){ return reverse_iterator(end()); }
-	// const_reverse_iterator	rbegin(){ return const_reverse_iterator(end()); }
-	// reverse_iterator		rend() 	{ return reverse_iterator(begin()); }
-	// const_reverse_iterator	rend() 	{ return const_reverse_iterator(begin()); }
+	iterator				begin()		  	{ return iterator(_header.left);}
+	const_iterator			begin() const 	{ return const_iterator(_header.left);}
+	iterator 				end()		  	{ return iterator(&_header);}
+	const_iterator			end() const	  	{ return const_iterator(&_header);}
+	reverse_iterator		rbegin()		{ return reverse_iterator(end()); }
+	const_reverse_iterator	rbegin() const	{ return const_reverse_iterator(end()); }
+	reverse_iterator		rend() 			{ return reverse_iterator(begin()); }
+	const_reverse_iterator	rend() const 	{ return const_reverse_iterator(begin()); }
 
-	bool		empty() const				{ return _nodeCount == 0; }
-	size_type	size() const				{ return _nodeCount; }
-	size_type	max_size() const throw()	{ return nodeAlloc.max_size(); }
+	bool			empty() const				{ return _nodeCount == 0; }
+	size_type		size() const				{ return _nodeCount; }
+	size_type		max_size() const throw()	{ return nodeAlloc.max_size(); }
 
 	allocator_type get_allocator() const throw(){ return allocator_type();}
 

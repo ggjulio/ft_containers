@@ -50,7 +50,14 @@ typedef std::reverse_iterator<std::vector<int>::iterator> reverse_iter;
 	CHECK( *++it == 4 );
 	CHECK( *++it == 2 );
 	CHECK( *++it == 1 );
+	CHECK( *--it == 2 );
+	CHECK( *++it == 1 );
 	// CHECK( it.base() == end.base() );
+
+	it = reverse_iter(vec.end());
+	REQUIRE( *it == 6 );
+	
+	// while
 
 	// CHECK(  );
 }

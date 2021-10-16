@@ -67,6 +67,7 @@ SRC = catch_amalgamated.cpp
 SRC+= TestsVector.cpp TestsStack.cpp
 SRC+= TestsTypeTraits.cpp TestsUtility.cpp
 SRC+= TestsIterator.cpp
+SRC+= TestsAlgorithm.cpp
 
 SRC+= TestsRbTree.cpp
 

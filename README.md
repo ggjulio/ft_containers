@@ -43,3 +43,6 @@ typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
 - https://stackoverflow.com/questions/2127612/is-there-a-readable-implementation-of-the-stl
 - http://stepanovpapers.com/butler.hpl.hp/stl/stl/
 - https://github.com/gcc-mirror/gcc/blob/master/libstdc%2B%2B-v3/include/bits/stl_set.h
+
+
+- https://en.cppreference.com/w/cpp/named_req/Compare

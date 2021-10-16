@@ -15,6 +15,9 @@ namespace NS_NAME
 	// }
 }
 
+/////////////////////
+// iterator traits //
+/////////////////////
 
 TEST_CASE( "cn::iterator_traits", "[iterator_traits]" ) {
 	typedef cn::iterator_traits<int*> traitsIntPtr;
@@ -28,66 +31,80 @@ TEST_CASE( "cn::iterator_traits", "[iterator_traits]" ) {
 
 }
 
-TEST_CASE( "cn::reverse_iterator - basic loop pre increment", "[reverse_iterator][basic_loop][pre_increment]" )
+//////////////////////
+// reverse iterator //
+//////////////////////
+
+typedef cn::reverse_iterator<std::vector<int>::iterator> reverse_it;
+
+TEST_CASE( "cn::reverse_iterator - basic loop pre increment",
+	"[reverse_iterator][basic_loop][pre][increment][pre_increment]" )
 {
 	std::vector<int> vec = {1,2,3,4,5};
-	typedef std::reverse_iterator<std::vector<int>::iterator> reverse_iter;
 
-	reverse_iter it(vec.end());
-	reverse_iter end(vec.begin());
+	reverse_it it(vec.end());
+	reverse_it end(vec.begin());
 
 	int n = 5;
-	while (it != end)
+	while (it != end && n > -10)
 	{
-		CHECK(*it == n);
+		CHECK(*it == n--);
 		++it;
-		REQUIRE( n > 0);
-		--n;
 	}
+	REQUIRE( n == 0);
 	REQUIRE( *--it == 1);
 }
 
-TEST_CASE( "cn::reverse_iterator - basic loop post increment", "[reverse_iterator][basic_loop][post_increment]" )
+TEST_CASE( "cn::reverse_iterator - basic loop post increment",
+	"[reverse_iterator][basic_loop][post][increment][post_increment]" )
 {
 	std::vector<int> vec = {1,2,3,4,5};
-	typedef std::reverse_iterator<std::vector<int>::iterator> reverse_iter;
 
-	reverse_iter it(vec.end());
-	reverse_iter end(vec.begin());
+	reverse_it it(vec.end());
+	reverse_it end(vec.begin());
 
 	int n = 5;
-	while (it != end)
+	while (it != end && n > -10)
 	{
-		CHECK(*it++ == n);
-		REQUIRE( n > 0);
-		--n;
+		CHECK(*it++ == n--);
 	}
+	REQUIRE( n == 0);
 	it--;
 	REQUIRE( *it == 1);
 }
 
-
-TEST_CASE( "cn::reverse_iterator", "[reverse_iterator]" ) {
+TEST_CASE( "cn::reverse_iterator - basic loop pre decrement",
+	"[reverse_iterator][basic_loop][pre][decrement][pre_decrement]" )
+{
 	std::vector<int> vec = {1,2,3,4,5};
 
-typedef std::reverse_iterator<std::vector<int>::iterator> reverse_iter;
+	reverse_it it(vec.begin());
+	reverse_it end(vec.end());
 
-	reverse_iter it(vec.end());
-	reverse_iter end(vec.begin());
+	int n = 0;
+	while (it != end && ++n < 10)
+	{
+		CHECK(*--it == n);
+	}
+	CHECK(n == 5);
+	CHECK( *++it == 4);
+}
 
-	CHECK( *it == 5 );
-	CHECK( *++it == 4 );
-	CHECK( *++it == 3 );
-	CHECK( *++it == 2 );
-	CHECK( *++it == 1 );
-	CHECK( *--it == 2 );
-	CHECK( *++it == 1 );
-	CHECK( ++it == end );
+TEST_CASE( "cn::reverse_iterator - basic loop post decrement",
+	"[reverse_iterator][basic_loop][post][decrement][post_decrement]" )
+{
+	std::vector<int> vec = {1,2,3,4,5};
 
-	it = reverse_iter(vec.end());
-	REQUIRE( *it == 5 );
-	
-	// while
+	reverse_it it(vec.begin());
+	reverse_it end(vec.end());
 
-	// CHECK(  );
+	int n = 0;
+	while (it != end && ++n < 10)
+	{
+		it--;
+		CHECK(*it == n);
+	}
+	CHECK(n == 5);
+	it++;
+	CHECK( *it == 4);
 }

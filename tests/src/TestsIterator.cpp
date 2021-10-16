@@ -27,15 +27,6 @@ TEST_CASE( "cn::iterator_traits", "[iterator_traits]" ) {
 //   CHECK( typeid(traitsInt::iterator_category).name() ==typeid(cn::  ).name());
 
 }
-// namespace NS_NAME
-// {
-// 	template<class T1, class T2>
-// 	std::ostream&	operator<<(std::ostream& os, const reverse_iter& rev)
-// 	{
-// 		os << rev.base();
-// 		return os;
-// 	}
-// }
 
 TEST_CASE( "cn::reverse_iterator - basic loop pre increment", "[reverse_iterator][basic_loop][pre_increment]" )
 {
@@ -55,7 +46,6 @@ TEST_CASE( "cn::reverse_iterator - basic loop pre increment", "[reverse_iterator
 	}
 	REQUIRE( *--it == 1);
 }
-
 
 TEST_CASE( "cn::reverse_iterator - basic loop post increment", "[reverse_iterator][basic_loop][post_increment]" )
 {

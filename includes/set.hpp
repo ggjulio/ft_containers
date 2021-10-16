@@ -125,7 +125,7 @@ public:
 	iterator				lower_bound(const value_type& val) const	{ return _tree.lower_bound(val);}
 	iterator				upper_bound(const value_type& val) const	{ return _tree.upper_bound(val);}
 	pair<iterator,iterator> equal_range(const value_type& val) const	{ return _tree.equal_range_unique(val);}
-	allocator_type			get_allocator() const 						{ return _tree.get_allocator()}
+	allocator_type			get_allocator() const 						{ return _tree.get_allocator();}
 
 }; /* class set */
 

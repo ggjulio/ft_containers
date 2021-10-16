@@ -6,6 +6,7 @@
 #include <map>
 
 #include "utility.hpp"
+#include "rb_tree.hpp"
 namespace ft
 {
 template <
@@ -31,7 +32,7 @@ public:
 		friend class map;
 	protected:
 		_Compare comp;
-		value_compare(Compare c) : comp(c) {}
+		value_compare(_Compare c) : comp(c) {}
 	public:
 		typedef bool result_type;
 		typedef value_type first_argument_type;
@@ -49,7 +50,7 @@ public:
 	typedef typename __tree::pointer						pointer;
 	typedef typename __tree::const_pointer					const_pointer;
 	typedef typename __tree::size_type						size_type;
-	typedef typename __tree::difference_type				difference_type ;
+	typedef typename __tree::difference_type				difference_type;
 	typedef typename __tree::const_iterator 				iterator;
 	typedef typename __tree::const_iterator 				const_iterator;
 	typedef typename ft::reverse_iterator<iterator>			reverse_iterator;
@@ -59,7 +60,7 @@ public:
 // construct
 	explicit map (const key_compare& comp = key_compare(),
               const allocator_type& alloc = allocator_type())
-	:: _tree(comp, alloc) {}
+	: _tree(comp, alloc) {}
 	
 	template <class InputIterator>
  	 map(InputIterator first, InputIterator last,
@@ -70,7 +71,7 @@ public:
 		insert(first, last);
 	}
 
-	map(const map& x): _tree(other._tree) {}
+	map(const map& other): _tree(other._tree) {}
 	~map(){}
 
 	map& operator= (const map& other)
@@ -111,10 +112,32 @@ public:
 	   { _tree._range_unique(first, last);}
 	
 	void		erase(iterator position)			{ _tree.erase(position); }
-	size_type	erase(const key_type& val)			{ return _tree.erase_unique(val); }
-    void		erase(iterator first, iterator last)	{ _tree.erase(first, last);}
+	size_type	erase(const key_type& k)			{ return _tree.erase_unique(k); }
+    void		erase(iterator first, iterator last)	{ _tree.erase(first, last); }
+	void 		swap(map& other)						{ _tree.swap(other._tree); }
+	void 		clear()									{ _tree.clear();}
 
-};
+// observers
+	key_compare	key_comp() const		{ return _tree.key_comp();}
+	value_compare value_comp() const	{ return _tree.key_comp();}
+
+// operations
+    iterator		find(const key_type& k)			{ return _tree.find(k);}
+	const_iterator	find(const key_type& k) const	{ return _tree.find(k);}
+	size_type		count(const key_type& k) const	{ return _tree.count_unique(k);}
+	iterator		lower_bound (const key_type& k)			{ return _tree.lower_bound(k); }
+	const_iterator	lower_bound (const key_type& k) const	{ return _tree.lower_bound(k); }
+	iterator		upper_bound (const key_type& k)			{ return _tree.upper_bound(k); }
+	const_iterator	upper_bound (const key_type& k) const	{ return _tree.upper_bound(k); }
+	pair<const_iterator,const_iterator> equal_range(const key_type& k) const
+											{ return _tree.equal_range_unique(k); }
+	pair<iterator,iterator>             equal_range(const key_type& k)
+											{ return _tree.equal_range_unique(k); }
+
+	allocator_type	get_allocator() const 	{ return _tree.get_allocator(); }
+
+
+}; /* class map */
 
 } /* namespace ft */
 

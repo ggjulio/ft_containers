@@ -19,7 +19,8 @@ namespace NS_NAME
 // iterator traits //
 /////////////////////
 
-TEST_CASE( "cn::iterator_traits", "[iterator_traits]" ) {
+TEST_CASE( "cn::iterator_traits", "[iterator][iterator_traits]" )
+{
 	typedef cn::iterator_traits<int*> traitsIntPtr;
 	CHECK( typeid(traitsIntPtr::iterator_category).name() ==typeid(std::random_access_iterator_tag).name());
 
@@ -38,7 +39,7 @@ TEST_CASE( "cn::iterator_traits", "[iterator_traits]" ) {
 typedef cn::reverse_iterator<std::vector<int>::iterator> reverse_it;
 
 TEST_CASE( "cn::reverse_iterator - basic loop pre increment",
-	"[reverse_iterator][basic_loop][pre][increment][pre_increment]" )
+	"[iterator][reverse_iterator][basic_loop][pre][increment][pre_increment]" )
 {
 	std::vector<int> vec = {1,2,3,4,5};
 
@@ -56,7 +57,7 @@ TEST_CASE( "cn::reverse_iterator - basic loop pre increment",
 }
 
 TEST_CASE( "cn::reverse_iterator - basic loop post increment",
-	"[reverse_iterator][basic_loop][post][increment][post_increment]" )
+	"[iterator][reverse_iterator][basic_loop][post][increment][post_increment]" )
 {
 	std::vector<int> vec = {1,2,3,4,5};
 
@@ -74,7 +75,7 @@ TEST_CASE( "cn::reverse_iterator - basic loop post increment",
 }
 
 TEST_CASE( "cn::reverse_iterator - basic loop pre decrement",
-	"[reverse_iterator][basic_loop][pre][decrement][pre_decrement]" )
+	"[iterator][reverse_iterator][basic_loop][pre][decrement][pre_decrement]" )
 {
 	std::vector<int> vec = {1,2,3,4,5};
 
@@ -91,7 +92,7 @@ TEST_CASE( "cn::reverse_iterator - basic loop pre decrement",
 }
 
 TEST_CASE( "cn::reverse_iterator - basic loop post decrement",
-	"[reverse_iterator][basic_loop][post][decrement][post_decrement]" )
+	"[iterator][reverse_iterator][basic_loop][post][decrement][post_decrement]" )
 {
 	std::vector<int> vec = {1,2,3,4,5};
 

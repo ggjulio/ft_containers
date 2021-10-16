@@ -9,10 +9,10 @@
 namespace ft
 {
 template <
-	class _Key,													// map::key_type
-	class _T,													// map::mapped_type
-	class _Compare = std::less<_Key>,							// map::key_compare
-	class _Alloc = std::allocator<std::pair<const _Key, _T> > // map::allocator_type
+	class _Key,												// map::key_type
+	class _T,												// map::mapped_type
+	class _Compare = std::less<_Key>,						// map::key_compare
+	class _Alloc = std::allocator<pair<const _Key, _T> >	// map::allocator_type
 	>
 class map
 {
@@ -25,14 +25,20 @@ public:
 	typedef _Alloc					allocator_type;
 	typedef value_type&				reference;
 	typedef const value_type&		const_reference;
-	// typedef implementation-defined	iterator; // see 23.2
-	// typedef implementation-defined	const_iterator; // see 23.2
-	// typedef implementation-defined size_type; // see 23.2
-	// typedef implementation-defined difference_type;// see 23.2
-	typedef typename std::allocator_traits<_Alloc>::pointer		pointer;
-	typedef typename std::allocator_traits<_Alloc>::const_pointer	const_pointer;
-	// typedef reverse_iterator<iterator> reverse_iterator;
-	// typedef reverse_iterator<const_iterator> const_reverse_iterator;
+
+private:
+	typedef rbTree<value_type, value_compare, allocator_type> __tree;
+
+	__tree _tree;
+public:
+	typedef typename __tree::pointer						pointer;
+	typedef typename __tree::const_pointer					const_pointer;
+	typedef typename __tree::size_type						size_type;
+	typedef typename __tree::difference_type				difference_type ;
+	typedef typename __tree::const_iterator 				iterator;
+	typedef typename __tree::const_iterator 				const_iterator;
+	typedef typename ft::reverse_iterator<iterator>			reverse_iterator;
+	typedef typename ft::reverse_iterator<const_iterator>	const_reverse_iterator;
 
 	// class value_compare
 	// {

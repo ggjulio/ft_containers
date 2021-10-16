@@ -4,7 +4,8 @@
 
 #include <memory>
 #include <vector> // to delete
-#include <iterator>
+// #include <iterator>
+#include "iterator.hpp"
 
 namespace ft{
 
@@ -17,11 +18,11 @@ namespace ft{
 // 	typedef value_type&								reference;
 // 	typedef const value_type&						const_reference;
 // 	typedef allocator_type::pointer					pointer;
-// 	// typedef allocator_type::connst_pointer			const_pointer;
+// 	typedef allocator_type::connst_pointer			const_pointer;
 // 	typedef pointer							iterator;
 // 	typedef const								const_iterator;
-// 	// typedef 			reverse_iterator;
-// 	// typedef 	const_reverse_iterator;
+// 	typedef reverse_iterator<iterator>			reverse_iterator;
+// 	typedef reverse_iterator<const_iterator>	const_reverse_iterator;
 // 	typedef ptrdiff_t		difference_type;
 // 	typedef size_t			size_type; 
 
@@ -117,11 +118,11 @@ namespace ft{
 
 
 // private:
-	// template<class _T1, class _Alloc1>
-	// friend bool operator==(const vector<_T1, _Alloc1>&, const vector<_T1, _Alloc1>&);
+// 	template<class _T1, class _Alloc1>
+// 	friend bool operator==(const vector<_T1, _Alloc1>&, const vector<_T1, _Alloc1>&);
 	
-	// template<class _T1, class _Alloc1>
-	// friend bool operator<(const vector<_T1, _Alloc1>&, const vector<_T1, _Alloc1>&);
+// 	template<class _T1, class _Alloc1>
+// 	friend bool operator<(const vector<_T1, _Alloc1>&, const vector<_T1, _Alloc1>&);
 // }; /* class vector */
 
 // template<class _T, class _Alloc>

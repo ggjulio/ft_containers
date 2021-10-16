@@ -46,3 +46,4 @@ typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
 
 
 - https://en.cppreference.com/w/cpp/named_req/Compare
+- https://gcc.gnu.org/onlinedocs/libstdc++/manual/containers.html

@@ -39,7 +39,7 @@ public:
 
 
 // construct
-	set(const value_compare& comp = key_compare(),
+	explicit set(const value_compare& comp = key_compare(),
 		const allocator_type& alloc = allocator_type())
 	: _tree(comp, alloc) {}
 
@@ -102,17 +102,17 @@ public:
 	 *
 	 *  Insertion requires logarithmic time (if the hint is not taken).
 	 */
-	iterator			insert (iterator position, const value_type& val)
+	iterator			insert(iterator position, const value_type& val)
 		{ return _tree.insert_unique(position, val);}
 	
 	template <class InputIterator>
-  	 void insert (InputIterator first, InputIterator last)
+  	 void insert(InputIterator first, InputIterator last)
 	   { _tree._range_unique(first, last);}
 
-	void		erase (iterator position)				{ _tree.erase(position); }
-	size_type	erase (const value_type& val)			{ return _tree.erase_multiple(val); }
-    void		erase (iterator first, iterator last)	{ _tree.erase(first, second);}
-	void 		swap (set& other)						{ _tree.swap(other._tree); }
+	void		erase(iterator position)				{ _tree.erase(position); }
+	size_type	erase(const value_type& val)			{ return _tree.erase_multiple(val); }
+    void		erase(iterator first, iterator last)	{ _tree.erase(first, last);}
+	void 		swap(set& other)						{ _tree.swap(other._tree); }
 	void 		clear()									{ _tree.clear();}
 
 // observers
@@ -120,13 +120,12 @@ public:
 	value_compare value_comp() const	{ return _tree.key_comp();}
 
 // operations:
-	iterator				find (const value_type& val) const			{ return _tree.find(val);}
-	size_type				count (const value_type& val) const			{ return _tree.count_unique(val);}
-	iterator				lower_bound (const value_type& val) const	{ return _tree.lower_bound(val);}
-	iterator				upper_bound (const value_type& val) const	{ return _tree.upper_bound(val);}
-	pair<iterator,iterator> equal_range (const value_type& val) const	{ return _tree.equal_range_unique(val);}
+	iterator				find(const value_type& val) const			{ return _tree.find(val);}
+	size_type				count(const value_type& val) const			{ return _tree.count_unique(val);}
+	iterator				lower_bound(const value_type& val) const	{ return _tree.lower_bound(val);}
+	iterator				upper_bound(const value_type& val) const	{ return _tree.upper_bound(val);}
+	pair<iterator,iterator> equal_range(const value_type& val) const	{ return _tree.equal_range_unique(val);}
 	allocator_type			get_allocator() const 						{ return _tree.get_allocator()}
-
 
 }; /* class set */
 

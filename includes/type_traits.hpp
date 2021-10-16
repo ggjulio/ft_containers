@@ -51,6 +51,11 @@ template <>			struct is_integral<const unsigned int>			: public true_type {};
 template <>			struct is_integral<const unsigned long int>		: public true_type {};
 template <>			struct is_integral<const unsigned long long int>	: public true_type {};
 
+template<class T, class U>
+struct is_same : public false_type {};
+ 
+template<class T>
+struct is_same<T, T> : public true_type {};
 
 
 // char16_t and char32_t only since c++11...

@@ -102,14 +102,14 @@ public:
 		{ return (*((this->insert(make_pair(k,mapped_type()))).first)).second;}
 
 // modifiers
-	pair<iterator,bool>	insert (const value_type& val)
+	pair<iterator,bool>	insert(const value_type& val)
 		{ return _tree.insert_unique(val);}
 	iterator			insert(iterator position, const value_type& val)
 		{ return _tree.insert_unique(position, val);}
 
 	template <class InputIterator>
   	 void insert(InputIterator first, InputIterator last)
-	   { _tree._range_unique(first, last);}
+	   { _tree.insert_range_unique(first, last);}
 	
 	void		erase(iterator position)			{ _tree.erase(position); }
 	size_type	erase(const key_type& k)			{ return _tree.erase_unique(k); }

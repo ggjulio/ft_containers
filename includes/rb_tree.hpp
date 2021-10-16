@@ -331,10 +331,16 @@ public:
 
 	allocator_type get_allocator() const throw(){ return allocator_type();}
 
-	void insert(const value_type& v)
+	void insert_unique(const value_type& v)
 	{
 		(void)v;
 		_insert(_m_root(), _m_header(), v);
+	}
+
+	template <typename _InputIterator>
+	void insert_range_unique(InputIterator first, InputIterator last)
+	{
+		while( first != end)
 	}
 
 protected:

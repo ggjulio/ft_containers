@@ -107,7 +107,7 @@ public:
 	
 	template <class InputIterator>
   	 void insert(InputIterator first, InputIterator last)
-	   { _tree._range_unique(first, last);}
+	   { _tree.insert_range_unique(first, last);}
 
 	void		erase(iterator position)				{ _tree.erase(position); }
 	size_type	erase(const value_type& val)			{ return _tree.erase_unique(val); }

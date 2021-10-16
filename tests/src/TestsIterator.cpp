@@ -37,7 +37,7 @@ TEST_CASE( "cn::iterator_traits", "[iterator_traits]" ) {
 // 	}
 // }
 
-TEST_CASE( "cn::reverse_iterator - basic loop", "[reverse_iterator][basic_loop]" )
+TEST_CASE( "cn::reverse_iterator - basic loop pre increment", "[reverse_iterator][basic_loop][pre_increment]" )
 {
 	std::vector<int> vec = {1,2,3,4,5};
 	typedef std::reverse_iterator<std::vector<int>::iterator> reverse_iter;
@@ -50,10 +50,30 @@ TEST_CASE( "cn::reverse_iterator - basic loop", "[reverse_iterator][basic_loop]"
 	{
 		CHECK(*it == n);
 		++it;
+		REQUIRE( n > 0);
 		--n;
-		REQUIRE( n >= 0);
 	}
 	REQUIRE( *--it == 1);
+}
+
+
+TEST_CASE( "cn::reverse_iterator - basic loop post increment", "[reverse_iterator][basic_loop][post_increment]" )
+{
+	std::vector<int> vec = {1,2,3,4,5};
+	typedef std::reverse_iterator<std::vector<int>::iterator> reverse_iter;
+
+	reverse_iter it(vec.end());
+	reverse_iter end(vec.begin());
+
+	int n = 5;
+	while (it != end)
+	{
+		CHECK(*it++ == n);
+		REQUIRE( n > 0);
+		--n;
+	}
+	it--;
+	REQUIRE( *it == 1);
 }
 
 

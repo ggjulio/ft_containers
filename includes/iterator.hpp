@@ -29,7 +29,7 @@ template <class T>
 		typedef T&								reference;
 	};
 
-template<class _Category, class _Tp, class _Distance = ptrdiff_t,
+template<class _Category, class _Tp, class _Distance = std::ptrdiff_t,
          class _Pointer = _Tp*, class _Reference = _Tp&>
 struct iterator
 {

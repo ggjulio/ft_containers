@@ -110,7 +110,7 @@ public:
 	   { _tree._range_unique(first, last);}
 
 	void		erase(iterator position)				{ _tree.erase(position); }
-	size_type	erase(const value_type& val)			{ return _tree.erase_multiple(val); }
+	size_type	erase(const value_type& val)			{ return _tree.erase_unique(val); }
     void		erase(iterator first, iterator last)	{ _tree.erase(first, last);}
 	void 		swap(set& other)						{ _tree.swap(other._tree); }
 	void 		clear()									{ _tree.clear();}

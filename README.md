@@ -16,27 +16,6 @@
 - Best ressource ever ? : http://www.open-std.org/JTC1/SC22/WG21/docs/papers/2011/n3242.pdf#page=731&zoom=100,96,712
  
 
-- The size type seem to depend on the implementation (23.4.4.1 Class template map overview) :
-```c++
-public:
-// types:
-typedef Key key_type;
-typedef T mapped_type;
-typedef pair<const Key, T> value_type;
-typedef Compare key_compare;
-typedef Allocator allocator_type;
-typedef value_type& reference;
-typedef const value_type& const_reference;
-typedef implementation-defined iterator; // see 23.2
-typedef implementation-defined const_iterator; // see 23.2
-typedef implementation-defined size_type; // see 23.2
-typedef implementation-defined difference_type;// see 23.2
-typedef typename allocator_traits<Allocator>::pointer pointer;
-typedef typename allocator_traits<Allocator>::const_pointer const_pointer;
-typedef std::reverse_iterator<iterator> reverse_iterator;
-typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
-```
-
 - http://www.open-std.org/JTC1/SC22/WG21/docs/papers/2011/n3242.pdf#page=789&zoom=100,96,712 (the size type depend on the implementation)
 
 

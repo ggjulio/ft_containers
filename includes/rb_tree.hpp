@@ -32,6 +32,7 @@
 #include <functional>
 
 #include "iterator.hpp"
+#include "utility.hpp"
 
 namespace ft
 {
@@ -313,7 +314,7 @@ protected:
 public:
 	static node_allocator nodeAlloc;
 
-	rbTree() {}
+	rbTree(): {}
 	~rbTree() {}
 
 	iterator				begin()		  	{ return iterator(_header.left);}
@@ -338,10 +339,35 @@ public:
 	}
 
 	template <typename _InputIterator>
-	void insert_range_unique(InputIterator first, InputIterator last)
+	void insert_range_unique(_InputIterator first, _InputIterator last)
 	{
-		while( first != end)
+		(void)first;
+		(void)last;
+		// while( first != end)
 	}
+	void erase(iterator position) {(void)position;}
+	void erase(iterator first, iterator last) {(void)first;(void)last;}
+	void erase_unique(const _Key& k) {(void)k;}
+
+	void swap(rbTree& other)	{(void)other;}
+	void clear() {}
+
+	_Compare	key_comp() const { return _m_key_compare;}
+
+	iterator		find(const _Key& k)					{(void)k; return begin(); }
+	const_iterator	find(const _Key& k)const			{(void)k; return begin(); }
+	size_type		count_unique(const _Key& k)const 	{(void)k; return begin(); }
+	iterator		lower_bound(const _Key& k)		 	{(void)k; return begin(); }
+	const_iterator	lower_bound(const _Key& k)const		{(void)k; return begin(); }
+	iterator		upper_bound(const _Key& k)		 	{(void)k; return begin(); }
+	const_iterator	upper_bound(const _Key& k)const		{(void)k; return begin(); }
+
+	pair<iterator,iterator>    equal_range(const _Key& k)
+		{(void)k; return make_pair<iterator, iterator>(begin(), begin());}
+	pair<const_iterator,const_iterator>    equal_range(const _Key& k) const
+		{(void)k; return make_pair<const_iterator, const_iterator>(begin(), begin());}
+
+
 
 protected:
 	base_ptr				_m_root()					throw() { return _header.parent;}

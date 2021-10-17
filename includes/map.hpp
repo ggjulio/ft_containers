@@ -129,9 +129,9 @@ public:
 	const_iterator	lower_bound (const key_type& k) const	{ return _tree.lower_bound(k); }
 	iterator		upper_bound (const key_type& k)			{ return _tree.upper_bound(k); }
 	const_iterator	upper_bound (const key_type& k) const	{ return _tree.upper_bound(k); }
-	pair<const_iterator,const_iterator> equal_range(const key_type& k) const
-											{ return _tree.equal_range_unique(k); }
 	pair<iterator,iterator>             equal_range(const key_type& k)
+											{ return _tree.equal_range_unique(k); }
+	pair<const_iterator,const_iterator> equal_range(const key_type& k) const
 											{ return _tree.equal_range_unique(k); }
 
 	allocator_type	get_allocator() const 	{ return _tree.get_allocator(); }

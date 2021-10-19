@@ -314,7 +314,7 @@ protected:
 public:
 	static node_allocator nodeAlloc;
 
-	rbTree(): {}
+	rbTree() {}
 	~rbTree() {}
 
 	iterator				begin()		  	{ return iterator(_header.left);}
@@ -352,7 +352,7 @@ public:
 	void swap(rbTree& other)	{(void)other;}
 	void clear() {}
 
-	_Compare	key_comp() const { return _m_key_compare;}
+	// _Compare	key_comp() const { return _m_key_compare;}
 
 	iterator		find(const _Key& k)					{(void)k; return begin(); }
 	const_iterator	find(const _Key& k)const			{(void)k; return begin(); }

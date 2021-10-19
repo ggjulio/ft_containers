@@ -58,8 +58,8 @@ TEST_CASE( "cn::equal - default",
 	std::vector<int> vec_bis = {1,2,3,4,5};
 	std::vector<int> vec2 = {10,2,3,4,5};
 
-	CHECK( true == std::equal(vec.begin(), vec.end(), vec_bis.begin(), vec_bis.end()) );
-	CHECK( false == std::equal(vec.begin(), vec.end(), vec2.begin(), vec2.end()) );
+	CHECK( true == std::equal(vec.begin(), vec.end(), vec_bis.begin()) );
+	CHECK( false == cn::equal(vec.begin(), vec.end(), vec2.begin()) );
 }
 
 template <class _Tp>
@@ -87,10 +87,10 @@ TEST_CASE( "cn::equal - custom",
 	std::vector<int> vec2 = {10,2,3,4,5};
 	std::vector<int> vec3 = {13,5,33,33,44};
 
-	CHECK( true == std::equal(vec.begin(), vec.end(), vec_bis.begin(), vec_bis.end(), ft_equal<int>()) );
-	CHECK( false == std::equal(vec.begin(), vec.end(), vec2.begin(), vec2.end(), ft_equal<int>()) );
+	CHECK( true ==  cn::equal(vec.begin(), vec.end(), vec_bis.begin(), ft_equal<int>()) );
+	CHECK( false == cn::equal(vec.begin(), vec.end(), vec2.begin(), ft_equal<int>()) );
 
-	CHECK( false == std::equal(vec.begin(), vec.end(), vec_bis.begin(), vec_bis.end(), ft_not_equal<int>()) );
-	CHECK( false == std::equal(vec.begin(), vec.end(), vec2.begin(), vec2.end(), ft_not_equal<int>()) );
-	CHECK( true == std::equal(vec.begin(), vec.end(), vec3.begin(), vec3.end(), ft_not_equal<int>()) );
+	CHECK( false == cn::equal(vec.begin(), vec.end(), vec_bis.begin(), ft_not_equal<int>()) );
+	CHECK( false == cn::equal(vec.begin(), vec.end(), vec2.begin(), ft_not_equal<int>()) );
+	CHECK( true ==  cn::equal(vec.begin(), vec.end(), vec3.begin(), ft_not_equal<int>()) );
 }

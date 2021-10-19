@@ -8,27 +8,33 @@
 #include <string>
 #include <vector>
 
-
-TEST_CASE( "cn::_Identity",
-	"[function][identity]" )
+TEMPLATE_TEST_CASE( "cn::_Identity",
+	"[function][identity]", std::string, int, const int)
 {
-	typedef std::pair<short, int>	some_pair;
-	// typedef std::vector<int>	vector_of_ints;
+	typedef typename TestType type_test;
+	typedef	typename const TestType  const_type_test;
+
+	typedef typename ft::_Identity<type_test> 			ident;
+	typedef typename ft::_Identity<const type_test> 	ident_const;
+
+	CHECK(		typeid(ident::argument_type).hash_code() == typeid(type_test).hash_code()  );
+	CHECK(		typeid(ident::result_type).hash_code() == typeid(type_test).hash_code()  );
+	REQUIRE(	typeid(ident::result_type).name() == typeid(type_test).name()  );
+
+	CHECK(		typeid(ident_const::argument_type).hash_code() == typeid(const_type_test).hash_code()  );
+	CHECK(		typeid(ident_const::result_type).hash_code() == typeid(const_type_test).hash_code()  );
+	REQUIRE(	typeid(ident_const::result_type).name() == typeid(const_type_test).name()  );
 
 
-	typedef  ft::_Identity<int> 		ident_int;
-	typedef  ft::_Identity<some_pair> 		ident_pair;
-	// typedef  ft::_Identity<vector_of_ints> 		ident_vector;
+}
 
-	CHECK(		typeid(ident_int::argument_type).hash_code() == typeid(int).hash_code()  );
-	CHECK(		typeid(ident_int::result_type).hash_code() == typeid(int).hash_code()  );
-	REQUIRE(	typeid(ident_int::result_type).name() == typeid(int).name()  );
+TEST_CASE( "cn::_Select1st",
+	"[function][select1st]")
+{
+	typedef std::pair<short, long>		some_pair;
+	typedef ft::_Select1st<some_pair> 	ident;
 
-	CHECK(		typeid(ident_pair::argument_type).hash_code() == typeid(some_pair::first_type).hash_code()  );
-	REQUIRE(	typeid(ident_pair::argument_type).name() == typeid(some_pair).name()  );
-	CHECK( 		typeid(ident_pair::result_type).hash_code() == typeid(some_pair).hash_code()  );
-	REQUIRE(	typeid(ident_pair::result_type).name() == typeid(some_pair).name()  );
+	ident t;
+	(void)t;
 
-	// CHECK( 		typeid(ident_vector).hash_code() == typeid(ident_vector).hash_code()  );
-	// REQUIRE(	typeid(ident_vector::result_type).name() == typeid(ident_vector).name()  );
 }

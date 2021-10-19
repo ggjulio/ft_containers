@@ -68,6 +68,7 @@ SRC+= TestsVector.cpp TestsStack.cpp
 SRC+= TestsTypeTraits.cpp TestsUtility.cpp
 SRC+= TestsIterator.cpp
 SRC+= TestsAlgorithm.cpp
+SRC+= TestsFunction.cpp
 
 SRC+= TestsRbTree.cpp
 

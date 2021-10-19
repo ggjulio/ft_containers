@@ -6,7 +6,10 @@
 #include <map>
 
 #include "utility.hpp"
+#include "function.hpp"
+
 #include "rb_tree.hpp"
+
 namespace ft
 {
 template <
@@ -43,6 +46,7 @@ public:
 		}
 	};
 private:
+	typedef rbTree<key_type, value_type, _Identity<value_type>, value_compare, allocator_type> __tree;
 	typedef rbTree<value_type, value_compare, allocator_type> __tree;
 	__tree _tree;
 

@@ -4,6 +4,7 @@
 #include <set>
 
 #include "rb_tree.hpp"
+#include "function.hpp"
 
 namespace ft 
 {
@@ -24,7 +25,7 @@ public:
 	typedef const value_type&	const_reference;
 
 private:
-	typedef rbTree<value_type, value_compare, allocator_type> __tree;
+	typedef rbTree<key_type, value_type, _Identity<value_type> , value_compare, allocator_type> __tree;
 
 	__tree _tree;
 public:

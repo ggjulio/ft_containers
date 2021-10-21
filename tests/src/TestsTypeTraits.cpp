@@ -32,6 +32,14 @@ TEST_CASE( "cn::enable_if", "[type_traits][enable_if]" ) {
 	CHECK( bar_is_bar.check());
 }
 
+TEST_CASE( "cn::is_same", "[type_traits][is_same]" ) {
+    CHECK( !cn::is_same<int, short>::value );
+    CHECK( cn::is_same<int, int>::value );
+
+    CHECK( !cn::is_same< std::string, int >::value );
+    CHECK( cn::is_same< std::string, std::string >::value );
+}
+
 TEST_CASE( "cn::is_integral", "[type_traits][is_integral]" ) {
 	/// non const
 	CHECK( cn::is_integral<bool>::value );

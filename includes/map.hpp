@@ -46,8 +46,12 @@ public:
 		}
 	};
 private:
-	typedef rbTree<key_type, value_type, _Select1st<value_type>, value_compare, allocator_type> __tree;
-	typedef rbTree<value_type, value_compare, allocator_type> __tree;
+	typedef rbTree<	key_type,
+					value_type,
+					_Select1st<value_type>,
+					value_compare,
+					allocator_type>
+			__tree;
 	__tree _tree;
 
 public:

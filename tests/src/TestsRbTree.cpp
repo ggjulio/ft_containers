@@ -12,6 +12,8 @@ TEST_CASE( "rb tree", "[rb_tree]" )
 	REQUIRE( tree.__rb_verify());
 
 	tree.insert_unique(5);
+	CHECK( tree.size() == 1);	
+	REQUIRE( tree.__rb_verify());
 
 	// tree.insert(7);
 	// tree.insert(3);

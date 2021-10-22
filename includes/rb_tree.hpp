@@ -589,8 +589,8 @@ public:
 		while (it != end())
 		{
 			const_link_type x = static_cast<const_link_type>(it._node);
-			const_link_type left = _s_left(x->left);
-			const_link_type right = _s_right(x->right);
+			const_link_type left = _s_left(x);
+			const_link_type right = _s_right(x);
 
 			// check if adjacent nodes are not red when parent is already red
 			if (x->color == kRed)

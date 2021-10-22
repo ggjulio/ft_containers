@@ -13,15 +13,14 @@ TEST_CASE( "rb tree", "[rb_tree]" )
 
 	tree.insert_unique(5);
 	tree.insert_unique(6);
-	tree.insert_unique(2);
 	tree.insert_unique(7);
 	tree.insert_unique(8);
 	tree.insert_unique(9);
-	tree.insert_unique(0);
+	// tree.insert_unique(0);
 
 
-	CHECK( tree.size() == 1);	
-	// REQUIRE( tree.__rb_verify());
+	CHECK( tree.size() == 5);	
+	REQUIRE( tree.__rb_verify());
 
 	// tree.insert(7);
 	// tree.insert(3);

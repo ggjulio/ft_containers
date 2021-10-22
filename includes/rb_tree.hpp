@@ -201,7 +201,7 @@ struct RbTree_iterator
 	RbTree_iterator()						: _node() {}
 	RbTree_iterator(base_ptr ptr) throw()	: _node(ptr) {}
 
-	reference operator*() const throw() { return *static_cast<link_type>(_node)->dataPtr(); }
+	reference operator*() const throw() { return *static_cast<link_type>(_node)->_m_dataPtr(); }
 	pointer operator->() const throw()	{ return static_cast<link_type>(_node)->getDataPtr(); }
 
 	Self &operator++() throw()	{ _node = _rb_tree_increment(_node); return *this; }
@@ -233,7 +233,7 @@ struct RbTree_const_iterator
 	RbTree_const_iterator()						: _node() {}
 	RbTree_const_iterator(base_ptr ptr) throw()	: _node(ptr) {}
 
-	reference operator*() const throw() { return *static_cast<link_type>(_node)->dataPtr(); }
+	reference operator*() const throw() { return *static_cast<link_type>(_node)->_m_dataPtr(); }
 	pointer operator->() const throw()	{ return static_cast<link_type>(_node)->getDataPtr(); }
 
 	Self &operator++() throw()	{ _node = _rb_tree_increment(_node); return *this; }
@@ -347,8 +347,7 @@ public:
 
 	void insert_unique(const value_type& v)
 	{
-		(void)v;
-		_insert(_m_root(), _m_root(), v);
+		_m_insert(v);
 	}
 
 	template <typename _InputIterator>
@@ -392,14 +391,14 @@ private:
 	base_ptr				_m_rightmost()				throw() { return _m_impl._header.parent->right;}
 	const_base_ptr			_m_rightmost()const			throw() { return _m_impl._header.parent->right;}
 	
-	link_type				_m_begin()					throw() { return _m_impl._header.parent;}
-	const_link_type			_m_begin()const				throw() { return _m_impl._header.parent;}
+	link_type				_m_begin()					throw() { return static_cast<link_type>(_m_impl._header.parent);}
+	const_link_type			_m_begin()const				throw() { return static_cast<const_link_type>(_m_impl._header.parent);}
 	
 	link_type				_m_end()					throw() { return static_cast<link_type>(&_m_impl._header);}
 	const_link_type			_m_end()const 				throw() { return static_cast<const_link_type>(&_m_impl._header);}
 
 	static const _Key&		_s_key(const_link_type x) 	throw()	{ return *x->_m_dataPtr();}
-	static const _Key&		_s_key(const_base_ptr x)  	throw()	{ return _s_key(x) ;}
+	static const _Key&		_s_key(const_base_ptr x)  	throw()	{ return _s_key(static_cast<const_link_type>(x)) ;}
 
 	static link_type		_s_left(base_ptr x)		 	throw() { return static_cast<link_type>(x->left);}
 	static const_link_type	_s_left(const_base_ptr x)	throw() { return static_cast<const_link_type>(x->left);}
@@ -415,35 +414,54 @@ private:
 
 	// base_ptr		_m_header()	{ return &_header;} // remove at the end ???
 
-	void _insert(base_ptr x, base_ptr y, const value_type& v)
+	pair<base_ptr, base_ptr> _m_get_insert_pos(const value_type& v)
+	{
+		base_ptr y = _m_end();
+		base_ptr x = static_cast<link_type>(_m_begin());
+		bool comp = true;
+		while (x != NULL)
+		{
+			y = x;
+			comp = _m_impl._m_key_compare(v, _s_key(x));
+			x = comp ? _s_left(x) : _s_right(x);
+		}
+		iterator j(y);
+		if (comp) // if comp true (v < parent node), then additional check 
+		{
+			if (j == begin()) // if parent of v  is actually the min node
+				return pair<base_ptr, base_ptr>(x, y);
+			else //else decrease to then check if --j.value < v 
+				--j;
+		}
+		if (_m_impl._m_key_compare(_s_key(j._node), v)) //if false then, there is already 
+			return pair<base_ptr, base_ptr>(x, y);
+		return pair<base_ptr, base_ptr>(j._node, 0);
+	}
+
+	void _m_insert(const value_type& v)
 	{
 		++_m_impl._nodeCount;
 		
 		link_type z = nodeAlloc.allocate(1);
-		nodeAlloc.construct(toInsert, v);
-		
-		if (_m_root() == NULL)
-		{
-			_m_impl._header.parent = toInsert;
-			toInsert->color = kRed;
-			return;
-		}
-
-		// find the position of new node
-		link_type current = static_cast<link_type>(_m_root());
+		nodeAlloc.construct(z, v);
 
 
-
-		y = _m_end();
-		x = T.root;
+		////////////////////////////////////
+		////////////////////////////////////
+		base_ptr y = _m_end();
+		base_ptr x = static_cast<link_type>(_m_begin());
 		while (x != NULL)
 		{
 			y = x;
-			current = _m_impl._m_key_compare(v, _s_key(current)) ? _s_left(current) : _s_right(current);
+			x = _m_impl._m_key_compare(v, _s_key(x)) ? _s_left(x) : _s_right(x);
 		}
 		z->parent = y;
-		if (y == NULL)
-			T:root = z;
+		if (y == &_m_impl._header) // if first node 
+		{
+			_m_impl._header.left = z;	//maintain leftmost pointing to min node
+			_m_impl._header.right = z;	// maintain rightmost
+			_m_impl._header.parent = z;
+		}
 		else if (_m_impl._m_key_compare(_s_key(z), _s_key(y)))
 			y->left = z;
 		else
@@ -451,24 +469,6 @@ private:
 		z->left = 0;
 		z->right = 0;
 		z->color = kRed;
-
-
-
-
-
-
-
-		// while (current->left != NULL && current->right != NULL)
-		// {
-		// 	std::cout << "comparing..." <<std::endl;
-		// 	current = _m_impl._m_key_compare(v, current->data) ? _s_left(current) : _s_right(current);
-		// }
-		// link it with the parent
-		// newNode->parent = current;
-		// if (_compare(obj, current->data) == -1)
-		// 	current->left = newNode;
-		// else
-		// 	current->right = newNode;
 
 		// _rebalance(current, newNode);
 	}

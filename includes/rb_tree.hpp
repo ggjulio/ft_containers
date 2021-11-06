@@ -475,7 +475,7 @@ private:
 		z->right = 0;
 		z->color = kRed;
 
-		_rebalance(current, newNode);
+		// _rebalance(current, newNode);
 	}
 
 	// void _rebalance(node<T> *current, node<T> *newNode)

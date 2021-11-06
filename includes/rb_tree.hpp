@@ -29,6 +29,7 @@
  */
 
 #include <memory>
+#include <cassert>
 
 #include <iostream>
 
@@ -284,14 +285,18 @@ public:
 	typedef _Compare 			value_compare;
 	typedef _Alloc				allocator_type;
 private:
-    typedef std::allocator_traits<allocator_type>      _alloc_traits;
+    // typedef std::allocator_traits<allocator_type>      _alloc_traits;
 public:
 	// typedef _Key 									key_type;
 
-	typedef typename _alloc_traits::pointer			*pointer;
-	typedef typename _alloc_traits::const_pointer	*const_pointer;
-	typedef typename _alloc_traits::size_type		size_type;
-	typedef typename _alloc_traits::difference_type	difference_type;
+	// typedef typename _alloc_traits::pointer			*pointer;
+	// typedef typename _alloc_traits::const_pointer	*const_pointer;
+	// typedef typename _alloc_traits::size_type		size_type;
+	// typedef typename _alloc_traits::difference_type	difference_type;
+	typedef value_type								*pointer;
+	typedef const value_type						*const_pointer;
+	typedef size_t									size_type;
+	typedef std::ptrdiff_t							difference_type;
 
 	typedef value_type								&reference;
 	typedef const value_type						&const_reference;
@@ -309,7 +314,7 @@ private:
 	typedef const node<_Val>	*const_link_type;
 
 	typedef typename _Alloc::template rebind< node<_Val> >::other		node_allocator;
-    typedef std::allocator_traits<node_allocator>     					node_traits;
+    // typedef std::allocator_traits<node_allocator>     					node_traits;
 
 	template <typename __Compare>
 	struct rbTree_impl
@@ -558,7 +563,7 @@ private:
 
 	void _rightRotate(node_base *x, node_base*& root)
 	{
-		assert(x->left != nullptr);
+		assert(x->left != NULL);
 
 		node_base* const y = x->left;
 

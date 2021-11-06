@@ -1,7 +1,7 @@
 #ifndef TESTS_HPP
 #define TESTS_HPP
 
-#include "catch_amalgamated.hpp"
+#include "catch.hpp"
 
 namespace ft {}
 

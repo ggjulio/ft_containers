@@ -421,8 +421,8 @@ private:
 
 	pair<base_ptr, base_ptr> _m_get_insert_pos(const value_type& v)
 	{
-		base_ptr y = _m_end();
 		base_ptr x = static_cast<link_type>(_m_begin());
+		base_ptr y = _m_end();
 		bool comp = true;
 		while (x != NULL)
 		{
@@ -445,7 +445,7 @@ private:
 
 	void _m_insert(const value_type& v)
 	{
-		++_m_impl._nodeCount;
+		// ++_m_impl._nodeCount;
 		
 		link_type z = nodeAlloc.allocate(1);
 		nodeAlloc.construct(z, v);
@@ -475,7 +475,7 @@ private:
 		z->right = 0;
 		z->color = kRed;
 
-		// _rebalance(current, newNode);
+		_rebalance(current, newNode);
 	}
 
 	// void _rebalance(node<T> *current, node<T> *newNode)

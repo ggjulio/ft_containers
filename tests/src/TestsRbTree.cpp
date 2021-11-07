@@ -14,7 +14,7 @@ void insert_v(ft::rbTree<int,int, int>& tree, int value, size_t actualTreeSize)
 	CHECK( tree.__rb_verify());
 }
 
-TEST_CASE( "rbTree::insert_unique - random insert value + decrease insert", "[rb_tree][insert_unique]" )
+TEST_CASE( "rbTree::insert_unique - random insert value + decrease insert", "[rb_tree][insert_unique][basic]" )
 {
 	ft::rbTree<int, int, int> tree;
 	CHECK( tree.size() == 0);	
@@ -58,3 +58,8 @@ TEST_CASE( "rbTree::insert_unique - test insert increase value", "[rb_tree][inse
 		REQUIRE( tree.__rb_verify());
 	}
 }
+
+// TEST_CASE( "rbTree::erase - test insert increase value", "[rb_tree][insert_unique]" )
+// {
+
+// }

@@ -335,7 +335,9 @@ public:
 	static node_allocator nodeAlloc;
 
 	rbTree() {}
-	~rbTree() {}
+	~rbTree() {
+		_m_erase(_m_begin());
+	}
 
 	iterator				begin()		  	{ return iterator(_m_impl._header.left);}
 	const_iterator			begin() const 	{ return const_iterator(_m_impl._header.left);}
@@ -467,42 +469,6 @@ private:
 		return z;
 	}
 
-
-	void _m_insert(const value_type& v)
-	{
-		++_m_impl._nodeCount;
-		
-		link_type z = nodeAlloc.allocate(1);
-		nodeAlloc.construct(z, v);
-
-
-		////////////////////////////////////
-		////////////////////////////////////
-		base_ptr y = _m_end();
-		base_ptr x = static_cast<link_type>(_m_begin());
-		while (x != NULL)
-		{
-			y = x;
-			x = _m_impl._m_key_compare(v, _s_key(x)) ? _s_left(x) : _s_right(x);
-		}
-		z->parent = y;
-		if (y == &_m_impl._header) // if first node 
-		{
-			_m_impl._header.left = z;	//maintain leftmost pointing to min node
-			_m_impl._header.right = z;	// maintain rightmost
-			_m_impl._header.parent = z;
-		}
-		else if (_m_impl._m_key_compare(_s_key(z), _s_key(y)))
-			y->left = z;
-		else
-			y->right = z;
-		z->left = 0;
-		z->right = 0;
-		z->color = kRed;
-
-		_rebalance(z);
-	}
-
 	// z is the node to insert
 	void _m_tree_insert_and_rebalance(base_ptr z, base_ptr parent)
 	{
@@ -584,6 +550,19 @@ private:
 			}
 		}
 		_m_root()->color = kBlack;
+	}
+
+	// erase node n and his childs without rebalance.
+	void _m_erase(link_type n)
+	{
+		while (n)
+		{
+			_m_erase(_s_right(n));
+			link_type x = _s_left(n);
+			nodeAlloc.destroy(n);
+			nodeAlloc.deallocate(n, 1);
+			n = x;
+		}
 	}
 
 	/*      y   right rotate     x

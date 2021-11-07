@@ -690,7 +690,7 @@ struct Trunk
 
 void showTrunks(Trunk *p)
 {
-    if (p == nullptr) {
+    if (p == NULL) {
         return;
     }
  
@@ -700,7 +700,7 @@ void showTrunks(Trunk *p)
 
 void __rb_tree_print(link_type root, Trunk *prev, bool isLeft)
 {
-    if (root == nullptr) {
+    if (root == NULL) {
         return;
     }
  

@@ -32,6 +32,8 @@
 #include <cassert>
 
 #include <iostream>
+#include <iomanip>
+#include <string>
 
 #include "iterator.hpp"
 #include "utility.hpp"
@@ -203,7 +205,7 @@ struct RbTree_iterator
 	RbTree_iterator(base_ptr ptr) throw()	: _node(ptr) {}
 
 	reference operator*() const throw() { return *static_cast<link_type>(_node)->_m_dataPtr(); }
-	pointer operator->() const throw()	{ return static_cast<link_type>(_node)->getDataPtr(); }
+	pointer operator->() const throw()	{ return static_cast<link_type>(_node)->_m_dataPtr(); }
 
 	Self &operator++() throw()	{ _node = _rb_tree_increment(_node); return *this; }
 	Self operator++(int) throw(){ Self tmp = *this; _node = _rb_tree_increment(_node); return tmp; }
@@ -235,7 +237,7 @@ struct RbTree_const_iterator
 	RbTree_const_iterator(base_ptr ptr) throw()	: _node(ptr) {}
 
 	reference operator*() const throw() { return *static_cast<link_type>(_node)->_m_dataPtr(); }
-	pointer operator->() const throw()	{ return static_cast<link_type>(_node)->getDataPtr(); }
+	pointer operator->() const throw()	{ return static_cast<link_type>(_node)->_m_dataPtr(); }
 
 	Self &operator++() throw()	{ _node = _rb_tree_increment(_node); return *this; }
 	Self operator++(int) throw(){ Self tmp = *this; _node = _rb_tree_increment(_node); return tmp; }
@@ -512,7 +514,7 @@ private:
 		bool insertLeft = 
 				parent == _m_end()
 				|| !_m_impl._m_key_compare(_s_key(parent), _s_key(z));
-		// The first inserted node is always left
+		// The first inserted node is always left.
 		// condition to maintain leftmost, rightmost and root links
 		if (insertLeft)
 		{
@@ -601,7 +603,7 @@ private:
 			y->left->parent = x;
 		y->parent = x->parent; // link x’s parent to y
 
-		if (x->parent == root)
+		if (x == root)
 			root = y;
 		else if (x == x->parent->left)
 			x->parent->left = y;
@@ -622,7 +624,7 @@ private:
 			y->right->parent = x;
 		y->parent = x->parent; // link x’s parent to y
 	
-		if (x->parent == root)
+		if (x == root)
 			root = y;
 		else if (x == x->parent->right)
 			x->parent->right = y;
@@ -673,6 +675,70 @@ public:
 				return false;
 		return true;
 	}
+
+struct Trunk
+{
+    Trunk *prev;
+   	std::string str;
+ 
+    Trunk(Trunk *prev, std::string str)
+    {
+        this->prev = prev;
+        this->str = str;
+    }
+};
+
+void showTrunks(Trunk *p)
+{
+    if (p == nullptr) {
+        return;
+    }
+ 
+    showTrunks(p->prev);
+    std::cout << p->str;
+}
+
+void __rb_tree_print(link_type root, Trunk *prev, bool isLeft)
+{
+    if (root == nullptr) {
+        return;
+    }
+ 
+    std::string prev_str = "    ";
+    Trunk *trunk = new Trunk(prev, prev_str);
+ 
+    __rb_tree_print(static_cast<link_type>(root->right), trunk, true);
+ 
+    if (!prev) {
+        trunk->str = "———";
+    }
+    else if (isLeft)
+    {
+        trunk->str = ".———";
+        prev_str = "   |";
+    }
+    else {
+        trunk->str = "`———";
+        prev->str = prev_str;
+    }
+ 
+    showTrunks(trunk);
+    std::cout << root->data << std::endl;
+ 
+    if (prev) {
+        prev->str = prev_str;
+    }
+    trunk->str = "   |";
+ 
+    __rb_tree_print(static_cast<link_type>(root->left), trunk, false);
+}
+
+void __rb_tree_print()
+{
+	std::cout << "###########################" << std::endl;
+	__rb_tree_print(static_cast<link_type>(_m_root()), NULL, false);
+}
+
 
 }; /* class rbTree */
 

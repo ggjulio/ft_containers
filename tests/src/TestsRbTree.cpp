@@ -14,7 +14,7 @@ void insert_v(ft::rbTree<int,int, int>& tree, int value, size_t actualTreeSize)
 	CHECK( tree.__rb_verify());
 }
 
-TEST_CASE( "rb tree", "[rb_tree]" )
+TEST_CASE( "rbTree::insert_unique - random insert value + decrease insert", "[rb_tree][insert_unique]" )
 {
 	ft::rbTree<int, int, int> tree;
 	CHECK( tree.size() == 0);	
@@ -27,18 +27,35 @@ TEST_CASE( "rb tree", "[rb_tree]" )
 	insert_v(tree, 9, 4);
 	insert_v(tree, 1, 5);
 	insert_v(tree, 10, 6);
-	insert_v(tree, -1, 7);
-	insert_v(tree, -3, 7);
 
+	int i = -1;
+	int len = 7;
+	while (i > -40)
+	{
+		insert_v(tree, i, len);
+		--i;
+		++len;
+	}
 
 	ft::rbTree<int, int, int>::iterator it = tree.begin();
 	ft::rbTree<int, int, int>::iterator end = tree.end();
 
-	std::cout << "iter: " << std::endl;
+	int prev = static_cast<ft::node<int>>(*it).data;
+	++it;
 	while (it != end)
+		REQUIRE( prev < static_cast<ft::node<int>>(*it++).data );
+}
+
+TEST_CASE( "rbTree::insert_unique - test insert increase value", "[rb_tree][insert_unique]" )
+{
+	ft::rbTree<int, int, int> tree;
+	
+	for (size_t i = 0; i < 60; i++)
 	{
-		std::cout << "	> "<< static_cast<ft::node<int>>(*it).data << std::endl;
-		++it;
+		tree.insert_unique(i);
+		CHECK( tree.size() == i + 1);
+		tree.
+		REQUIRE( tree.__rb_verify());
 	}
-	std::cout << "iter end " << std::endl;
+	tree.__rb_tree_print();
 }

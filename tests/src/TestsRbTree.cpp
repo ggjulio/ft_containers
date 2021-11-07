@@ -54,8 +54,7 @@ TEST_CASE( "rbTree::insert_unique - test insert increase value", "[rb_tree][inse
 	{
 		tree.insert_unique(i);
 		CHECK( tree.size() == i + 1);
-		tree.
+
 		REQUIRE( tree.__rb_verify());
 	}
-	tree.__rb_tree_print();
 }

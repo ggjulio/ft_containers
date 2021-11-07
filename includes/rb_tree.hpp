@@ -387,13 +387,13 @@ public:
 
 
 private:
-	base_ptr				_m_root()					throw() { return _m_impl._header.parent;}
+	base_ptr&				_m_root()					throw() { return _m_impl._header.parent;}
 	const_base_ptr			_m_root()const				throw() { return _m_impl._header.parent;}
 	
-	base_ptr				_m_leftmost()				throw() { return _m_impl._header.parent->left;}
+	base_ptr&				_m_leftmost()				throw() { return _m_impl._header.parent->left;}
 	const_base_ptr			_m_leftmost()const			throw() { return _m_impl._header.parent->left;}
 	
-	base_ptr				_m_rightmost()				throw() { return _m_impl._header.parent->right;}
+	base_ptr&				_m_rightmost()				throw() { return _m_impl._header.parent->right;}
 	const_base_ptr			_m_rightmost()const			throw() { return _m_impl._header.parent->right;}
 	
 	link_type				_m_begin()					throw() { return static_cast<link_type>(_m_impl._header.parent);}
@@ -445,7 +445,7 @@ private:
 
 	void _m_insert(const value_type& v)
 	{
-		// ++_m_impl._nodeCount;
+		++_m_impl._nodeCount;
 		
 		link_type z = nodeAlloc.allocate(1);
 		nodeAlloc.construct(z, v);
@@ -475,112 +475,60 @@ private:
 		z->right = 0;
 		z->color = kRed;
 
-		_rebalance(y, z);
+		_rebalance(z);
 	}
 
-	void _rebalance(base_ptr y, link_type z)
+	// z is the inserted node
+	void _rebalance(base_ptr z)
 	{
-		while (z->parent->color == kRed)
+		while (z != _m_root() && z->parent->color == kRed)
 		{
 			if (z->parent == z->parent->parent->left)
 			{
-				y = z->parent->parent->right;
-				if (y->color == kRed)
+				base_ptr y = z->parent->parent->right;
+				if (y && y->color == kRed)
 				{
 					z->parent->color = kBlack;
 					y->color = kBlack;
 					z->parent->parent->color = kRed;
-					z = static_cast<link_type>(z->parent->parent);
+					z = z->parent->parent;
 				}
 				else 
 				{
 					if (z == z->parent->right)
 					{
-						z = z.p;
+						z = z->parent;
 						_leftRotate(y, _m_root());
 					}
 					z->parent->color = kBlack;
 					z->parent->parent->color = kRed;
-					_rightRotate(y->parent->parent, _m_root());
+					_rightRotate(z->parent->parent, _m_root());
 				}
 			}
 			else
 			{
-				y = z->parent->parent->left;
-				if (y->color == kRed)
+				base_ptr y = z->parent->parent->left;
+				if (y && y->color == kRed)
 				{
 					z->parent->color = kBlack;
 					y->color = kBlack;
 					z->parent->parent->color = kRed;
-					z = static_cast<link_type>(z->parent->parent);
+					z = z->parent->parent;
 				}
 				else 
 				{
 					if (z == z->parent->left)
 					{
-						z = z.p;
+						z = z->parent;
 						_rightRotate(y, _m_root());
 					}
 					z->parent->color = kBlack;
 					z->parent->parent->color = kRed;
-					_leftRotate(y->parent->parent, _m_root());
+					_leftRotate(z->parent->parent, _m_root());
 				}
 			}
 		}
 		_m_begin()->color = kBlack;
-
-		// while (current->color == kRed && current->parent != NULL)
-		// {
-		// 	bool isRight = (current == current->parent->right);
-		// 	base_ptr uncle = isRight ? current->parent->left : current->parent->right;
-
-		// 	if (uncle == NULL)
-		// 	{
-		// 		current->color = kBlack;
-		// 		current->parent->color = kRed;
-		// 		if (uncle == current->parent->right)
-		// 		{
-		// 			_rightRotate(current->parent);
-		// 		}
-		// 		else
-		// 		{
-		// 			_leftRotate(current->parent);
-		// 		}
-		// 		break;
-		// 	}
-		// 	else if (uncle->color == kRed)
-		// 	{
-		// 		current->color = kBlack;
-		// 		uncle->color = kBlack;
-		// 		current->parent->color = kRed;
-		// 		current = current->parent;
-		// 	}
-		// 	else
-		// 	{
-		// 		current->color = kBlack;
-		// 		current->parent->color = kRed;
-
-		// 		if (isRight)
-		// 		{
-		// 			if (newNode == current->left)
-		// 			{
-		// 				_rightRotate(current);
-		// 				current = newNode;
-		// 			}
-		// 			_leftRotate(current->parent);
-		// 		}
-		// 		else
-		// 		{
-		// 			if (newNode == current->right)
-		// 			{
-		// 				_leftRotate(current);
-		// 				current = newNode;
-		// 			}
-		// 			_rightRotate(current->parent);
-		// 		}
-		// 	}
-			// _getRoot()->color = kBlack;
-		// }
 	}
 
 	/*      y   right rotate     x

@@ -438,7 +438,7 @@ private:
 			else //else decrease to then check if --j.value < v 
 				--j;
 		}
-		if (_m_impl._m_key_compare(_s_key(j._node), v)) //if false then, there is already 
+		if (_m_impl._m_key_compare(_s_key(j._node), v)) //if false then, there is already a node with same value
 			return pair<base_ptr, base_ptr>(x, y);
 		return pair<base_ptr, base_ptr>(j._node, 0);
 	}
@@ -475,64 +475,113 @@ private:
 		z->right = 0;
 		z->color = kRed;
 
-		// _rebalance(current, newNode);
+		_rebalance(y, z);
 	}
 
-	// void _rebalance(node<T> *current, node<T> *newNode)
-	// {
-	// 	while (current->color == kRed && current->parent != NULL)
-	// 	{
-	// 		bool isRight = (current == current->parent->right);
-	// 		base_ptr uncle = isRight ? current->parent->left : current->parent->right;
+	void _rebalance(base_ptr y, link_type z)
+	{
+		while (z->parent->color == kRed)
+		{
+			if (z->parent == z->parent->parent->left)
+			{
+				y = z->parent->parent->right;
+				if (y->color == kRed)
+				{
+					z->parent->color = kBlack;
+					y->color = kBlack;
+					z->parent->parent->color = kRed;
+					z = static_cast<link_type>(z->parent->parent);
+				}
+				else 
+				{
+					if (z == z->parent->right)
+					{
+						z = z.p;
+						_leftRotate(y, _m_root());
+					}
+					z->parent->color = kBlack;
+					z->parent->parent->color = kRed;
+					_rightRotate(y->parent->parent, _m_root());
+				}
+			}
+			else
+			{
+				y = z->parent->parent->left;
+				if (y->color == kRed)
+				{
+					z->parent->color = kBlack;
+					y->color = kBlack;
+					z->parent->parent->color = kRed;
+					z = static_cast<link_type>(z->parent->parent);
+				}
+				else 
+				{
+					if (z == z->parent->left)
+					{
+						z = z.p;
+						_rightRotate(y, _m_root());
+					}
+					z->parent->color = kBlack;
+					z->parent->parent->color = kRed;
+					_leftRotate(y->parent->parent, _m_root());
+				}
+			}
+		}
+		_m_begin()->color = kBlack;
 
-	// 		if (uncle == NULL)
-	// 		{
-	// 			current->color = kBlack;
-	// 			current->parent->color = kRed;
-	// 			if (uncle == current->parent->right)
-	// 			{
-	// 				_rightRotate(current->parent);
-	// 			}
-	// 			else
-	// 			{
-	// 				_leftRotate(current->parent);
-	// 			}
-	// 			break;
-	// 		}
-	// 		else if (uncle->color == kRed)
-	// 		{
-	// 			current->color = kBlack;
-	// 			uncle->color = kBlack;
-	// 			current->parent->color = kRed;
-	// 			current = current->parent;
-	// 		}
-	// 		else
-	// 		{
-	// 			current->color = kBlack;
-	// 			current->parent->color = kRed;
+		// while (current->color == kRed && current->parent != NULL)
+		// {
+		// 	bool isRight = (current == current->parent->right);
+		// 	base_ptr uncle = isRight ? current->parent->left : current->parent->right;
 
-	// 			if (isRight)
-	// 			{
-	// 				if (newNode == current->left)
-	// 				{
-	// 					_rightRotate(current);
-	// 					current = newNode;
-	// 				}
-	// 				_leftRotate(current->parent);
-	// 			}
-	// 			else
-	// 			{
-	// 				if (newNode == current->right)
-	// 				{
-	// 					_leftRotate(current);
-	// 					current = newNode;
-	// 				}
-	// 				_rightRotate(current->parent);
-	// 			}
-	// 		}
-	// 		_getRoot()->color = kBlack;
-	// 	}
-	// }
+		// 	if (uncle == NULL)
+		// 	{
+		// 		current->color = kBlack;
+		// 		current->parent->color = kRed;
+		// 		if (uncle == current->parent->right)
+		// 		{
+		// 			_rightRotate(current->parent);
+		// 		}
+		// 		else
+		// 		{
+		// 			_leftRotate(current->parent);
+		// 		}
+		// 		break;
+		// 	}
+		// 	else if (uncle->color == kRed)
+		// 	{
+		// 		current->color = kBlack;
+		// 		uncle->color = kBlack;
+		// 		current->parent->color = kRed;
+		// 		current = current->parent;
+		// 	}
+		// 	else
+		// 	{
+		// 		current->color = kBlack;
+		// 		current->parent->color = kRed;
+
+		// 		if (isRight)
+		// 		{
+		// 			if (newNode == current->left)
+		// 			{
+		// 				_rightRotate(current);
+		// 				current = newNode;
+		// 			}
+		// 			_leftRotate(current->parent);
+		// 		}
+		// 		else
+		// 		{
+		// 			if (newNode == current->right)
+		// 			{
+		// 				_leftRotate(current);
+		// 				current = newNode;
+		// 			}
+		// 			_rightRotate(current->parent);
+		// 		}
+		// 	}
+			// _getRoot()->color = kBlack;
+		// }
+	}
 
 	/*      y   right rotate     x
 	/      / \  ------------>   / \ 

@@ -18,7 +18,7 @@ TEST_CASE( "rb tree", "[rb_tree]" )
 	tree.insert_unique(6);
 	tree.insert_unique(9);
 	tree.insert_unique(0);
-	tree.insert_unique(1);
+	// tree.insert_unique(1);
 
 
 	// CHECK( tree.size() == 5);	

@@ -352,7 +352,7 @@ public:
 
 	void insert_unique(const value_type& v)
 	{
-		_m_insert(v);
+		_m_insert_unique(v);
 	}
 
 	template <typename _InputIterator>
@@ -417,8 +417,6 @@ private:
 	static base_ptr 		_s_maximum(base_ptr x)		throw()	{ return node_base::_s_maximum(x); }
 	static const_base_ptr 	_s_maximum(const_base_ptr x)throw()	{ return node_base::_s_maximum(x); }
 
-	// base_ptr		_m_header()	{ return &_header;} // remove at the end ???
-
 	pair<base_ptr, base_ptr> _m_get_insert_pos(const value_type& v)
 	{
 		base_ptr x = static_cast<link_type>(_m_begin());
@@ -442,6 +440,31 @@ private:
 			return pair<base_ptr, base_ptr>(x, y);
 		return pair<base_ptr, base_ptr>(j._node, 0);
 	}
+
+	pair<iterator, bool> _m_insert_unique(const value_type& v)
+	{
+		pair<base_ptr, base_ptr> result = _m_get_insert_pos(v);
+
+		if (result.second)
+			return pair<iterator, bool>(
+						_m_insert_(result.first, result.second, v),
+						true);
+		return pair<iterator, bool>(result.first, false);
+	}
+
+	iterator _m_insert_(base_ptr x, base_ptr parent, const value_type& v)
+	{
+		(void)x;
+		(void)parent;
+		link_type z = nodeAlloc.allocate(1);
+		nodeAlloc.construct(z, v);
+		
+		_m_tree_insert_and_rebalance(z, parent);
+
+		++_m_impl._nodeCount;
+		return z;
+	}
+
 
 	void _m_insert(const value_type& v)
 	{
@@ -478,9 +501,39 @@ private:
 		_rebalance(z);
 	}
 
-	// z is the inserted node
-	void _rebalance(base_ptr z)
+	// z is the node to insert
+	void _m_tree_insert_and_rebalance(base_ptr z, base_ptr parent)
 	{
+		z->parent = parent;
+		z->left = 0;
+		z->right = 0;
+		z->color = kRed;
+
+		bool insertLeft = 
+				parent == _m_end()
+				|| !_m_impl._m_key_compare(_s_key(parent), _s_key(z));
+		// The first inserted node is always left
+		// condition to maintain leftmost, rightmost and root links
+		if (insertLeft)
+		{
+			parent->left = z;
+			if (parent == _m_begin())
+			{
+				_m_impl._header.parent = z;
+				_m_impl._header.right = z;
+			}
+			else if (parent == _m_impl._header.left)
+				_m_impl._header.left = z;
+		}
+		else
+		{
+			parent->right = z;
+			if (parent == _m_impl._header.right)
+				_m_impl._header.right = z;
+		}
+
+
+		// rebalance the tree
 		while (z != _m_root() && z->parent->color == kRed)
 		{
 			if (z->parent == z->parent->parent->left)
@@ -498,7 +551,7 @@ private:
 					if (z == z->parent->right)
 					{
 						z = z->parent;
-						_leftRotate(y, _m_root());
+						_leftRotate(z, _m_root());
 					}
 					z->parent->color = kBlack;
 					z->parent->parent->color = kRed;
@@ -520,7 +573,7 @@ private:
 					if (z == z->parent->left)
 					{
 						z = z->parent;
-						_rightRotate(y, _m_root());
+						_rightRotate(z, _m_root());
 					}
 					z->parent->color = kBlack;
 					z->parent->parent->color = kRed;

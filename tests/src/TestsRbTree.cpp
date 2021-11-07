@@ -13,16 +13,24 @@ TEST_CASE( "rb tree", "[rb_tree]" )
 	REQUIRE( tree.__rb_verify());
 
 	tree.insert_unique(5);
-	tree.insert_unique(7);
+		CHECK( tree.size() == 1);
+		REQUIRE( tree.__rb_verify());
+	tree.insert_unique(2);
+		CHECK( tree.size() == 2);
+		REQUIRE( tree.__rb_verify());
 	tree.insert_unique(8);
+		CHECK( tree.size() == 3);
+		REQUIRE( tree.__rb_verify());
 	tree.insert_unique(6);
+		CHECK( tree.size() == 4);
+		REQUIRE( tree.__rb_verify());
 	tree.insert_unique(9);
-	tree.insert_unique(0);
+		CHECK( tree.size() == 5);
+		REQUIRE( tree.__rb_verify());
 	// tree.insert_unique(1);
 
+	REQUIRE( tree.__rb_verify());
 
-	// CHECK( tree.size() == 5);	
-	// REQUIRE( tree.__rb_verify());
 
 	// tree.insert(7);
 	// tree.insert(3);

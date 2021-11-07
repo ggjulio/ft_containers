@@ -6,38 +6,30 @@
 #include <iostream>
 #include <set>
 
+void insert_v(ft::rbTree<int,int, int>& tree, int value, size_t actualTreeSize)
+{
+	CHECK( tree.size() == actualTreeSize);
+	tree.insert_unique(value);
+	CHECK( tree.size() == actualTreeSize + 1);
+	CHECK( tree.__rb_verify());
+}
+
 TEST_CASE( "rb tree", "[rb_tree]" )
 {
 	ft::rbTree<int, int, int> tree;
 	CHECK( tree.size() == 0);	
 	REQUIRE( tree.__rb_verify());
 
-	tree.insert_unique(5);
-		CHECK( tree.size() == 1);
-		REQUIRE( tree.__rb_verify());
-	tree.insert_unique(2);
-		CHECK( tree.size() == 2);
-		REQUIRE( tree.__rb_verify());
-	tree.insert_unique(8);
-		CHECK( tree.size() == 3);
-		REQUIRE( tree.__rb_verify());
-	tree.insert_unique(6);
-		CHECK( tree.size() == 4);
-		REQUIRE( tree.__rb_verify());
-	tree.insert_unique(9);
-		CHECK( tree.size() == 5);
-		REQUIRE( tree.__rb_verify());
-	// tree.insert_unique(1);
+	insert_v(tree, 5, 0);
+	insert_v(tree, 2, 1);
+	insert_v(tree, 8, 2);
+	insert_v(tree, 6, 3);
+	insert_v(tree, 9, 4);
+	insert_v(tree, 1, 5);
+	insert_v(tree, 10, 6);
+	insert_v(tree, -1, 7);
+	insert_v(tree, -3, 7);
 
-	REQUIRE( tree.__rb_verify());
-
-
-	// tree.insert(7);
-	// tree.insert(3);
-	// tree.insert(6);
-	// tree.insert(10);
-	// tree.insert(9);
-	// tree.insert(11);
 
 	ft::rbTree<int, int, int>::iterator it = tree.begin();
 	ft::rbTree<int, int, int>::iterator end = tree.end();

@@ -390,11 +390,11 @@ private:
 	base_ptr&				_m_root()					throw() { return _m_impl._header.parent;}
 	const_base_ptr			_m_root()const				throw() { return _m_impl._header.parent;}
 	
-	base_ptr&				_m_leftmost()				throw() { return _m_impl._header.parent->left;}
-	const_base_ptr			_m_leftmost()const			throw() { return _m_impl._header.parent->left;}
+	base_ptr&				_m_leftmost()				throw() { return _m_impl._header.left;}
+	const_base_ptr			_m_leftmost()const			throw() { return _m_impl._header.left;}
 	
-	base_ptr&				_m_rightmost()				throw() { return _m_impl._header.parent->right;}
-	const_base_ptr			_m_rightmost()const			throw() { return _m_impl._header.parent->right;}
+	base_ptr&				_m_rightmost()				throw() { return _m_impl._header.right;}
+	const_base_ptr			_m_rightmost()const			throw() { return _m_impl._header.right;}
 	
 	link_type				_m_begin()					throw() { return static_cast<link_type>(_m_impl._header.parent);}
 	const_link_type			_m_begin()const				throw() { return static_cast<const_link_type>(_m_impl._header.parent);}
@@ -517,7 +517,7 @@ private:
 		if (insertLeft)
 		{
 			parent->left = z;
-			if (parent == _m_begin())
+			if (parent == &_m_impl._header)
 			{
 				_m_impl._header.parent = z;
 				_m_impl._header.right = z;
@@ -581,7 +581,7 @@ private:
 				}
 			}
 		}
-		_m_begin()->color = kBlack;
+		_m_root()->color = kBlack;
 	}
 
 	/*      y   right rotate     x

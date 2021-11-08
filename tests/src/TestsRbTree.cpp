@@ -63,30 +63,90 @@ TEST_CASE( "rbTree - lower_bound and upper_bound ", "[rb_tree][lower_bound][uppe
 {
 	ft::rbTree<int, int, int> tree;
 	
+	auto itLow = tree.lower_bound(30);
+	auto itUp = tree.upper_bound(60);
+
+	CHECK(itLow == tree.end());
+	CHECK(itUp == tree.end());
+
 	for (int i=1; i<10; i++)
 		insert_v(tree, i*10, i - 1); // 10 20 30 40 50 60 70 80 90
 
-	auto itLow = tree.lower_bound(30);  
-	auto itUp = tree.upper_bound(60);
+	itLow = tree.lower_bound(30);
+	itUp = tree.upper_bound(60);
 
 	CHECK(*itLow == 30);
 	CHECK(*itUp == 70);
 }
+
 
 TEST_CASE( "rbTree::find ", "[rb_tree][find]" )
 {
 	ft::rbTree<int, int, int> tree;
 
 	CHECK( tree.find(30) == tree.end() );
-	
-	for (int i=1; i<10; i++)
-		insert_v(tree, i*10, i - 1); // 10 20 30 40 50 60 70 80 90
-	tree.__rb_tree_print();
-	CHECK( *tree.find(30) == 30);
-	CHECK( tree.find(42) == tree.end() );
 
+	insert_v(tree, -42, 0);
+	CHECK( *tree.find(-42) == -42 );
+	CHECK( tree.find(30) == tree.end() );
+
+	for (int i=1; i<10; i++)
+		insert_v(tree, i*10, i); // 10 20 30 40 50 60 70 80 90
+
+	CHECK( *tree.find(30) == 30 );
+	CHECK( tree.find(42) == tree.end() );
 }
 
+TEST_CASE( "rbTree::equal_range ", "[rb_tree][equal_range]" )
+{
+	ft::rbTree<int, int, int> tree;
+
+	// empty tree
+	auto res = tree.equal_range(42);
+	CHECK( res.first == tree.begin());
+	CHECK( res.second == tree.begin());
+	CHECK( res.first == tree.end());
+	CHECK( res.second == tree.end());
+	REQUIRE( res.first == res.second);
+
+	for (int i=1; i<10; i++)
+		insert_v(tree, i*10, i - 1); // 10 20 30 40 50 60 70 80 90
+
+	// min limit
+	res = tree.equal_range(9);  
+	CHECK( res.first == tree.begin());
+	CHECK( res.second == tree.begin());
+	REQUIRE( res.first == res.second);
+
+
+	res = tree.equal_range(10);  
+	CHECK( res.first == tree.begin());
+	REQUIRE( *res.second == 20);
+	
+	// middle
+	res = tree.equal_range(35);  
+	CHECK( *res.first == 40);
+	CHECK( *res.second == 40);
+	REQUIRE( res.first == res.second);
+
+	res = tree.equal_range(50);  
+	CHECK( *res.first == 50);
+	REQUIRE( *res.second == 60);
+
+
+	// max limits
+	res = tree.equal_range(90);  
+	CHECK( *res.first == 90);
+	REQUIRE( res.second == tree.end());
+
+	res = tree.equal_range(91);  
+	CHECK( res.first == tree.end());
+	CHECK( res.second == tree.end());
+	REQUIRE( res.first == res.second);
+
+
+
+}
 
 // TEST_CASE( "rbTree::erase - test insert increase value", "[rb_tree][insert_unique]" )
 // {

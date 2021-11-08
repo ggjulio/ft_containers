@@ -289,12 +289,6 @@ public:
 private:
     // typedef std::allocator_traits<allocator_type>      _alloc_traits;
 public:
-	// typedef _Key 									key_type;
-
-	// typedef typename _alloc_traits::pointer			*pointer;
-	// typedef typename _alloc_traits::const_pointer	*const_pointer;
-	// typedef typename _alloc_traits::size_type		size_type;
-	// typedef typename _alloc_traits::difference_type	difference_type;
 	typedef value_type								*pointer;
 	typedef const value_type						*const_pointer;
 	typedef size_t									size_type;
@@ -354,24 +348,29 @@ public:
 
 	allocator_type get_allocator() const throw(){ return allocator_type();}
 
-	void insert_unique(const value_type& v)
+	pair<iterator, bool> insert_unique(const value_type& v)
 	{
-		_m_insert_unique(v);
+		return _m_insert_unique(v);
 	}
 
 	template <typename _InputIterator>
 	void insert_range_unique(_InputIterator first, _InputIterator last)
 	{
-		(void)first;
-		(void)last;
-		// while( first != end)
+		while( first != last)
+		{
+			_m_insert_unique(*first);
+			++first;
+		}
 	}
 	void erase(iterator position) {(void)position;}
 	void erase(iterator first, iterator last) {(void)first;(void)last;}
 	void erase_unique(const _Key& k) {(void)k;}
 
 	void swap(rbTree& other)	{(void)other;}
-	void clear() {}
+	void clear() {
+		_m_erase(_m_begin());
+		_m_impl.reset();
+	}
 
 	_Compare	key_comp() const { return _m_impl._m_key_compare;}
 
@@ -379,7 +378,7 @@ public:
 		iterator res = _m_lower_bound(_m_begin(), _m_end(), k);
 		return _m_impl._m_key_compare(k, _s_key(res._node)) ? end() : res;
 	}
-	const_iterator	find(const _Key& k)const			{
+	const_iterator	find(const _Key& k) const			{
 		const_iterator res = _m_lower_bound(_m_begin(), _m_end(), k);
 		return _m_impl._m_key_compare(k, _s_key(res._node)) ? end() : res;
 	}
@@ -389,11 +388,9 @@ public:
 	const_iterator	upper_bound(const _Key& k)const		{ return _m_upper_bound(_m_begin(), _m_end(), k); }
 
 	pair<iterator,iterator>    equal_range(const _Key& k)
-		{(void)k; return make_pair<iterator, iterator>(begin(), begin());}
+		{ return make_pair<iterator, iterator>(lower_bound(k), upper_bound(k)); }
 	pair<const_iterator,const_iterator>    equal_range(const _Key& k) const
-		{(void)k; return make_pair<const_iterator, const_iterator>(begin(), begin());}
-
-
+		{ return make_pair<const_iterator, const_iterator>(lower_bound(k), upper_bound(k)); }
 
 private:
 	base_ptr&				_m_root()					throw() { return _m_impl._header.parent;}

@@ -76,6 +76,8 @@ TEST_CASE( "rbTree - lower_bound and upper_bound ", "[rb_tree][lower_bound][uppe
 TEST_CASE( "rbTree::find ", "[rb_tree][find]" )
 {
 	ft::rbTree<int, int, int> tree;
+
+	CHECK( tree.find(30) == tree.end() );
 	
 	for (int i=1; i<10; i++)
 		insert_v(tree, i*10, i - 1); // 10 20 30 40 50 60 70 80 90

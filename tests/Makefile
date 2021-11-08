@@ -49,7 +49,7 @@ UNAME := $(shell uname)
 
 NAME = tests
 
-SRC_DIR = ./src
+SRC_DIR = ./src ../src
 BUILD_DIR = ./build
 INC_DIR = $(shell find . -type d -name "includes")
 INC_DIR+= $(shell find ../includes -type d)
@@ -61,10 +61,10 @@ SRCS_DIR = $(shell find $(SRC_DIR) -type d)
 vpath %.hpp $(INC_DIR)
 
 # Unit test framework source code
-SRC = main.cpp 
+SRC = main.cpp rb_tree.cpp
 
 # Our tests
-SRC+= TestsVector.cpp TestsStack.cpp
+SRC+= TestsVector.cpp TestsStack.cpp TestsSet.cpp TestsMap.cpp
 SRC+= TestsTypeTraits.cpp TestsUtility.cpp
 SRC+= TestsIterator.cpp
 SRC+= TestsAlgorithm.cpp

@@ -98,95 +98,6 @@ const node_base*	_rb_tree_increment(const node_base *x) throw();
 node_base*			_rb_tree_decrement(node_base * __x) throw();
 const node_base *	_rb_tree_decrement(const node_base *__x) throw();
 
-node_base*			_rb_tree_increment(node_base * x) throw()
-{
-	if (x->right != 0)
-	{
-		x = x->right;
-		while (x->left != 0)
-			x = x->left;
-	}
-	else
-	{
-		node_base* y = x->parent;
-		while (x == y->right)
-		{
-			x = y;
-			y = y->parent;
-		}
-		if (x->right != y)
-			x = y;
-	}
-	return x;
-}
-const node_base*	_rb_tree_increment(const node_base *x) throw()
-{
-	if (x->right != 0)
-	{
-		x = x->right;
-		while (x->left != 0)
-			x = x->left;
-	}
-	else
-	{
-		node_base* y = x->parent;
-		while (x == y->right)
-		{
-			x = y;
-			y = y->parent;
-		}
-		if (x->right != y)
-			x = y;
-	}
-	return x;
-}
-node_base*			_rb_tree_decrement(node_base * x) throw()
-{
-	if (x->color == kRed && x->parent->parent == x)
-		x = x->right;
-	else if (x->left != 0)
-	{
-		node_base* y = x->left;
-		while (y->right != 0)
-			y = y->right;
-		x = y;
-	}
-	else
-	{
-		node_base* y = x->parent;
-		while (x == y->left)
-		{
-			x = y;
-			y = y->parent;
-		}
-		x = y;
-	}
-	return x;
-}
-const node_base *	_rb_tree_decrement(const node_base *x) throw()
-{
-	if (x->color == kRed && x->parent->parent == x)
-		x = x->right;
-	else if (x->left != 0)
-	{
-		node_base* y = x->left;
-		while (y->right != 0)
-			y = y->right;
-		x = y;
-	}
-	else
-	{
-		node_base* y = x->parent;
-		while (x == y->left)
-		{
-			x = y;
-			y = y->parent;
-		}
-		x = y;
-	}
-	return x;
-}
-
 template <typename T>
 struct RbTree_iterator
 {
@@ -310,25 +221,33 @@ private:
 	typedef const node<_Val>	*const_link_type;
 
 	typedef typename _Alloc::template rebind< node<_Val> >::other		node_allocator;
-    // typedef std::allocator_traits<node_allocator>     					node_traits;
 
 	template <typename __Compare>
 	struct rbTree_impl
 		: public rb_tree_header,
 		  public rb_tree_key_compare<__Compare>
 	{
-		rb_tree_key_compare<_Compare> com;
+		rb_tree_key_compare<_Compare> comp;
 
 		rbTree_impl() {}
+		rbTree_impl(const __Compare& c): rb_tree_key_compare<__Compare>(c) {}
+
 		~rbTree_impl() {}
 
 	};
 	rbTree_impl<_Compare> _m_impl;
 
+	static node_allocator _nodeAlloc;
 public:
-	static node_allocator nodeAlloc;
 
 	rbTree() {}
+	rbTree(const _Compare& comp, const allocator_type& alloc = allocator_type())
+		: _m_impl(comp) { (void)alloc;}
+	rbTree(const rbTree& other)
+		: _m_impl(other._m_impl)
+	{
+		// do deep copy
+	}
 	~rbTree() {
 		_m_erase(_m_begin());
 	}
@@ -344,7 +263,7 @@ public:
 
 	bool			empty() const				{ return _m_impl._nodeCount == 0; }
 	size_type		size() const				{ return _m_impl._nodeCount; }
-	size_type		max_size() const throw()	{ return nodeAlloc.max_size(); }
+	size_type		max_size() const throw()	{ return _nodeAlloc.max_size(); }
 
 	allocator_type get_allocator() const throw(){ return allocator_type();}
 
@@ -462,8 +381,8 @@ private:
 	{
 		(void)x;
 		(void)parent;
-		link_type z = nodeAlloc.allocate(1);
-		nodeAlloc.construct(z, v);
+		link_type z = _nodeAlloc.allocate(1);
+		_nodeAlloc.construct(z, v);
 		
 		_m_tree_insert_and_rebalance(z, parent);
 
@@ -609,8 +528,8 @@ private:
 		{
 			_m_erase(_s_right(n));
 			link_type x = _s_left(n);
-			nodeAlloc.destroy(n);
-			nodeAlloc.deallocate(n, 1);
+			_nodeAlloc.destroy(n);
+			_nodeAlloc.deallocate(n, 1);
 			n = x;
 		}
 	}
@@ -711,89 +630,79 @@ public:
 		return true;
 	}
 
-struct Trunk
-{
-    Trunk *prev;
-   	std::string str;
- 
-    Trunk(Trunk *prev, std::string str)
-    {
-        this->prev = prev;
-        this->str = str;
-    }
-};
+private:
 
-void showTrunks(Trunk *p)
-{
-    if (p == NULL) {
-        return;
-    }
- 
-    showTrunks(p->prev);
-    std::cout << p->str;
-}
+	struct Trunk
+	{
+		Trunk *prev;
+		std::string str;
+	
+		Trunk(Trunk *prev, std::string str)
+		{
+			this->prev = prev;
+			this->str = str;
+		}
+	};
 
-void __rb_tree_print(link_type root, Trunk *prev, bool isLeft)
-{
-    if (root == NULL) {
-        return;
-    }
- 
-    std::string prev_str = "    ";
-    Trunk *trunk = new Trunk(prev, prev_str);
- 
-    __rb_tree_print(static_cast<link_type>(root->right), trunk, true);
- 
-    if (!prev) {
-        trunk->str = "———";
-    }
-    else if (isLeft)
-    {
-        trunk->str = ".———";
-        prev_str = "   |";
-    }
-    else {
-        trunk->str = "`———";
-        prev->str = prev_str;
-    }
- 
-    showTrunks(trunk);
-    std::cout << root->data << std::endl;
- 
-    if (prev) {
-        prev->str = prev_str;
-    }
-    trunk->str = "   |";
- 
-    __rb_tree_print(static_cast<link_type>(root->left), trunk, false);
-}
+	void showTrunks(Trunk *p)
+	{
+		if (p == NULL) {
+			return;
+		}
+	
+		showTrunks(p->prev);
+		std::cout << p->str;
+	}
 
-void __rb_tree_print()
-{
-	std::cout << "###########################" << std::endl;
-	__rb_tree_print(static_cast<link_type>(_m_root()), NULL, false);
-}
+	void __rb_tree_print(link_type root, Trunk *prev, bool isLeft)
+	{
+		if (root == NULL) {
+			return;
+		}
+	
+		std::string prev_str = "    ";
+		Trunk *trunk = new Trunk(prev, prev_str);
+	
+		__rb_tree_print(static_cast<link_type>(root->right), trunk, true);
+	
+		if (!prev) {
+			trunk->str = "———";
+		}
+		else if (isLeft)
+		{
+			trunk->str = ".———";
+			prev_str = "   |";
+		}
+		else {
+			trunk->str = "`———";
+			prev->str = prev_str;
+		}
+	
+		showTrunks(trunk);
+		std::cout << root->data << std::endl;
+	
+		if (prev) {
+			prev->str = prev_str;
+		}
+		trunk->str = "   |";
+	
+		__rb_tree_print(static_cast<link_type>(root->left), trunk, false);
+	}
 
+public:
+	void __rb_tree_print()
+	{
+		__rb_tree_print(static_cast<link_type>(_m_root()), NULL, false);
+	}
 
 }; /* class rbTree */
 
-
-size_t _rb_tree_black_count(const node_base *node, const node_base *root) throw()
-{
-	size_t len = 0;
-	if (node != NULL)
-		while (node != root)
-		{
-			if (node->color == kBlack)
-				++len;
-			node = node->parent;
-		}
-	return len;
-}
+size_t _rb_tree_black_count(const node_base *node, const node_base *root) throw();
 
 template<typename _Key, typename _Val, typename _KeyOfValue, typename _Compare, typename _Alloc >
 typename	rbTree<_Key, _Val, _KeyOfValue, _Compare, _Alloc>::node_allocator 
-			rbTree<_Key, _Val, _KeyOfValue, _Compare, _Alloc>::nodeAlloc;
+			rbTree<_Key, _Val, _KeyOfValue, _Compare, _Alloc>::_nodeAlloc;
+
 
 } /* namespace ft */
 

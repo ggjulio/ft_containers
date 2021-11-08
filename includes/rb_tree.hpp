@@ -375,9 +375,14 @@ public:
 
 	_Compare	key_comp() const { return _m_impl._m_key_compare;}
 
-	iterator		find(const _Key& k)					{ return _m_lower_bound(_m_begin(), _m_end(), k); }
-	const_iterator	find(const _Key& k)const			{ return _m_lower_bound(_m_begin(), _m_end(), k); }
-	size_type		count_unique(const _Key& k)const 	{(void)k; return -1; }
+	iterator		find(const _Key& k)	{
+		iterator res = _m_lower_bound(_m_begin(), _m_end(), k);
+		return _m_impl._m_key_compare(k, _s_key(res._node)) ? end() : res;
+	}
+	const_iterator	find(const _Key& k)const			{
+		const_iterator res = _m_lower_bound(_m_begin(), _m_end(), k);
+		return _m_impl._m_key_compare(k, _s_key(res._node)) ? end() : res;
+	}
 	iterator		lower_bound(const _Key& k)		 	{ return _m_lower_bound(_m_begin(), _m_end(), k); }
 	const_iterator	lower_bound(const _Key& k)const		{ return _m_lower_bound(_m_begin(), _m_end(), k); }
 	iterator		upper_bound(const _Key& k)		 	{ return _m_upper_bound(_m_begin(), _m_end(), k); }

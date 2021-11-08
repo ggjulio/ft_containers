@@ -59,6 +59,33 @@ TEST_CASE( "rbTree::insert_unique - test insert increase value", "[rb_tree][inse
 	}
 }
 
+TEST_CASE( "rbTree - lower_bound and upper_bound ", "[rb_tree][lower_bound][upper_bound]" )
+{
+	ft::rbTree<int, int, int> tree;
+	
+	for (int i=1; i<10; i++)
+		insert_v(tree, i*10, i - 1); // 10 20 30 40 50 60 70 80 90
+
+	auto itLow = tree.lower_bound(30);  
+	auto itUp = tree.upper_bound(60);
+
+	CHECK(*itLow == 30);
+	CHECK(*itUp == 70);
+}
+
+TEST_CASE( "rbTree::find ", "[rb_tree][find]" )
+{
+	ft::rbTree<int, int, int> tree;
+	
+	for (int i=1; i<10; i++)
+		insert_v(tree, i*10, i - 1); // 10 20 30 40 50 60 70 80 90
+	tree.__rb_tree_print();
+	CHECK( *tree.find(30) == 30);
+	CHECK( tree.find(42) == tree.end() );
+
+}
+
+
 // TEST_CASE( "rbTree::erase - test insert increase value", "[rb_tree][insert_unique]" )
 // {
 

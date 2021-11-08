@@ -375,13 +375,13 @@ public:
 
 	_Compare	key_comp() const { return _m_impl._m_key_compare;}
 
-	iterator		find(const _Key& k)					{(void)k; return begin(); }
-	const_iterator	find(const _Key& k)const			{(void)k; return begin(); }
-	size_type		count_unique(const _Key& k)const 	{(void)k; return begin(); }
-	iterator		lower_bound(const _Key& k)		 	{(void)k; return begin(); }
-	const_iterator	lower_bound(const _Key& k)const		{(void)k; return begin(); }
-	iterator		upper_bound(const _Key& k)		 	{(void)k; return begin(); }
-	const_iterator	upper_bound(const _Key& k)const		{(void)k; return begin(); }
+	iterator		find(const _Key& k)					{ return _m_lower_bound(_m_begin(), _m_end(), k); }
+	const_iterator	find(const _Key& k)const			{ return _m_lower_bound(_m_begin(), _m_end(), k); }
+	size_type		count_unique(const _Key& k)const 	{(void)k; return -1; }
+	iterator		lower_bound(const _Key& k)		 	{ return _m_lower_bound(_m_begin(), _m_end(), k); }
+	const_iterator	lower_bound(const _Key& k)const		{ return _m_lower_bound(_m_begin(), _m_end(), k); }
+	iterator		upper_bound(const _Key& k)		 	{ return _m_upper_bound(_m_begin(), _m_end(), k); }
+	const_iterator	upper_bound(const _Key& k)const		{ return _m_upper_bound(_m_begin(), _m_end(), k); }
 
 	pair<iterator,iterator>    equal_range(const _Key& k)
 		{(void)k; return make_pair<iterator, iterator>(begin(), begin());}
@@ -552,19 +552,6 @@ private:
 		_m_root()->color = kBlack;
 	}
 
-	// erase node n and his childs without rebalance.
-	void _m_erase(link_type n)
-	{
-		while (n)
-		{
-			_m_erase(_s_right(n));
-			link_type x = _s_left(n);
-			nodeAlloc.destroy(n);
-			nodeAlloc.deallocate(n, 1);
-			n = x;
-		}
-	}
-
 	/*      y   right rotate     x
 	/      / \  ------------>   / \ 
 	/     x	  c                 a   y 
@@ -611,6 +598,73 @@ private:
 			x->parent->left = y;
 		y->right = x; // put x on y’s left
 		x->parent = y;
+	}
+
+	// erase node n and his childs without rebalance.
+	void _m_erase(link_type n)
+	{
+		while (n)
+		{
+			_m_erase(_s_right(n));
+			link_type x = _s_left(n);
+			nodeAlloc.destroy(n);
+			nodeAlloc.deallocate(n, 1);
+			n = x;
+		}
+	}
+
+	iterator _m_lower_bound(link_type x, base_ptr y, const _Key& k) 
+	{
+		while (x != NULL)
+		{
+			if (_m_impl._m_key_compare(_s_key(x), k))
+				x = _s_right(x);
+			else
+			{
+				y = x;
+				x = _s_left(x);
+			}
+		}
+		return iterator(y);
+	}
+
+	const_iterator _m_lower_bound(link_type x, base_ptr y, const _Key& k) const
+	{
+		while (x != NULL)
+		{
+			if (_m_impl._m_key_compare(_s_key(x), k))
+				x = _s_right(x);
+			else
+				y = x, x = _s_left(x);
+		}
+		return const_iterator(y);
+	}
+	
+	iterator _m_upper_bound(link_type x, base_ptr y, const _Key& k) 
+	{
+		while (x != NULL)
+		{
+			if (!_m_impl._m_key_compare(k, _s_key(x)))
+				x = _s_right(x);
+			else
+			{
+				y = x;
+				x = _s_left(x);
+			}
+		}
+		return iterator(y);
+	}
+
+	const_iterator _m_upper_bound(link_type x, base_ptr y, const _Key& k) const
+	{
+		while (x != NULL)
+		{
+			if (!_m_impl._m_key_compare(k, _s_key(x)))
+				x = _s_right(x);
+			else
+				y = x, x = _s_left(x);
+		}
+		return const_iterator(y);
 	}
 
 public:
@@ -735,29 +789,10 @@ size_t _rb_tree_black_count(const node_base *node, const node_base *root) throw(
 	return len;
 }
 
-
-
-
-
-
 template<typename _Key, typename _Val, typename _KeyOfValue, typename _Compare, typename _Alloc >
 typename	rbTree<_Key, _Val, _KeyOfValue, _Compare, _Alloc>::node_allocator 
 			rbTree<_Key, _Val, _KeyOfValue, _Compare, _Alloc>::nodeAlloc;
 
 } /* namespace ft */
+
 #endif /* RB_TREE */
-
-
-
-
-
-
-
-	// int _compare(const T &one, const T &two)
-	// {
-	// 	if (one < two)
-	// 		return -1;
-	// 	if (one > two)
-	// 		return 1;
-	// 	return 0;
-	// }

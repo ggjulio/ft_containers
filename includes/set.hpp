@@ -126,7 +126,7 @@ public:
 
 // operations:
 	iterator				find(const value_type& val) const			{ return _tree.find(val);}
-	size_type				count(const value_type& val) const			{ return _tree.count_unique(val);}
+	size_type				count(const value_type& val) const			{ return _tree.find(val) != _tree.end() ? 1: 0;}
 	iterator				lower_bound(const value_type& val) const	{ return _tree.lower_bound(val);}
 	iterator				upper_bound(const value_type& val) const	{ return _tree.upper_bound(val);}
 	pair<iterator,iterator> equal_range(const value_type& val) const	{ return _tree.equal_range_unique(val);}

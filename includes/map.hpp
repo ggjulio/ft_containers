@@ -132,7 +132,7 @@ public:
 // operations
     iterator		find(const key_type& k)			{ return _tree.find(k);}
 	const_iterator	find(const key_type& k) const	{ return _tree.find(k);}
-	size_type		count(const key_type& k) const	{ return _tree.count_unique(k);}
+	size_type		count(const key_type& k) const	{ return _tree.find(k) != _tree.end() ? 1: 0;}
 	iterator		lower_bound (const key_type& k)			{ return _tree.lower_bound(k); }
 	const_iterator	lower_bound (const key_type& k) const	{ return _tree.lower_bound(k); }
 	iterator		upper_bound (const key_type& k)			{ return _tree.upper_bound(k); }

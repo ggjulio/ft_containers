@@ -148,6 +148,20 @@ TEST_CASE( "rbTree::equal_range ", "[rb_tree][equal_range]" )
 
 }
 
+TEST_CASE( "rbTree::erase a position", "[rb_tree][erase][iterator][position]" )
+{
+	ft::rbTree<int, int, int> tree;
+	
+	for (int i=1; i<10; i++)
+		insert_v(tree, i*10, i - 1); // 10 20 30 40 50 60 70 80 90
+
+	tree.erase(tree.find(30));
+	REQUIRE(tree.find(30) == tree.end());
+
+
+}
+
+
 // TEST_CASE( "rbTree::erase - test insert increase value", "[rb_tree][insert_unique]" )
 // {
 

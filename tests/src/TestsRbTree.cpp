@@ -185,14 +185,9 @@ TEST_CASE( "rbTree::erase node with two childs", "[rb_tree][erase][iterator][pos
 	        `———10
 	*/
 	tree.erase(tree.find(60));
+	tree.__rb_tree_print();
 	REQUIRE(tree.find(60) == tree.end());
 	REQUIRE(tree.__rb_verify());
-	tree.__rb_tree_print();
+
 
 }
-
-
-// TEST_CASE( "rbTree::erase - test insert increase value", "[rb_tree][insert_unique]" )
-// {
-
-// }

@@ -525,7 +525,7 @@ private:
 			y = _s_minimum(z->right);
 			yPrevColor = y->color;
 			x = y->right;
-			if (y->parent != z)
+			if (y->parent == z)
 			{
 				x->parent = y;
 			}
@@ -538,9 +538,9 @@ private:
 			_m_transplant(z, y, _m_impl._header);
 			y->left = z->left;
 			y->left->parent = y;
-			y->color = x->color;
+			y->color = z->color;
 		}
-		// if black, there's we've may not respect rb tree rules anymore, then fix
+		// if black, we've may not respect rb tree rules anymore, then fix
 		if (yPrevColor == kBlack)
 		{
 			while (x && x != _m_root() && x->color == kBlack)
@@ -575,7 +575,31 @@ private:
 				}
 				else
 				{
-					
+					// base_ptr w = x->parent->left;
+					// if (w->color == kRed)
+					// {
+					// 	w->color = kBlack;
+					// 	x->parent->color = kRed;
+					// 	_rightRotate(x->parent, _m_root());
+					// 	w = x->parent->left;
+					// }
+					// if (w->left->color == kBlack and w->right->color == kBlack)
+					// {
+					// 	w->color = kRed;
+					// 	x = x->parent;
+					// }
+					// else if (w->right->color == kBlack)
+					// {
+					// 	w->left->color = kBlack;
+					// 	w->color = kRed;
+					// 	_rightRotate(w, _m_root());
+					// 	w = x->parent->right;
+					// }
+					// w->color = x->parent->color;
+					// x->parent->color = kBlack;
+					// w->right->color = kBlack;
+					// _leftRotate(x->parent, _m_root());
+					// x = _m_root();
 				}
 				
 			}

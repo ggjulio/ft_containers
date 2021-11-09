@@ -98,6 +98,9 @@ const node_base*	_rb_tree_increment(const node_base *x) throw();
 node_base*			_rb_tree_decrement(node_base * __x) throw();
 const node_base *	_rb_tree_decrement(const node_base *__x) throw();
 
+void 				_leftRotate(node_base *x, node_base*& root);
+void				_rightRotate(node_base *x, node_base*& root);
+
 template <typename T>
 struct RbTree_iterator
 {
@@ -197,9 +200,7 @@ public:
 	typedef _Val 				value_type;
 	typedef _Compare 			value_compare;
 	typedef _Alloc				allocator_type;
-private:
-    // typedef std::allocator_traits<allocator_type>      _alloc_traits;
-public:
+
 	typedef value_type								*pointer;
 	typedef const value_type						*const_pointer;
 	typedef size_t									size_type;
@@ -473,54 +474,6 @@ private:
 		_m_root()->color = kBlack;
 	}
 
-	/*      y   right rotate     x
-	/      / \  ------------>   / \ 
-	/     x	  c                 a   y 
-	/    / \     left rotate       / \ 
-	/   a   b   <------------     b   c
-	*/
-	void _leftRotate(node_base *x, node_base*& root)
-	{
-		assert(x->right != NULL);
-
-		node_base* const y = x->right;
-	
-		x->right = y->left; // turn y’s left subtree into x’s right subtree
-		if (y->left != NULL)
-			y->left->parent = x;
-		y->parent = x->parent; // link x’s parent to y
-
-		if (x == root)
-			root = y;
-		else if (x == x->parent->left)
-			x->parent->left = y;
-		else
-			x->parent->right = y;
-		y->left = x; // put x on y’s left
-		x->parent = y;
-	}
-
-	void _rightRotate(node_base *x, node_base*& root)
-	{
-		assert(x->left != NULL);
-
-		node_base* const y = x->left;
-
-		x->left = y->right; // turn y’s left subtree into x’s right subtree
-		if (y->right != NULL)
-			y->right->parent = x;
-		y->parent = x->parent; // link x’s parent to y
-	
-		if (x == root)
-			root = y;
-		else if (x == x->parent->right)
-			x->parent->right = y;
-		else
-			x->parent->left = y;
-		y->right = x; // put x on y’s left
-		x->parent = y;
-	}
-
 	// erase node n and his childs without rebalance.
 	void _m_erase(link_type n)
 	{
@@ -630,6 +583,11 @@ public:
 		return true;
 	}
 
+	void __rb_tree_print()
+	{
+		__rb_tree_print(static_cast<link_type>(_m_root()), NULL, false);
+	}
+
 private:
 
 	struct Trunk
@@ -688,13 +646,6 @@ private:
 	
 		__rb_tree_print(static_cast<link_type>(root->left), trunk, false);
 	}
-
-public:
-	void __rb_tree_print()
-	{
-		__rb_tree_print(static_cast<link_type>(_m_root()), NULL, false);
-	}
-
 }; /* class rbTree */
 
 size_t _rb_tree_black_count(const node_base *node, const node_base *root) throw();

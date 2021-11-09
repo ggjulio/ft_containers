@@ -498,7 +498,8 @@ private:
 			u->parent->left = v;
 		else
 			u->parent->right = v;
-		v->parent = u->parent;
+		if (v)
+			v->parent = u->parent;
 	}
 
 	void _m_erase_and_fix(iterator position)
@@ -507,6 +508,7 @@ private:
 		base_ptr y = z;
 		base_ptr x = NULL;
 
+		--_m_impl._nodeCount;
 		enum color yPrevColor = y->color;
 		if (z->left == NULL)
 		{
@@ -538,10 +540,10 @@ private:
 			y->left->parent = y;
 			y->color = x->color;
 		}
-		// if black, fix eventual violation of rb tree rules
+		// if black, there's we've may not respect rb tree rules anymore, then fix
 		if (yPrevColor == kBlack)
 		{
-			while (x != _m_root() && x->color == kBlack)
+			while (x && x != _m_root() && x->color == kBlack)
 			{
 				if (x == x->parent->left)
 				{
@@ -561,7 +563,15 @@ private:
 					else if (w->right->color == kBlack)
 					{
 						w->left->color = kBlack;
+						w->color = kRed;
+						_rightRotate(w, _m_root());
+						w = x->parent->right;
 					}
+					w->color = x->parent->color;
+					x->parent->color = kBlack;
+					w->right->color = kBlack;
+					_leftRotate(x->parent, _m_root());
+					x = _m_root();
 				}
 				else
 				{

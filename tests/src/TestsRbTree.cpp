@@ -148,16 +148,46 @@ TEST_CASE( "rbTree::equal_range ", "[rb_tree][equal_range]" )
 
 }
 
-TEST_CASE( "rbTree::erase a position", "[rb_tree][erase][iterator][position]" )
+
+
+TEST_CASE( "rbTree::erase node with no childs", "[rb_tree][erase][iterator][position]" )
 {
 	ft::rbTree<int, int, int> tree;
 	
 	for (int i=1; i<10; i++)
 		insert_v(tree, i*10, i - 1); // 10 20 30 40 50 60 70 80 90
-
+	
+	REQUIRE( tree.size() == 9);
 	tree.erase(tree.find(30));
-	REQUIRE(tree.find(30) == tree.end());
+	CHECK( tree.size() == 8);
+	REQUIRE( tree.find(30) == tree.end());
+	REQUIRE( tree.__rb_verify());
 
+}
+
+TEST_CASE( "rbTree::erase node with two childs", "[rb_tree][erase][iterator][position]" )
+{
+	ft::rbTree<int, int, int> tree;
+	
+	for (int i=1; i<10; i++)
+		insert_v(tree, i*10, i - 1); // 10 20 30 40 50 60 70 80 90
+	
+	tree.__rb_tree_print();
+	/*
+	            .———90
+	        .———80
+	       |    `———70
+	    .———60
+	   |    `———50
+	———40
+	   |    .———30
+	    `———20
+	        `———10
+	*/
+	tree.erase(tree.find(60));
+	REQUIRE(tree.find(60) == tree.end());
+	REQUIRE(tree.__rb_verify());
+	tree.__rb_tree_print();
 
 }
 

@@ -282,7 +282,10 @@ public:
 			++first;
 		}
 	}
-	void erase(iterator position) {(void)position;}
+	void erase(iterator position)
+	{
+		_m_erase_and_fix(position);
+	}
 	void erase(iterator first, iterator last) {(void)first;(void)last;}
 	void erase_unique(const _Key& k) {(void)k;}
 
@@ -486,6 +489,25 @@ private:
 			n = x;
 		}
 	}
+
+	void _m_transplant(node_base u, node_base v, node_base header)
+	{
+		if (u.parent == header.parent)
+			header.parent = v
+		else if ( u == u.parent.left)
+			u.parent.left = v;
+		else
+			u.parent.right = v;
+		v.parent = p;
+	}
+
+	void _m_erase_and_fix(iterator position)
+	{
+		base_ptr z = position._node;
+
+		y 
+	}
+
 
 	iterator _m_lower_bound(link_type x, base_ptr y, const _Key& k) 
 	{

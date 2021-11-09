@@ -541,11 +541,11 @@ private:
 		// if black, fix eventual violation of rb tree rules
 		if (yPrevColor == kBlack)
 		{
-			while (x != _m_root() && x->color == Black)
+			while (x != _m_root() && x->color == kBlack)
 			{
 				if (x == x->parent->left)
 				{
-					auto w = x->parent->right;
+					base_ptr w = x->parent->right;
 					if (w->color == kRed)
 					{
 						w->color = kBlack;
@@ -560,7 +560,7 @@ private:
 					}
 					else if (w->right->color == kBlack)
 					{
-						w->left->color = kBlack
+						w->left->color = kBlack;
 					}
 				}
 				else

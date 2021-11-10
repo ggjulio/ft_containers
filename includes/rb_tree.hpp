@@ -492,7 +492,9 @@ private:
 
 	void _m_transplant(base_ptr u, base_ptr v, node_base header)
 	{
-		if (u->parent == header.parent)
+		assert(_m_root()->parent == &_m_impl._header);
+		assert(_m_root()->parent == _m_impl._header.parent->parent );
+		if (u->parent == header.parent->parent)
 			header.parent = v;
 		else if (u == u->parent->left)
 			u->parent->left = v;
@@ -505,31 +507,20 @@ private:
 	void _m_erase_and_fix(iterator position)
 	{
 		base_ptr z = position._node;
-		base_ptr y = z;
-		base_ptr x = NULL;
 
 		--_m_impl._nodeCount;
-		enum color yPrevColor = y->color;
 		if (z->left == NULL)
 		{
-			x = z->right;
 			_m_transplant(z, z->right, _m_impl._header);
 		}
 		else if (z->right == NULL)
 		{
-			x = z->left;
 			_m_transplant(z, z->left, _m_impl._header);
 		}
 		else
 		{
-			y = _s_minimum(z->right);
-			yPrevColor = y->color;
-			x = y->right;
-			if (y->parent == z)
-			{
-				x->parent = y;
-			}
-			else
+			base_ptr y = _s_minimum(z->right);
+			if (y->parent != z)
 			{
 				_m_transplant(y, y->right, _m_impl._header);
 				y->right = z->right;
@@ -538,71 +529,71 @@ private:
 			_m_transplant(z, y, _m_impl._header);
 			y->left = z->left;
 			y->left->parent = y;
-			y->color = z->color;
+			// y->color = z->color;
 		}
 		// if black, we've may not respect rb tree rules anymore, then fix
-		if (yPrevColor == kBlack)
+		// if (yPrevColor == kBlack)
 		{
-			while (x && x != _m_root() && x->color == kBlack)
-			{
-				if (x == x->parent->left)
-				{
-					base_ptr w = x->parent->right;
-					if (w->color == kRed)
-					{
-						w->color = kBlack;
-						x->parent->color = kRed;
-						_leftRotate(x->parent, _m_root());
-						w = x->parent->right;
-					}
-					if (w->left->color == kBlack and w->right->color == kBlack)
-					{
-						w->color = kRed;
-						x = x->parent;
-					}
-					else if (w->right->color == kBlack)
-					{
-						w->left->color = kBlack;
-						w->color = kRed;
-						_rightRotate(w, _m_root());
-						w = x->parent->right;
-					}
-					w->color = x->parent->color;
-					x->parent->color = kBlack;
-					w->right->color = kBlack;
-					_leftRotate(x->parent, _m_root());
-					x = _m_root();
-				}
-				else
-				{
-					// base_ptr w = x->parent->left;
-					// if (w->color == kRed)
-					// {
-					// 	w->color = kBlack;
-					// 	x->parent->color = kRed;
-					// 	_rightRotate(x->parent, _m_root());
-					// 	w = x->parent->left;
-					// }
-					// if (w->left->color == kBlack and w->right->color == kBlack)
-					// {
-					// 	w->color = kRed;
-					// 	x = x->parent;
-					// }
-					// else if (w->right->color == kBlack)
-					// {
-					// 	w->left->color = kBlack;
-					// 	w->color = kRed;
-					// 	_rightRotate(w, _m_root());
-					// 	w = x->parent->right;
-					// }
-					// w->color = x->parent->color;
-					// x->parent->color = kBlack;
-					// w->right->color = kBlack;
-					// _leftRotate(x->parent, _m_root());
-					// x = _m_root();
-				}
+			// while (x && x != _m_root() && x->color == kBlack)
+			// {
+			// 	if (x == x->parent->left)
+			// 	{
+			// 		base_ptr w = x->parent->right;
+			// 		if (w->color == kRed)
+			// 		{
+			// 			w->color = kBlack;
+			// 			x->parent->color = kRed;
+			// 			_leftRotate(x->parent, _m_root());
+			// 			w = x->parent->right;
+			// 		}
+			// 		if (w->left->color == kBlack and w->right->color == kBlack)
+			// 		{
+			// 			w->color = kRed;
+			// 			x = x->parent;
+			// 		}
+			// 		else if (w->right->color == kBlack)
+			// 		{
+			// 			w->left->color = kBlack;
+			// 			w->color = kRed;
+			// 			_rightRotate(w, _m_root());
+			// 			w = x->parent->right;
+			// 		}
+			// 		w->color = x->parent->color;
+			// 		x->parent->color = kBlack;
+			// 		w->right->color = kBlack;
+			// 		_leftRotate(x->parent, _m_root());
+			// 		x = _m_root();
+			// 	}
+			// 	else
+			// 	{
+			// 		// base_ptr w = x->parent->left;
+			// 		// if (w->color == kRed)
+			// 		// {
+			// 		// 	w->color = kBlack;
+			// 		// 	x->parent->color = kRed;
+			// 		// 	_rightRotate(x->parent, _m_root());
+			// 		// 	w = x->parent->left;
+			// 		// }
+			// 		// if (w->left->color == kBlack and w->right->color == kBlack)
+			// 		// {
+			// 		// 	w->color = kRed;
+			// 		// 	x = x->parent;
+			// 		// }
+			// 		// else if (w->right->color == kBlack)
+			// 		// {
+			// 		// 	w->left->color = kBlack;
+			// 		// 	w->color = kRed;
+			// 		// 	_rightRotate(w, _m_root());
+			// 		// 	w = x->parent->right;
+			// 		// }
+			// 		// w->color = x->parent->color;
+			// 		// x->parent->color = kBlack;
+			// 		// w->right->color = kBlack;
+			// 		// _leftRotate(x->parent, _m_root());
+			// 		// x = _m_root();
+			// 	}
 				
-			}
+			// }
 		}
 	}
 

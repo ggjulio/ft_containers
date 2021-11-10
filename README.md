@@ -30,3 +30,5 @@
 
 #### intro to algorithms (rb tree insertion, deletion algorithm page 315)
 - https://edutechlearners.com/download/Introduction_to_algorithms-3rd%20Edition.pdf
+
+- https://www.cs.dartmouth.edu/~thc/cs10/lectures/0428/0428.html

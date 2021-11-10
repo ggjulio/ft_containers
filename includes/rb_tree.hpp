@@ -511,13 +511,6 @@ private:
 		enum color yOriginalColor = z->color;
 		--_m_impl._nodeCount;
 
-		//maintain leftmost and rightmost pointers
-		if (z == _m_impl._header.left)
-			_m_impl._header.left = _s_minimum();
-		if (z == _m_impl._header.right)
-			_m_impl._header.right = _s_minimum();
-
-
 		if (z->left == NULL)
 		{
 			x = z->right;
@@ -546,70 +539,78 @@ private:
 			y->left->parent = y;
 			y->color = z->color;
 		}
-		// // if black, we've may break rb tree rules, then fix
-		// if (yOriginalColor == kBlack)
-		// {
-		// 	while (x && x != _m_root() && x->color == kBlack)
-		// 	{
-		// 		if (x == x->parent->left)
-		// 		{
-		// 			base_ptr w = x->parent->right;
-		// 			if (w->color == kRed)
-		// 			{
-		// 				w->color = kBlack;
-		// 				x->parent->color = kRed;
-		// 				_leftRotate(x->parent, _m_root());
-		// 				w = x->parent->right;
-		// 			}
-		// 			if (w->left->color == kBlack and w->right->color == kBlack)
-		// 			{
-		// 				w->color = kRed;
-		// 				x = x->parent;
-		// 			}
-		// 			else if (w->right->color == kBlack)
-		// 			{
-		// 				w->left->color = kBlack;
-		// 				w->color = kRed;
-		// 				_rightRotate(w, _m_root());
-		// 				w = x->parent->right;
-		// 			}
-		// 			w->color = x->parent->color;
-		// 			x->parent->color = kBlack;
-		// 			w->right->color = kBlack;
-		// 			_leftRotate(x->parent, _m_root());
-		// 			x = _m_root();
-		// 		}
-		// 		else
-		// 		{
-		// 			// base_ptr w = x->parent->left;
-		// 			// if (w->color == kRed)
-		// 			// {
-		// 			// 	w->color = kBlack;
-		// 			// 	x->parent->color = kRed;
-		// 			// 	_rightRotate(x->parent, _m_root());
-		// 			// 	w = x->parent->left;
-		// 			// }
-		// 			// if (w->left->color == kBlack and w->right->color == kBlack)
-		// 			// {
-		// 			// 	w->color = kRed;
-		// 			// 	x = x->parent;
-		// 			// }
-		// 			// else if (w->right->color == kBlack)
-		// 			// {
-		// 			// 	w->left->color = kBlack;
-		// 			// 	w->color = kRed;
-		// 			// 	_rightRotate(w, _m_root());
-		// 			// 	w = x->parent->right;
-		// 			// }
-		// 			// w->color = x->parent->color;
-		// 			// x->parent->color = kBlack;
-		// 			// w->right->color = kBlack;
-		// 			// _leftRotate(x->parent, _m_root());
-		// 			// x = _m_root();
-		// 		}
+		// if black, we've may break rb tree rules, then fix
+		if (yOriginalColor == kBlack)
+		{
+			while (x && x != _m_root() && x->color == kBlack)
+			{
+				if (x == x->parent->left)
+				{
+					base_ptr w = x->parent->right;
+					if (w->color == kRed)
+					{
+						w->color = kBlack;
+						x->parent->color = kRed;
+						_leftRotate(x->parent, _m_root());
+						w = x->parent->right;
+					}
+					if (w->left->color == kBlack and w->right->color == kBlack)
+					{
+						w->color = kRed;
+						x = x->parent;
+					}
+					else if (w->right->color == kBlack)
+					{
+						w->left->color = kBlack;
+						w->color = kRed;
+						_rightRotate(w, _m_root());
+						w = x->parent->right;
+					}
+					w->color = x->parent->color;
+					x->parent->color = kBlack;
+					w->right->color = kBlack;
+					_leftRotate(x->parent, _m_root());
+					x = _m_root();
+				}
+				else
+				{
+					base_ptr w = x->parent->left;
+					if (w->color == kRed)
+					{
+						w->color = kBlack;
+						x->parent->color = kRed;
+						_rightRotate(x->parent, _m_root());
+						w = x->parent->left;
+					}
+					if (w->left->color == kBlack and w->right->color == kBlack)
+					{
+						w->color = kRed;
+						x = x->parent;
+					}
+					else if (w->right->color == kBlack)
+					{
+						w->left->color = kBlack;
+						w->color = kRed;
+						_rightRotate(w, _m_root());
+						w = x->parent->right;
+					}
+					w->color = x->parent->color;
+					x->parent->color = kBlack;
+					w->right->color = kBlack;
+					_leftRotate(x->parent, _m_root());
+					x = _m_root();
+				}
 				
-		// 	}
-		// }
+			}
+			// if (x)
+			// 	x->color = kBlack;
+		}
+
+		// maintain leftmost and rightmost pointers
+		if (z == _m_impl._header.left)
+			_m_impl._header.left = _s_minimum(_m_root());
+		if (z == _m_impl._header.right)
+			_m_impl._header.right = _s_maximum(_m_root());
 	}
 
 

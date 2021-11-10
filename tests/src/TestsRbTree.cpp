@@ -173,7 +173,9 @@ TEST_CASE( "rbTree::erase leftmost node", "[rb_tree][erase][iterator][position][
 		insert_v(tree, i*10, i - 1); // 10 20 30 40 50 60 70 80 90
 	
 	REQUIRE( tree.size() == 9);
+	tree.__rb_tree_print();
 	tree.erase(tree.find(10));
+	tree.__rb_tree_print();
 
 	CHECK( tree.size() == 8);
 	REQUIRE( tree.find(10) == tree.end());

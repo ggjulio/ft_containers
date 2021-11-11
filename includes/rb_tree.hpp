@@ -513,7 +513,7 @@ private:
 
 		if (z->left == NULL)
 		{
-			x = z->right;
+			x = z->right; // might be null
 			_m_transplant(z, z->right, _m_impl._header);
 		}
 		else if (z->right == NULL)
@@ -524,8 +524,8 @@ private:
 		else
 		{
 			base_ptr y = _s_minimum(z->right);
-			yOriginalColor = y->color;
 			x = y->right;
+			yOriginalColor = y->color;
 			if (y->parent != z)
 			{
 				_m_transplant(y, y->right, _m_impl._header);
@@ -554,7 +554,7 @@ private:
 						_leftRotate(x->parent, _m_root());
 						w = x->parent->right;
 					}
-					if (w->left->color == kBlack and w->right->color == kBlack)
+					if (w->left->color == kBlack && w->right->color == kBlack)
 					{
 						w->color = kRed;
 						x = x->parent;
@@ -582,7 +582,7 @@ private:
 						_rightRotate(x->parent, _m_root());
 						w = x->parent->left;
 					}
-					if (w->left->color == kBlack and w->right->color == kBlack)
+					if (w->left->color == kBlack && w->right->color == kBlack)
 					{
 						w->color = kRed;
 						x = x->parent;
@@ -602,8 +602,8 @@ private:
 				}
 				
 			}
-			// if (x)
-			// 	x->color = kBlack;
+			if (x)
+				x->color = kBlack;
 		}
 
 		// maintain leftmost and rightmost pointers
@@ -699,7 +699,8 @@ public:
 
 			// check if number of black nodes are equal no matter the node we're in
 			if (!left && !right && _rb_tree_black_count(x, _m_root()) != len)
-				return false;
+			 throw "im dumb";
+				// return false;
 			++it;
 		}
 		// check if leftmost and rightmost correspond to min/max of root node
@@ -764,6 +765,11 @@ private:
 		}
 	
 		showTrunks(trunk);
+		if (root->color == kRed)
+			std::cout << "R";
+		else
+			std::cout << "B";
+		
 		std::cout << root->data << std::endl;
 	
 		if (prev) {

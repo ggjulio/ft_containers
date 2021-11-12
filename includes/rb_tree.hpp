@@ -534,11 +534,11 @@ private:
 				if (z->color != kRed)
 				{
 					x = &nil_node;
-					_m_transplant(z, x, _m_impl._header);
 
 				}
 				else
 					x = NULL;
+				_m_transplant(z, x, _m_impl._header);
 			}
 		}
 		else

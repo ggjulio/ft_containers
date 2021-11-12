@@ -540,71 +540,75 @@ private:
 			y->color = z->color;
 		}
 		// if black, we've may break rb tree rules, then fix
-		if (yOriginalColor == kBlack)
-		{
-			while (x && x != _m_root() && x->color == kBlack)
-			{
-				if (x == x->parent->left)
-				{
-					base_ptr w = x->parent->right;
-					if (w->color == kRed)
-					{
-						w->color = kBlack;
-						x->parent->color = kRed;
-						_leftRotate(x->parent, _m_root());
-						w = x->parent->right;
-					}
-					if (w->left->color == kBlack && w->right->color == kBlack)
-					{
-						w->color = kRed;
-						x = x->parent;
-					}
-					else if (w->right->color == kBlack)
-					{
-						w->left->color = kBlack;
-						w->color = kRed;
-						_rightRotate(w, _m_root());
-						w = x->parent->right;
-					}
-					w->color = x->parent->color;
-					x->parent->color = kBlack;
-					w->right->color = kBlack;
-					_leftRotate(x->parent, _m_root());
-					x = _m_root();
-				}
-				else
-				{
-					base_ptr w = x->parent->left;
-					if (w->color == kRed)
-					{
-						w->color = kBlack;
-						x->parent->color = kRed;
-						_rightRotate(x->parent, _m_root());
-						w = x->parent->left;
-					}
-					if (w->left->color == kBlack && w->right->color == kBlack)
-					{
-						w->color = kRed;
-						x = x->parent;
-					}
-					else if (w->right->color == kBlack)
-					{
-						w->left->color = kBlack;
-						w->color = kRed;
-						_rightRotate(w, _m_root());
-						w = x->parent->right;
-					}
-					w->color = x->parent->color;
-					x->parent->color = kBlack;
-					w->right->color = kBlack;
-					_leftRotate(x->parent, _m_root());
-					x = _m_root();
-				}
+		// if (yOriginalColor == kBlack)
+		// {
+		// 	while (x && x != _m_root() && x->color == kBlack)
+		// 	{
+		// 		if (x == x->parent->left)
+		// 		{
+		// 			base_ptr w = x->parent->right;
+		// 			if (w->color == kRed)
+		// 			{
+		// 				w->color = kBlack;
+		// 				x->parent->color = kRed;
+		// 				_leftRotate(x->parent, _m_root());
+		// 				w = x->parent->right;
+		// 			}
+		// 			if (w->left->color == kBlack && w->right->color == kBlack)
+		// 			{
+		// 				w->color = kRed;
+		// 				x = x->parent;
+		// 			}
+		// 			else if (w->right->color == kBlack)
+		// 			{
+		// 				w->left->color = kBlack;
+		// 				w->color = kRed;
+		// 				_rightRotate(w, _m_root());
+		// 				w = x->parent->right;
+		// 			}
+		// 			w->color = x->parent->color;
+		// 			x->parent->color = kBlack;
+		// 			w->right->color = kBlack;
+		// 			_leftRotate(x->parent, _m_root());
+		// 			x = _m_root();
+		// 		}
+		// 		else
+		// 		{
+		// 			base_ptr w = x->parent->left;
+		// 			if (w->color == kRed)
+		// 			{
+		// 				w->color = kBlack;
+		// 				x->parent->color = kRed;
+		// 				_rightRotate(x->parent, _m_root());
+		// 				w = x->parent->left;
+		// 			}
+		// 			if (w->left->color == kBlack && w->right->color == kBlack)
+		// 			{
+		// 				w->color = kRed;
+		// 				x = x->parent;
+		// 			}
+		// 			else if (w->right->color == kBlack)
+		// 			{
+		// 				w->left->color = kBlack;
+		// 				w->color = kRed;
+		// 				_rightRotate(w, _m_root());
+		// 				w = x->parent->right;
+		// 			}
+		// 			w->color = x->parent->color;
+		// 			x->parent->color = kBlack;
+		// 			w->right->color = kBlack;
+		// 			_leftRotate(x->parent, _m_root());
+		// 			x = _m_root();
+		// 		}
 				
-			}
-			if (x)
-				x->color = kBlack;
-		}
+		// 	}
+		// 	if (x)
+		// 		x->color = kBlack;
+		// }
+		if (yOriginalColor == kBlack)
+			fixShit(x);
+
+
 
 		// maintain leftmost and rightmost pointers
 		if (z == _m_impl._header.left)
@@ -612,8 +616,71 @@ private:
 		if (z == _m_impl._header.right)
 			_m_impl._header.right = _s_maximum(_m_root());
 	}
+	void fixShit(base_ptr x)
+	{
+		if (x == _m_root())
+			return; // case one
+		
+		base_ptr sibling = NULL;
+		if (x == x->parent->left)
+			sibling = x->parent->right;
+		else
+			sibling = x->parent->left; // may be null
 
+		// case two
+		if (sibling->color == kRed)
+		{
+			sibling->color = kBlack;
+			x->parent->color = kRed;
+			if (x == x->parent->left)
+				_leftRotate(x->parent, _m_root());
+			else
+				_rightRotate(x->parent, _m_root());
+		}
+		// case 3 and 4
+		if (sibling->left->color == kBlack && sibling->right->color == kBlack)
+		{
+			sibling->color = kRed;
+			if (x->parent->color != kBlack)
+			{
+				fixShit(x->parent);
+			}
+			else
+				x->parent->color = kRed;
+		}
+		else
+		{
+			bool xIsleftChild = x == x->parent->left;
+			// case 5
+			if (xIsleftChild && sibling->right->color == kBlack)
+			{
+				sibling->left->color = kBlack;
+				sibling->color = kRed;
+				_rightRotate(sibling, _m_root());
+				sibling = x->parent->right;
+			}
+			else if (!xIsleftChild && sibling->left->color == kBlack)
+			{
+				sibling->right->color = kBlack;
+				sibling->color = kRed;
+				_leftRotate(sibling, _m_root());
+				sibling = x->parent->left;
+			}
 
+			sibling->color = x->parent->color;
+			x->parent->color = kBlack;
+			if (xIsleftChild)
+			{
+				sibling->right->color = kBlack;
+				_leftRotate(x->parent, _m_root());
+			}
+			else
+			{
+				sibling->left->color = kBlack;
+				_rightRotate(x->parent, _m_root());
+			}
+		}
+	}
 	iterator _m_lower_bound(link_type x, base_ptr y, const _Key& k) 
 	{
 		while (x != NULL)

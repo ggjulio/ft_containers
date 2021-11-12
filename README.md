@@ -27,7 +27,7 @@
 - https://en.cppreference.com/w/cpp/named_req/Compare
 - https://gcc.gnu.org/onlinedocs/libstdc++/manual/containers.html
 
-
+- https://www.happycoders.eu/algorithms/red-black-tree-java/
 #### intro to algorithms (rb tree insertion, deletion algorithm page 315)
 - https://edutechlearners.com/download/Introduction_to_algorithms-3rd%20Edition.pdf
 

@@ -836,24 +836,24 @@ private:
 		}
 	
 		std::string prev_str = "    ";
-		Trunk *trunk = new Trunk(prev, prev_str);
+		Trunk trunk(prev, prev_str);
 	
-		__rb_tree_print(static_cast<link_type>(root->right), trunk, true);
+		__rb_tree_print(static_cast<link_type>(root->right), &trunk, true);
 	
 		if (!prev) {
-			trunk->str = "———";
+			trunk.str = "———";
 		}
 		else if (isLeft)
 		{
-			trunk->str = ".———";
+			trunk.str = ".———";
 			prev_str = "   |";
 		}
 		else {
-			trunk->str = "`———";
+			trunk.str = "`———";
 			prev->str = prev_str;
 		}
 	
-		showTrunks(trunk);
+		showTrunks(&trunk);
 		if (root->color == kRed)
 			std::cout << "R";
 		else
@@ -864,9 +864,9 @@ private:
 		if (prev) {
 			prev->str = prev_str;
 		}
-		trunk->str = "   |";
+		trunk.str = "   |";
 	
-		__rb_tree_print(static_cast<link_type>(root->left), trunk, false);
+		__rb_tree_print(static_cast<link_type>(root->left), &trunk, false);
 	}
 }; /* class rbTree */
 

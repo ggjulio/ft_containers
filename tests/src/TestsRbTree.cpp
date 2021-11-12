@@ -158,9 +158,11 @@ TEST_CASE( "rbTree::erase node with no childs", "[rb_tree][erase][iterator][posi
 		insert_v(tree, i*10, i - 1); // 10 20 30 40 50 60 70 80 90
 	
 	REQUIRE( tree.size() == 9);
+tree.__rb_tree_print();
 	tree.erase(tree.find(30));
 	CHECK( tree.size() == 8);
 	REQUIRE( tree.find(30) == tree.end());
+tree.__rb_tree_print();
 	REQUIRE( tree.__rb_verify());
 
 }
@@ -173,9 +175,9 @@ TEST_CASE( "rbTree::erase leftmost node", "[rb_tree][erase][iterator][position][
 		insert_v(tree, i*10, i - 1); // 10 20 30 40 50 60 70 80 90
 	
 	REQUIRE( tree.size() == 9);
-	tree.__rb_tree_print();
+tree.__rb_tree_print();
 	tree.erase(tree.find(10));
-	tree.__rb_tree_print();
+tree.__rb_tree_print();
 
 	CHECK( tree.size() == 8);
 	REQUIRE( tree.find(10) == tree.end());
@@ -191,8 +193,9 @@ TEST_CASE( "rbTree::erase rightmost node", "[rb_tree][erase][iterator][position]
 		insert_v(tree, i*10, i - 1); // 10 20 30 40 50 60 70 80 90
 	
 	REQUIRE( tree.size() == 9);
+tree.__rb_tree_print();
 	tree.erase(tree.find(90));
-
+tree.__rb_tree_print();
 	CHECK( tree.size() == 8);
 	REQUIRE( tree.find(90) == tree.end());
 	REQUIRE( tree.__rb_verify());
@@ -219,8 +222,11 @@ TEST_CASE( "rbTree::erase node with no left childs", "[rb_tree][erase][iterator]
 	    `———20
 	        `———10
 	*/
-	tree.erase(tree.find(35));
-	REQUIRE(tree.find(35) == tree.end());
+tree.__rb_tree_print();
+	tree.erase(tree.find(30));
+tree.__rb_tree_print();
+	REQUIRE(tree.find(30) == tree.end());
+	REQUIRE(*tree.find(35) == 35);
 	REQUIRE(tree.__rb_verify());
 }
 
@@ -242,10 +248,69 @@ TEST_CASE( "rbTree::erase node with no right childs", "[rb_tree][erase][iterator
 	    `———20  `———25
 	        `———10
 	*/
+tree.__rb_tree_print();
 	tree.erase(tree.find(25));
+tree.__rb_tree_print();
 	REQUIRE(tree.find(25) == tree.end());
+
 	REQUIRE(tree.__rb_verify());
 }
+
+
+TEST_CASE( "rbTree::erase node with no left sibbling", "[rb_tree][erase][iterator][position][l]" )
+{
+	ft::rbTree<int, int, int> tree;
+	
+	for (int i=1; i<10; i++)
+		insert_v(tree, i*10, i - 1); // 10 20 30 40 50 60 70 80 90
+	insert_v(tree, 35, 9);
+	
+	/*
+	            .———90
+	        .———80
+	       |    `———70
+	    .———60
+	   |    `———50
+	———40       .———35
+	   |    .———30
+	    `———20
+	        `———10
+	*/
+tree.__rb_tree_print();
+	tree.erase(tree.find(30));
+tree.__rb_tree_print();
+	REQUIRE(tree.find(30) == tree.end());
+	REQUIRE(*tree.find(35) == 35);
+	REQUIRE(tree.__rb_verify());
+}
+
+TEST_CASE( "rbTree::erase node with no right sibling", "[rb_tree][erase][iterator][position][r][sibling]" )
+{
+	ft::rbTree<int, int, int> tree;
+	
+	for (int i=1; i<10; i++)
+		insert_v(tree, i*10, i - 1); // 10 20 30 40 50 60 70 80 90
+	insert_v(tree, 25, 9);
+	/*
+	            .———90
+	        .———80
+	       |    `———70
+	    .———60
+	   |    `———50
+	———40
+	   |    .———30
+	    `———20  `———25
+	        `———10
+	*/
+tree.__rb_tree_print();
+	tree.erase(tree.find(25));
+tree.__rb_tree_print();
+	REQUIRE(tree.find(25) == tree.end());
+
+	REQUIRE(tree.__rb_verify());
+}
+
+
 
 TEST_CASE( "rbTree::erase node with two childs", "[rb_tree][erase][iterator][position][two]" )
 {
@@ -254,7 +319,6 @@ TEST_CASE( "rbTree::erase node with two childs", "[rb_tree][erase][iterator][pos
 	for (int i=1; i<10; i++)
 		insert_v(tree, i*10, i - 1); // 10 20 30 40 50 60 70 80 90
 	
-	tree.__rb_tree_print();
 	/*
 	            .———90
 	        .———80
@@ -267,8 +331,9 @@ TEST_CASE( "rbTree::erase node with two childs", "[rb_tree][erase][iterator][pos
 	        `———10
 	*/
 
+tree.__rb_tree_print();
 	tree.erase(tree.find(60));
-	tree.__rb_tree_print();
+tree.__rb_tree_print();
 	REQUIRE(tree.find(60) == tree.end());
 	REQUIRE(tree.__rb_verify());
 

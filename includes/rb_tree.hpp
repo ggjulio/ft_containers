@@ -511,15 +511,35 @@ private:
 		enum color yOriginalColor = z->color;
 		--_m_impl._nodeCount;
 
-		if (z->left == NULL)
+		node_base nil_node;
+		nil_node.left = NULL;
+		nil_node.right = NULL;
+		nil_node.parent = NULL;
+		nil_node.color = kBlack;
+
+		if (!z->left || !z->right)
 		{
-			x = z->right; // might be null
-			_m_transplant(z, z->right, _m_impl._header);
-		}
-		else if (z->right == NULL)
-		{
-			x = z->left;
-			_m_transplant(z, z->left, _m_impl._header);
+			if (z->left != NULL)
+			{
+				x = z->left;
+				_m_transplant(z, z->left, _m_impl._header);
+			}
+			else if (z->right != NULL)
+			{
+				x = z->right;
+				_m_transplant(z, z->right, _m_impl._header);
+			}
+			else
+			{
+				if (z->color != kRed)
+				{
+					x = &nil_node;
+					_m_transplant(z, x, _m_impl._header);
+
+				}
+				else
+					x = NULL;
+			}
 		}
 		else
 		{
@@ -607,8 +627,10 @@ private:
 		// }
 		if (yOriginalColor == kBlack)
 			fixShit(x);
-
-
+		if (x == &nil_node)
+		{
+			_m_transplant(x, NULL, _m_impl._header);
+		}
 
 		// maintain leftmost and rightmost pointers
 		if (z == _m_impl._header.left)
@@ -622,11 +644,14 @@ private:
 			return; // case one
 		
 		base_ptr sibling = NULL;
-		if (x == x->parent->left)
-			sibling = x->parent->right;
-		else
-			sibling = x->parent->left; // may be null
-
+		// if (x == x->parent->left)
+		// 	sibling = x->parent->right;
+		// else
+		// 	sibling = x->parent->left;
+		
+		// may be null
+		sibling = x == x->parent->left ? x->parent->right : x->parent->left;
+		
 		// case two
 		if (sibling->color == kRed)
 		{
@@ -636,17 +661,19 @@ private:
 				_leftRotate(x->parent, _m_root());
 			else
 				_rightRotate(x->parent, _m_root());
+			sibling = x == x->parent->left ? x->parent->right : x->parent->left;
 		}
 		// case 3 and 4
-		if (sibling->left->color == kBlack && sibling->right->color == kBlack)
+		if ((sibling->left == NULL || sibling->left->color == kBlack)
+		&& (sibling->right == NULL || sibling->right->color == kBlack))
 		{
 			sibling->color = kRed;
-			if (x->parent->color != kBlack)
+			if (x->parent->color == kBlack)
 			{
 				fixShit(x->parent);
 			}
 			else
-				x->parent->color = kRed;
+				x->parent->color = kBlack;
 		}
 		else
 		{

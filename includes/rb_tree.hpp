@@ -637,7 +637,7 @@ private:
 			_m_impl._header.left = _s_minimum(_m_root());
 		if (z == _m_impl._header.right)
 			_m_impl._header.right = _s_maximum(_m_root());
-		_nodeAlloc.destroy(z);
+		_nodeAlloc.destroy(static_cast<link_type>(z));
 		_nodeAlloc.deallocate(static_cast<link_type>(z), 1);
 	}
 	void fixShit(base_ptr x)

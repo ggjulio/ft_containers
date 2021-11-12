@@ -788,8 +788,7 @@ public:
 
 			// check if number of black nodes are equal no matter the node we're in
 			if (!left && !right && _rb_tree_black_count(x, _m_root()) != len)
-			 throw "im dumb";
-				// return false;
+				return false;
 			++it;
 		}
 		// check if leftmost and rightmost correspond to min/max of root node

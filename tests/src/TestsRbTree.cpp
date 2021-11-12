@@ -148,7 +148,14 @@ TEST_CASE( "rbTree::equal_range ", "[rb_tree][equal_range]" )
 
 }
 
-
+TEST_CASE( "rbTree::erase empty tree", "[rb_tree][erase][iterator][position][empty]" )
+{
+	ft::rbTree<int, int, int> tree;
+	
+	tree.erase(tree.find(30));
+	CHECK( tree.size() == 0);
+	REQUIRE( tree.__rb_verify());
+}
 
 TEST_CASE( "rbTree::erase node with no childs", "[rb_tree][erase][iterator][position][no]" )
 {

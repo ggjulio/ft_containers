@@ -637,20 +637,15 @@ private:
 			_m_impl._header.left = _s_minimum(_m_root());
 		if (z == _m_impl._header.right)
 			_m_impl._header.right = _s_maximum(_m_root());
+		_nodeAlloc.destroy(z);
+		_nodeAlloc.deallocate(static_cast<link_type>(z), 1);
 	}
 	void fixShit(base_ptr x)
 	{
 		if (x == _m_root())
 			return; // case one
 		
-		base_ptr sibling = NULL;
-		// if (x == x->parent->left)
-		// 	sibling = x->parent->right;
-		// else
-		// 	sibling = x->parent->left;
-		
-		// may be null
-		sibling = x == x->parent->left ? x->parent->right : x->parent->left;
+		base_ptr sibling = (x == x->parent->left) ? x->parent->right : x->parent->left;
 		
 		// case two
 		if (sibling->color == kRed)

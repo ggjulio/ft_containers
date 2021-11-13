@@ -219,3 +219,42 @@ TEST_CASE( "vector - capacity - vectors can be sized and resized",
 	}
 }
 
+TEST_CASE( "vector - Element access - operator[] (subscript) ", "[vector][element_access][operator][subscript]" )
+{
+	cn::vector<int> v(5, 42);
+
+	REQUIRE( v[0] == 42);
+	v[0] = -42;
+	REQUIRE( v[0] == -42);
+	v[1] = v[0];
+	REQUIRE( v[1] == -42);
+}
+
+TEST_CASE( "vector - Element access - at() ", "[vector][element_access][at]" )
+{
+	cn::vector<int> v(5, 42);
+
+	REQUIRE( v.at(0) == 42);
+	v.at(0) = -42;
+	REQUIRE( v.at(0) == -42);
+	v.at(1) = v.at(0);
+	REQUIRE( v.at(1) == -42);
+}
+
+TEST_CASE( "vector - Element access - front() ", "[vector][element_access][front]" )
+{
+	cn::vector<int> v(5, 42);
+
+	REQUIRE( v.front() == 42);
+	v.at(0) = -42;
+	REQUIRE( v.front() == -42);
+}
+
+TEST_CASE( "vector - Element access - back() ", "[vector][element_access][back]" )
+{
+	cn::vector<int> v(5, 42);
+
+	REQUIRE( v.back() == 42);
+	v.at(4) = -42;
+	REQUIRE( v.back() == -42);
+}

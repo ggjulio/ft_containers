@@ -462,3 +462,85 @@ TEST_CASE( "map - Operations - count ", "[map][operation][count]" )
 	REQUIRE( mymap.count('a') == 1);
 	REQUIRE( mymap.count('c') == 1);
 }
+
+TEST_CASE( "map - Operations - lower_bound and upper_bound ", "[map][operation][lower_bound][upper_bound]" )
+{
+	cn::map<int,char> mymap;
+	cn::map<int,char>::iterator itlow,itup;
+
+	auto itLow = mymap.lower_bound(30);
+	auto itUp = mymap.upper_bound(60);
+
+	CHECK(itLow == mymap.end());
+	CHECK(itUp == mymap.end());
+
+	mymap[10] = 'a';
+	mymap[20] = 'b';
+	mymap[30] = 'c';
+	mymap[40] = 'd';
+	mymap[50] = 'e';
+	mymap[60] = 'f';
+	mymap[70] = 'g';
+	mymap[80] = 'h';
+	mymap[90] = 'i';
+
+	itLow = mymap.lower_bound(30);
+	itUp = mymap.upper_bound(60);
+
+	CHECK(itLow->first == 30);
+	CHECK(itUp->first == 70);
+}
+
+TEST_CASE( "map - Operations - equal_range ", "[map][operation][equal_range]" )
+{
+	cn::map<int, char> mymap;
+
+	// empty map
+	auto res = mymap.equal_range(42);
+	CHECK( res.first == mymap.begin());
+	CHECK( res.second == mymap.begin());
+	CHECK( res.first == mymap.end());
+	CHECK( res.second == mymap.end());
+	REQUIRE( res.first == res.second);
+
+	mymap[10] = 'a';
+	mymap[20] = 'b';
+	mymap[30] = 'c';
+	mymap[40] = 'd';
+	mymap[50] = 'e';
+	mymap[60] = 'f';
+	mymap[70] = 'g';
+	mymap[80] = 'h';
+	mymap[90] = 'i';
+
+	// min limit
+	res = mymap.equal_range(9);
+	CHECK( res.first == mymap.begin());
+	CHECK( res.second == mymap.begin());
+	REQUIRE( res.first == res.second);
+
+
+	res = mymap.equal_range(10);
+	CHECK( res.first == mymap.begin());
+	REQUIRE( res.second->first == 20);
+
+	// middle
+	res = mymap.equal_range(35);
+	CHECK( res.first->first == 40);
+	CHECK( res.second->first == 40);
+	REQUIRE( res.first == res.second);
+
+	res = mymap.equal_range(50);
+	CHECK( res.first->first == 50);
+	REQUIRE( res.second->first == 60);
+
+	// max limits
+	res = mymap.equal_range(90);
+	CHECK( res.first->first == 90);
+	REQUIRE( res.second == mymap.end());
+
+	res = mymap.equal_range(91);
+	CHECK( res.first == mymap.end());
+	CHECK( res.second == mymap.end());
+	REQUIRE( res.first == res.second);
+}

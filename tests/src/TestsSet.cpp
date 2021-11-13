@@ -387,8 +387,8 @@ TEST_CASE( "set - Observers - key_comp and value_comp ", "[set][observer][key_co
 
 TEST_CASE( "set - Operations - find ", "[set][operation][find]" )
 {
-	std::set<int> myset;
-	std::set<int>::iterator it;
+	cn::set<int> myset;
+	cn::set<int>::iterator it;
 
 	for (int i=1; i<=5; i++)
 		myset.insert(i*10);    // set: 10 20 30 40 50
@@ -401,7 +401,7 @@ TEST_CASE( "set - Operations - find ", "[set][operation][find]" )
 
 TEST_CASE( "set - Operations - count ", "[set][operation][count]" )
 {
-	std::set<int> myset;
+	cn::set<int> myset;
 
 	for (int i=1; i<5; ++i)
 		myset.insert(i*3); // 3 6 9 12
@@ -410,4 +410,72 @@ TEST_CASE( "set - Operations - count ", "[set][operation][count]" )
 	REQUIRE( myset.count(1) == 0);
 	REQUIRE( myset.count(3) == 1);
 	REQUIRE( myset.count(12) == 1);
+}
+
+TEST_CASE( "set - Operations - lower_bound and upper_bound ", "[set][operation][lower_bound][upper_bound]" )
+{
+	cn::set<int> myset;
+	cn::set<int>::iterator itlow,itup;
+
+	auto itLow = myset.lower_bound(30);
+	auto itUp = myset.upper_bound(60);
+
+	CHECK(itLow == myset.end());
+	CHECK(itUp == myset.end());
+
+	for (int i=1; i<10; i++)
+		myset.insert(i*10); // 10 20 30 40 50 60 70 80 90
+
+	itLow = myset.lower_bound(30);
+	itUp = myset.upper_bound(60);
+
+	CHECK(*itLow == 30);
+	CHECK(*itUp == 70);
+}
+
+TEST_CASE( "set - Operations - equal_range ", "[set][operation][equal_range]" )
+{
+	cn::set<int> myset;
+
+	// empty set
+	auto res = myset.equal_range(42);
+	CHECK( res.first == myset.begin());
+	CHECK( res.second == myset.begin());
+	CHECK( res.first == myset.end());
+	CHECK( res.second == myset.end());
+	REQUIRE( res.first == res.second);
+
+	for (int i=1; i<10; i++)
+		myset.insert(i*10); // 10 20 30 40 50 60 70 80 90
+
+	// min limit
+	res = myset.equal_range(9);
+	CHECK( res.first == myset.begin());
+	CHECK( res.second == myset.begin());
+	REQUIRE( res.first == res.second);
+
+
+	res = myset.equal_range(10);
+	CHECK( res.first == myset.begin());
+	REQUIRE( *res.second == 20);
+
+	// middle
+	res = myset.equal_range(35);
+	CHECK( *res.first == 40);
+	CHECK( *res.second == 40);
+	REQUIRE( res.first == res.second);
+
+	res = myset.equal_range(50);
+	CHECK( *res.first == 50);
+	REQUIRE( *res.second == 60);
+
+	// max limits
+	res = myset.equal_range(90);
+	CHECK( *res.first == 90);
+	REQUIRE( res.second == myset.end());
+
+	res = myset.equal_range(91);
+	CHECK( res.first == myset.end());
+	CHECK( res.second == myset.end());
+	REQUIRE( res.first == res.second);
 }

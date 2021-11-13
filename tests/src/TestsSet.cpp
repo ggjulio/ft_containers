@@ -135,26 +135,26 @@ TEST_CASE( "set - iterator ", "[set][iterator]" )
 
 TEST_CASE( "set - reverse iterator ", "[set][reverse_iterator]" )
 {
-	cn::set<int> first;
+	cn::set<int> myset;
 	SECTION( "empty container should have begin() == end()" )
 	{
-		REQUIRE( first.rbegin() == first.rend() );
+		REQUIRE( myset.rbegin() == myset.rend() );
 	}
-	first.insert(10);
+	myset.insert(10);
 	SECTION( "container with one element should have consistant boundary" )
 	{
-		REQUIRE( ++first.rbegin() == first.rend() );
-		REQUIRE( first.rbegin() == --first.rend() );
-		REQUIRE( first.rbegin().operator*() == 10 );
-		REQUIRE( first.rbegin().operator->() == &*first.rbegin() );
+		REQUIRE( ++myset.rbegin() == myset.rend() );
+		REQUIRE( myset.rbegin() == --myset.rend() );
+		REQUIRE( myset.rbegin().operator*() == 10 );
+		REQUIRE( myset.rbegin().operator->() == &*myset.rbegin() );
 	}
-	first.insert(20);
-	first.insert(30);
+	myset.insert(20);
+	myset.insert(30);
 	SECTION( "container with three elements should loop properly" )
 	{
-		auto it = first.rbegin();
+		auto it = myset.rbegin();
 		int i = 40;
-		while (it != first.rend())
+		while (it != myset.rend())
 		{
 			i -= 10;
 			REQUIRE(*it == i);
@@ -164,9 +164,9 @@ TEST_CASE( "set - reverse iterator ", "[set][reverse_iterator]" )
 	}
 	SECTION( "container with three elements should loop properly in reverse" )
 	{
-		auto it = first.rend();
+		auto it = myset.rend();
 		int i = 0;
-		while (--it != first.rbegin())
+		while (--it != myset.rbegin())
 		{
 			i += 10;
 			REQUIRE(*it == i);

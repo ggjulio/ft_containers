@@ -59,8 +59,8 @@ TEST_CASE( "vector - construct", "[vector][constructors]" )
 
 TEST_CASE( "vector - operator - assignment ", "[vector][operator][assignment]" )
 {
-	std::vector<int> first(3, 42);
-	std::vector<int> second(5, 43);
+	cn::vector<int> first(3, 42);
+	cn::vector<int> second(5, 43);
 
 	REQUIRE(first.size() == 3);
 	REQUIRE(second.size() == 5);
@@ -117,9 +117,74 @@ TEST_CASE( "vector - iterator ", "[vector][iterator]" )
 	}
 }
 
+TEST_CASE( "vector - reverse iterator ", "[vector][reverse_iterator]" )
+{
+	cn::vector<int> myvector;
+	SECTION( "empty container should have begin() == end()" )
+	{
+		REQUIRE( myvector.rbegin() == myvector.rend() );
+	}
+	myvector.push_back(10);
+	SECTION( "container with one element should have consistant boundary" )
+	{
+		REQUIRE( ++myvector.rbegin() == myvector.rend() );
+		REQUIRE( myvector.rbegin() == --myvector.rend() );
+		REQUIRE( myvector.rbegin().operator*() == 10 );
+		REQUIRE( myvector.rbegin().operator->() == &*myvector.rbegin() );
+	}
+	myvector.push_back(20);
+	myvector.push_back(30);
+	SECTION( "container with three elements should loop properly" )
+	{
+		auto it = myvector.rbegin();
+		int i = 40;
+		while (it != myvector.rend())
+		{
+			i -= 10;
+			REQUIRE(*it == i);
+			++it;
+		}
+		REQUIRE(i == 10);
+	}
+	SECTION( "container with three elements should loop properly in reverse" )
+	{
+		auto it = myvector.rend();
+		int i = 0;
+		while (--it != myvector.rbegin())
+		{
+			i += 10;
+			REQUIRE(*it == i);
+		}
+		REQUIRE(*it == 30);
+	}
+}
 
+TEST_CASE( "vector - capacity ", "[vector][capacity]" )
+{
+	cn::vector<int> myvector;
 
-
+	SECTION( "empty container should be empty (insightful)" )
+	{
+		REQUIRE(myvector.empty());
+		REQUIRE(myvector.size() == 0);
+	}
+	myvector.push_back(10);
+	SECTION( "container with one element should be of size one (and not empty, of course)" )
+	{
+		REQUIRE(!myvector.empty());
+		REQUIRE(myvector.size() == 1);
+	}
+	myvector.erase(myvector.begin());
+	SECTION( "delete the single element, should become an empty container again." )
+	{
+		REQUIRE(myvector.size() == 0);
+		REQUIRE(myvector.empty());
+	}
+	SECTION( "max_size(), For now I don't know which value is suposed to be equal to (probably depend on the underlying implementation)" )
+	{
+		REQUIRE(myvector.max_size() == 2305843009213693951);
+	}
+}
 
 
 

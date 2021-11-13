@@ -423,7 +423,7 @@ TEST_CASE( "map - Modifiers - clear ", "[map][modifier][clear]" )
 	}
 }
 
-TEST_CASE( "map - Observers - key_comp ", "[map][observer][key_comp][value_comp]" )
+TEST_CASE( "map - Observers - key_comp and value_comp", "[map][observer][key_comp][value_comp]" )
 {
 	cn::map<char,int> mymap;
 
@@ -575,7 +575,6 @@ TEST_CASE( "map - Allocator - get_allocator ", "[map][allocator][get_allocator]"
   cn::map<char,int> mymap;
   cn::pair<const char,int>* p;
 
-  // allocate an array of 5 elements using mymap's allocator:
   p = mymap.get_allocator().allocate(5);
 
   mymap.get_allocator().deallocate(p,5);

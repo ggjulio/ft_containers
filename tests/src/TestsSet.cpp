@@ -486,10 +486,8 @@ TEST_CASE( "set - Allocator - get_allocator ", "[set][allocator][get_allocator]"
 	int * p;
 	unsigned int i;
 
-	// allocate an array of 5 elements using myset's allocator:
 	p = myset.get_allocator().allocate(5);
 
-	// assign some values to array
 	for (i=0; i<5; i++)
 		p[i]=(i+1)*10; // 10 20 30
 

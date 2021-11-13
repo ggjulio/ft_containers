@@ -8,72 +8,75 @@ TEST_CASE( "vector - construct", "[vector][constructors]" )
 {
 	SECTION( "empty construtor" ) {
 		cn::vector<int> first;
-		REQUIRE( first.empty());
 		REQUIRE( first.size() == 0);
+		REQUIRE( first.empty());
 	}
 	cn::vector<int> second (4,100);
 	SECTION( "fill constructor" )
 	{
-		REQUIRE( !second.empty());
+		CHECK( second[0] == 100);
+		CHECK( second[1] == 100);
+		CHECK( second[2] == 100);
+		CHECK( second[3] == 100);
 		REQUIRE( second.size() == 4);
-		REQUIRE( second[0] == 100);
-		REQUIRE( second[1] == 100);
-		REQUIRE( second[2] == 100);
-		REQUIRE( second[3] == 100);
+		REQUIRE( !second.empty());
 	}
 	cn::vector<int> third (second.begin(),second.end());
 	SECTION( "range constructor" )
 	{
-		REQUIRE( !third.empty());
+		CHECK( third[0] == 100);
+		CHECK( third[1] == 100);
+		CHECK( third[2] == 100);
+		CHECK( third[3] == 100);
 		REQUIRE( third.size() == 4);
-		REQUIRE( third[0] == 100);
-		REQUIRE( third[1] == 100);
-		REQUIRE( third[2] == 100);
-		REQUIRE( third[3] == 100);
-
+		REQUIRE( !third.empty());
 
 	}
 	cn::vector<int> fourth (third);
 	SECTION( "copy constructor" )
 	{
-		REQUIRE( !fourth.empty());
+		CHECK( fourth[0] == 100);
+		CHECK( fourth[1] == 100);
+		CHECK( fourth[2] == 100);
+		CHECK( fourth[3] == 100);
 		REQUIRE( fourth.size() == 4);
-		REQUIRE( fourth[0] == 100);
-		REQUIRE( fourth[1] == 100);
-		REQUIRE( fourth[2] == 100);
-		REQUIRE( fourth[3] == 100);
+		REQUIRE( !fourth.empty());
 	}
 	SECTION( "the iterator constructor can also be used to construct from arrays" )
 	{
 		int myints[] = {16,2,77,29, 42};
 		cn::vector<int> fifth(myints, myints + sizeof(myints) / sizeof(int));
 
+		CHECK( fifth[0] == 16);
+		CHECK( fifth[1] == 2);
+		CHECK( fifth[2] == 77);
+		CHECK( fifth[3] == 29);
+		CHECK( fifth[4] == 42);
 		REQUIRE( !fifth.empty());
 		REQUIRE( fifth.size() == 5);
-		REQUIRE( fifth[0] == 16);
-		REQUIRE( fifth[1] == 2);
-		REQUIRE( fifth[2] == 77);
-		REQUIRE( fifth[3] == 29);
-		REQUIRE( fifth[4] == 42);
 	}
-/*
-
-	// constructors used in the same order as described above:
-	std::vector<int> first;                                // empty vector of ints
-	std::vector<int> second (4,100);                       // four ints with value 100
-	std::vector<int> third (second.begin(),second.end());  // iterating through second
-	std::vector<int> fourth (third);                       // a copy of third
-
-	// the iterator constructor can also be used to construct from arrays:
-	int myints[] = {16,2,77,29};
-	std::vector<int> fifth (myints, myints + sizeof(myints) / sizeof(int) );
-
-	std::cout << "The contents of fifth are:";
-	for (std::vector<int>::iterator it = fifth.begin(); it != fifth.end(); ++it)
-		std::cout << ' ' << *it;
-	std::cout << '\n';
-*/
 }
+
+TEST_CASE( "vector - operator - assignment ", "[vector][operator][assignment]" )
+{
+	std::vector<int> first(3, 42);
+	std::vector<int> second(5, 43);
+
+	REQUIRE(first.size() == 3);
+	REQUIRE(second.size() == 5);
+
+	second = first;
+	REQUIRE(first.size() == 3);
+	REQUIRE(second.size() == 3);
+	REQUIRE(second[0] == 42);
+
+	first = std::vector<int>();
+	REQUIRE(first.size() == 0);
+	REQUIRE(first.empty());
+}
+
+
+
 
 // TEST_CASE( "vectors can be sized and resized", "[vector][template][size()][capacity]" ) {
 

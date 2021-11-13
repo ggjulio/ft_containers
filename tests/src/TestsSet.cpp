@@ -63,9 +63,9 @@ TEST_CASE( "set - constructor ", "[set][constructor]" )
 
 TEST_CASE( "set - operator - assignment ", "[set][operator][assignment]" )
 {
-	int myints[]={ 10,20,30,40,50 };
-	std::set<int> first (myints,myints+5);
-	std::set<int> second;
+	int myints[] = { 10,20,30,40,50 };
+	cn::set<int> first (myints,myints+5);
+	cn::set<int> second;
 	
 	REQUIRE(!first.empty());
 	REQUIRE(first.size() == 5);
@@ -84,8 +84,7 @@ TEST_CASE( "set - operator - assignment ", "[set][operator][assignment]" )
 		REQUIRE(first.size() == 5);
 		REQUIRE(*first.find(10) == 10);
 	}
-	SECTION( "Check leaks running the binary with your favorite leak detection program" ) {
-		first = std::set<int>();
+	SECTION( "Must have no leaks when running w ur fav leak detect prog" ) {
+		first = cn::set<int>();
 	}
 }
-

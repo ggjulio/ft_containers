@@ -65,3 +65,34 @@ TEST_CASE( "map - construct", "[map][constructors]" )
 		REQUIRE(sixth.find('b')->second == 20);
 	}
 }
+
+
+TEST_CASE( "map - operator - assignment ", "[map][operator][assignment]" )
+{
+	cn::map<char,int> first;
+  	cn::map<char,int> second;
+	
+	first['x']=10;
+	first['y']=20;
+	first['z']=30;
+
+	REQUIRE(!first.empty());
+	REQUIRE(first.size() == 3);
+	REQUIRE(second.empty());
+	REQUIRE(second.size() == 0);
+
+	second = first;
+	REQUIRE(!second.empty());
+	REQUIRE(second.size() == 3);
+	
+	SECTION( "A deep_copy/clone must be made" ) {
+		second.erase(second.begin());
+		REQUIRE(second.size() == 2);
+		REQUIRE(second.find('x') == second.end());
+		REQUIRE(first.size() == 3);
+		REQUIRE(first.find('x')->second == 10);
+	}
+	SECTION( "Must have no leaks when running w ur fav leak detect prog" ) {
+		first = cn::map<char,int>();
+	}
+}

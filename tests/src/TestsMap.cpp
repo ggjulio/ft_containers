@@ -447,3 +447,18 @@ TEST_CASE( "map - Operations - find ", "[map][operation][find]" )
 	REQUIRE( mymap.find('e') == mymap.end());
 	
 }
+
+TEST_CASE( "map - Operations - count ", "[map][operation][count]" )
+{
+	std::map<char,int> mymap;
+
+	mymap['a']=101;
+	mymap['c']=202;
+	mymap['f']=303;
+
+
+	REQUIRE( mymap.count('z') == 0);
+	REQUIRE( mymap.count('o') == 0);
+	REQUIRE( mymap.count('a') == 1);
+	REQUIRE( mymap.count('c') == 1);
+}

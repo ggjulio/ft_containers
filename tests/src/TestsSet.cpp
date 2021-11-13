@@ -398,3 +398,16 @@ TEST_CASE( "set - Operations - find ", "[set][operation][find]" )
 	REQUIRE( *myset.find(50) == 50);
 	REQUIRE( myset.find(42) == myset.end());
 }
+
+TEST_CASE( "set - Operations - count ", "[set][operation][count]" )
+{
+	std::set<int> myset;
+
+	for (int i=1; i<5; ++i)
+		myset.insert(i*3); // 3 6 9 12
+
+	REQUIRE( myset.count(0) == 0);
+	REQUIRE( myset.count(1) == 0);
+	REQUIRE( myset.count(3) == 1);
+	REQUIRE( myset.count(12) == 1);
+}

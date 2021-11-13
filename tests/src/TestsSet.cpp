@@ -479,3 +479,19 @@ TEST_CASE( "set - Operations - equal_range ", "[set][operation][equal_range]" )
 	CHECK( res.second == myset.end());
 	REQUIRE( res.first == res.second);
 }
+
+TEST_CASE( "set - Allocator - get_allocator ", "[set][allocator][get_allocator]" )
+{
+	std::set<int> myset;
+	int * p;
+	unsigned int i;
+
+	// allocate an array of 5 elements using myset's allocator:
+	p = myset.get_allocator().allocate(5);
+
+	// assign some values to array
+	for (i=0; i<5; i++)
+		p[i]=(i+1)*10; // 10 20 30
+
+	myset.get_allocator().deallocate(p,5);
+}

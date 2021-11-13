@@ -66,7 +66,6 @@ TEST_CASE( "map - construct", "[map][constructors]" )
 	}
 }
 
-
 TEST_CASE( "map - operator - assignment ", "[map][operator][assignment]" )
 {
 	cn::map<char,int> first;
@@ -206,6 +205,32 @@ TEST_CASE( "map - capacity ", "[map][capacity]" )
 	{
 		REQUIRE(first.max_size() == 230584300921369395);
 	}
+}
+
+TEST_CASE( "map - Element access - operator[] (subscript) ", "[map][element_access][operator][subscript]" )
+{
+	cn::map<char,std::string> mymap;
+
+	mymap['a'] = "an element";
+	REQUIRE( mymap.size() == 1);
+	REQUIRE( mymap.find('a')->second == "an element");
+
+	SECTION( "Should be able to override a value" )
+	{
+		mymap['a'] = "I changed my mind";
+		REQUIRE( mymap.size() == 1);
+		REQUIRE( mymap.find('a')->second == "I changed my mind");
+
+	}
+	mymap['b'] = "another element";
+	REQUIRE( mymap.size() == 2);
+	REQUIRE( mymap.find('b')->second == "another element");
+
+
+	mymap['c'] = mymap['b'];
+	REQUIRE( mymap.size() == 3);
+	REQUIRE( mymap.find('c')->second == "another element");
+	REQUIRE( mymap.find('b')->second == "another element");
 }
 
 TEST_CASE( "map - Modifiers ", "[map][modifier][insert]" )
@@ -433,8 +458,8 @@ TEST_CASE( "map - Observers - key_comp ", "[map][observer][key_comp][value_comp]
 
 TEST_CASE( "map - Operations - find ", "[map][operation][find]" )
 {
-	std::map<char,int> mymap;
-	std::map<char,int>::iterator it;
+	cn::map<char,int> mymap;
+	cn::map<char,int>::iterator it;
 
 	mymap['a']=10;
 	mymap['b']=20;
@@ -450,7 +475,7 @@ TEST_CASE( "map - Operations - find ", "[map][operation][find]" )
 
 TEST_CASE( "map - Operations - count ", "[map][operation][count]" )
 {
-	std::map<char,int> mymap;
+	cn::map<char,int> mymap;
 
 	mymap['a']=101;
 	mymap['c']=202;
@@ -547,17 +572,11 @@ TEST_CASE( "map - Operations - equal_range ", "[map][operation][equal_range]" )
 
 TEST_CASE( "map - Allocator - get_allocator ", "[map][allocator][get_allocator]" )
 {
-  int psize;
-  std::map<char,int> mymap;
-  std::pair<const char,int>* p;
+  cn::map<char,int> mymap;
+  cn::pair<const char,int>* p;
 
   // allocate an array of 5 elements using mymap's allocator:
   p = mymap.get_allocator().allocate(5);
-
-  // assign some values to array
-  psize = sizeof(std::map<char,int>::value_type)*5;
-
-  std::cout << "The allocated array has a size of " << psize << " bytes.\n";
 
   mymap.get_allocator().deallocate(p,5);
 }

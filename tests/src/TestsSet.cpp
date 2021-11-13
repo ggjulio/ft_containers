@@ -482,7 +482,7 @@ TEST_CASE( "set - Operations - equal_range ", "[set][operation][equal_range]" )
 
 TEST_CASE( "set - Allocator - get_allocator ", "[set][allocator][get_allocator]" )
 {
-	std::set<int> myset;
+	cn::set<int> myset;
 	int * p;
 	unsigned int i;
 

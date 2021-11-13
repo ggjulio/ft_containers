@@ -96,3 +96,87 @@ TEST_CASE( "map - operator - assignment ", "[map][operator][assignment]" )
 		first = cn::map<char,int>();
 	}
 }
+
+TEST_CASE( "map - iterator ", "[map][iterator]" )
+{
+	cn::map<char, int> first;
+	SECTION( "empty container should have begin() == end()" )
+	{
+		REQUIRE( first.begin() == first.end() );
+	}
+	first.insert(cn::pair('a', 10));
+	SECTION( "container with one element should have consistant boundary" )
+	{
+		REQUIRE( ++first.begin() == first.end() );
+		REQUIRE( first.begin() == --first.end() );
+		REQUIRE( first.begin().operator*().second == 10 );
+		REQUIRE( first.begin().operator->() == &*first.begin() );
+	}
+	first.insert(cn::pair('b', 20));
+	first.insert(cn::pair('c', 30));
+	SECTION( "container with three elements should loop properly" )
+	{
+		auto it = first.begin();
+		int i = 0;
+		while (it != first.end())
+		{
+			i += 10;
+			REQUIRE(it->second == i);
+			++it;
+		}
+		REQUIRE(i == 30);
+	}
+	SECTION( "container with three elements should loop properly in reverse" )
+	{
+		auto it = first.end();
+		int i = 40;
+		while (--it != first.begin())
+		{
+			i -= 10;
+			REQUIRE(it->second == i);
+		}
+		REQUIRE(it->second == 10);
+	}
+}
+
+TEST_CASE( "map - reverse iterator ", "[map][reverse_iterator]" )
+{
+	cn::map<char,int> first;
+	SECTION( "empty container should have begin() == end()" )
+	{
+		REQUIRE( first.rbegin() == first.rend() );
+	}
+	first.insert(cn::pair('a', 10));
+	SECTION( "container with one element should have consistant boundary" )
+	{
+		REQUIRE( ++first.rbegin() == first.rend() );
+		REQUIRE( first.rbegin() == --first.rend() );
+		REQUIRE( first.rbegin().operator*().second == 10 );
+		REQUIRE( first.rbegin().operator->() == &*first.rbegin() );
+	}
+	first.insert(cn::pair('b', 20));
+	first.insert(cn::pair('c', 30));
+	SECTION( "container with three elements should loop properly" )
+	{
+		auto it = first.rbegin();
+		int i = 40;
+		while (it != first.rend())
+		{
+			i -= 10;
+			REQUIRE(it->second == i);
+			++it;
+		}
+		REQUIRE(i == 10);
+	}
+	SECTION( "container with three elements should loop properly in reverse" )
+	{
+		auto it = first.rend();
+		int i = 0;
+		while (--it != first.rbegin())
+		{
+			i += 10;
+			REQUIRE(it->second == i);
+		}
+		REQUIRE(it->second == 30);
+	}
+}

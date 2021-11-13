@@ -5,8 +5,8 @@
 bool fncomp_set (int lhs, int rhs) {return lhs>rhs;}
 
 struct classcomp_set {
-  bool operator() (const int& lhs, const int& rhs) const
-  {return lhs>rhs;}
+	bool operator() (const int& lhs, const int& rhs) const
+	{ return lhs>rhs; }
 };
 
 TEST_CASE( "set - constructor ", "[set][constructor]" )
@@ -86,5 +86,116 @@ TEST_CASE( "set - operator - assignment ", "[set][operator][assignment]" )
 	}
 	SECTION( "Must have no leaks when running w ur fav leak detect prog" ) {
 		first = cn::set<int>();
+	}
+}
+
+TEST_CASE( "set - iterator ", "[set][iterator]" )
+{
+	cn::set<int> first;
+	SECTION( "empty container should have begin() == end()" )
+	{
+		REQUIRE( first.begin() == first.end() );
+	}
+	first.insert(10);
+	SECTION( "container with one element should have consistant boundary" )
+	{
+		REQUIRE( ++first.begin() == first.end() );
+		REQUIRE( first.begin() == --first.end() );
+		REQUIRE( first.begin().operator*() == 10 );
+		REQUIRE( first.begin().operator->() == &*first.begin() );
+	}
+	first.insert(20);
+	first.insert(30);
+	SECTION( "container with three elements should loop properly" )
+	{
+		auto it = first.begin();
+		int i = 0;
+		while (it != first.end())
+		{
+			i += 10;
+			REQUIRE(*it == i);
+			++it;
+		}
+		REQUIRE(i == 30);
+	}
+	SECTION( "container with three elements should loop properly in reverse" )
+	{
+		auto it = first.end();
+		int i = 40;
+		while (--it != first.begin())
+		{
+			i -= 10;
+			REQUIRE(*it == i);
+		}
+		REQUIRE(*it == 10);
+	}
+}
+
+TEST_CASE( "set - reverse iterator ", "[set][reverse_iterator]" )
+{
+	cn::set<int> first;
+	SECTION( "empty container should have begin() == end()" )
+	{
+		REQUIRE( first.rbegin() == first.rend() );
+	}
+	first.insert(10);
+	SECTION( "container with one element should have consistant boundary" )
+	{
+		REQUIRE( ++first.rbegin() == first.rend() );
+		REQUIRE( first.rbegin() == --first.rend() );
+		REQUIRE( first.rbegin().operator*() == 10 );
+		REQUIRE( first.rbegin().operator->() == &*first.rbegin() );
+	}
+	first.insert(20);
+	first.insert(30);
+	SECTION( "container with three elements should loop properly" )
+	{
+		auto it = first.rbegin();
+		int i = 40;
+		while (it != first.rend())
+		{
+			i -= 10;
+			REQUIRE(*it == i);
+			++it;
+		}
+		REQUIRE(i == 10);
+	}
+	SECTION( "container with three elements should loop properly in reverse" )
+	{
+		auto it = first.rend();
+		int i = 0;
+		while (--it != first.rbegin())
+		{
+			i += 10;
+			REQUIRE(*it == i);
+		}
+		REQUIRE(*it == 30);
+	}
+}
+
+TEST_CASE( "set - capacity ", "[set][capacity]" )
+{
+	cn::set<int> first;
+
+	SECTION( "empty container should be empty (insightful)" )
+	{
+		REQUIRE(first.empty());
+		REQUIRE(first.size() == 0);
+	}
+	first.insert(10);
+	SECTION( "container with one element should be of size one (and not empty, of course)" )
+	{
+		REQUIRE(!first.empty());
+		REQUIRE(first.size() == 1);
+	}
+	first.erase(first.begin());
+	SECTION( "delete the single element, should become an empty container again." )
+	{
+		REQUIRE(first.size() == 0);
+		REQUIRE(first.empty());
+	}
+	SECTION( "max_size(), For now I don't know which value is suposed to be equal to (probably depend on the underlying implementation)" )
+	{
+		REQUIRE(first.max_size() == 230584300921369395);
 	}
 }

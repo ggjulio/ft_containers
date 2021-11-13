@@ -6,7 +6,7 @@
 namespace ft {}
 
 #if !defined(NS_NAME)
- 	#define NS_NAME ft
+ 	#define NS_NAME std
 #endif
 
 namespace cn = ::NS_NAME;

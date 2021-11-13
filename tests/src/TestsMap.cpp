@@ -2,7 +2,7 @@
 
 #include "map.hpp"
 
-TEST_CASE( "map - construct", "[set][constructors]" )
+TEST_CASE( "map - construct", "[map][constructors]" )
 {
 
 }

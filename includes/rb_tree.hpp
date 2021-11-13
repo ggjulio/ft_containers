@@ -284,6 +284,7 @@ public:
 	}
 	void erase(iterator position)
 	{
+		assert (position != end());
 		_m_erase_and_fix(position);
 	}
 	void erase(iterator first, iterator last) {(void)first;(void)last;}

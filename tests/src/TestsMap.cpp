@@ -423,6 +423,10 @@ TEST_CASE( "map - Observers - key_comp ", "[map][observer][key_comp]" )
 		REQUIRE( mycustomComp(4, 5) == false );
 		REQUIRE( mycustomComp(5, 5) == false );
 		REQUIRE( mycustomComp(6, 5) == true );
-
+	}
+	SECTION( "Map should have different key_comp and value_comp (because of pair)" )
+	{
+		REQUIRE(typeid(mymap.key_comp()).name() != typeid(mymap.value_comp()).name());
+		REQUIRE(typeid(mymap.key_comp()).hash_code() != typeid(mymap.value_comp()).hash_code());
 	}
 }

@@ -352,7 +352,7 @@ TEST_CASE( "set - Modifiers - clear ", "[set][modifier][clear]" )
 	}
 }
 
-TEST_CASE( "set - Observers - key_comp ", "[set][observer][key_comp]" )
+TEST_CASE( "set - Observers - key_comp and value_comp ", "[set][observer][key_comp][value_comp]" )
 {
 	cn::set<int> myset;
 
@@ -377,6 +377,10 @@ TEST_CASE( "set - Observers - key_comp ", "[set][observer][key_comp]" )
 		REQUIRE( mycustomComp(4, 5) == false );
 		REQUIRE( mycustomComp(5, 5) == false );
 		REQUIRE( mycustomComp(6, 5) == true );
-
+	}
+	SECTION( "Set should have equal key_comp and value_comp" )
+	{
+		REQUIRE(typeid(myset.key_comp()).name() == typeid(myset.value_comp()).name());
+		REQUIRE(typeid(myset.key_comp()).hash_code() == typeid(myset.value_comp()).hash_code());
 	}
 }

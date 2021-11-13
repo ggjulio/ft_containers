@@ -43,3 +43,32 @@ jobs:
         elif [ "$RUNNER_OS" == "macOS" ]; then
           make check
         fi
+
+    unit-tests-std:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install dependencies
+      run: |
+        set -x
+        if [ "$RUNNER_OS" == "Linux" ]; then
+            sudo apt-get install valgrind
+        elif [ "$RUNNER_OS" == "macOS" ]; then
+            :
+        fi
+    - run: make NS_NAME=std
+      working-directory: ./tests
+    - name: Run test
+      working-directory: ./tests
+      run: |
+        set -x
+        if [ "$RUNNER_OS" == "Linux" ]; then
+          valgrind --leak-check=full --show-leak-kinds=definite,indirect,possible --errors-for-leak-kinds=definite,indirect,possible --error-exitcode=42 ./build/tests
+        elif [ "$RUNNER_OS" == "macOS" ]; then
+          make check NS_NAME=std
+        fi
+

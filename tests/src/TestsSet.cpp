@@ -60,3 +60,32 @@ TEST_CASE( "set - constructor ", "[set][constructor]" )
 	}
 
 }
+
+TEST_CASE( "set - operator - assignment ", "[set][operator][assignment]" )
+{
+	int myints[]={ 10,20,30,40,50 };
+	std::set<int> first (myints,myints+5);
+	std::set<int> second;
+	
+	REQUIRE(!first.empty());
+	REQUIRE(first.size() == 5);
+	REQUIRE(second.empty());
+	REQUIRE(second.size() == 0);
+
+
+	second = first;
+	REQUIRE(!second.empty());
+	REQUIRE(second.size() == 5);
+	
+	SECTION( "A deep_copy/clone must be made" ) {
+		second.erase(second.begin());
+		REQUIRE(second.size() == 4);
+		REQUIRE(second.find(10) == second.end());
+		REQUIRE(first.size() == 5);
+		REQUIRE(*first.find(10) == 10);
+	}
+	SECTION( "Check leaks running the binary with your favorite leak detection program" ) {
+		first = std::set<int>();
+	}
+}
+

@@ -398,7 +398,7 @@ TEST_CASE( "map - Modifiers - clear ", "[map][modifier][clear]" )
 	}
 }
 
-TEST_CASE( "map - Observers - key_comp ", "[map][observer][key_comp]" )
+TEST_CASE( "map - Observers - key_comp ", "[map][observer][key_comp][value_comp]" )
 {
 	cn::map<char,int> mymap;
 

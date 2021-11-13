@@ -44,7 +44,7 @@ jobs:
           make check
         fi
 
-    unit-tests-std:
+  unit-tests-std:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false

@@ -322,3 +322,30 @@ TEST_CASE( "set - Modifiers - swap ", "[set][modifier][swap]" )
 	REQUIRE(it == second.end());
 }
 
+TEST_CASE( "set - Modifiers - clear ", "[set][modifier][clear]" )
+{
+	cn::set<int> emptySet;
+	SECTION( "Empty set being clear should be okay" )
+	{
+		emptySet.clear();
+		REQUIRE( emptySet.empty() );
+		REQUIRE( emptySet.size() == 0);
+	}
+
+	int myints[]={12,75,10,32,20,25};
+	cn::set<int> myset (myints,myints+6);
+	REQUIRE( !myset.empty() );
+	REQUIRE( myset.size() == 6);
+	myset.clear();
+	SECTION( "Clear set who contain element should be ok" )
+	{
+		REQUIRE( myset.empty() );
+		REQUIRE( myset.size() == 0);
+	}
+	myset.clear();
+	SECTION( "Clear two times should be ok" )
+	{
+		REQUIRE( myset.empty() );
+		REQUIRE( myset.size() == 0);
+	}
+}

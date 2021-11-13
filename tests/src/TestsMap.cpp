@@ -322,7 +322,7 @@ TEST_CASE( "map - Modifiers - erase ", "[map][modifier][erase]" )
 
 TEST_CASE( "map - Modifiers - swap ", "[map][modifier][swap]" )
 {
-	std::map<char,int> first,second;
+	cn::map<char,int> first,second;
 
 	first['x']=100;
 	first['y']=200;
@@ -366,3 +366,34 @@ TEST_CASE( "map - Modifiers - swap ", "[map][modifier][swap]" )
 	REQUIRE(it == second.end());
 }
 
+TEST_CASE( "map - Modifiers - clear ", "[map][modifier][clear]" )
+{
+	cn::map<char,int> emptyMap;
+	SECTION( "Empty set being clear should be okay" )
+	{
+		emptyMap.clear();
+		REQUIRE( emptyMap.empty() );
+		REQUIRE( emptyMap.size() == 0);
+	}
+
+	cn::map<char, int> mymap;
+	mymap['a']=10;
+	mymap['b']=20;
+	mymap['c']=30;
+	mymap['d']=40;
+
+	REQUIRE( !mymap.empty() );
+	REQUIRE( mymap.size() == 4);
+	mymap.clear();
+	SECTION( "Clear set who contain element should be ok" )
+	{
+		REQUIRE( mymap.empty() );
+		REQUIRE( mymap.size() == 0);
+	}
+	mymap.clear();
+	SECTION( "Clear two times should be ok" )
+	{
+		REQUIRE( mymap.empty() );
+		REQUIRE( mymap.size() == 0);
+	}
+}

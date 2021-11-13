@@ -2,9 +2,9 @@
 
 #include "set.hpp"
 
-bool fncomp (int lhs, int rhs) {return lhs>rhs;}
+bool fncomp_set (int lhs, int rhs) {return lhs>rhs;}
 
-struct classcomp {
+struct classcomp_set {
   bool operator() (const int& lhs, const int& rhs) const
   {return lhs>rhs;}
 };
@@ -41,7 +41,7 @@ TEST_CASE( "set - constructor ", "[set][constructor]" )
 		REQUIRE(fourth.size() == 5);
 	}
 	SECTION( "class as Compare" ) {
-		cn::set<int,classcomp> fifth;
+		cn::set<int,classcomp_set> fifth;
 		fifth.insert(1);
 		fifth.insert(2);
 		REQUIRE(*fifth.begin() == 2);
@@ -49,7 +49,7 @@ TEST_CASE( "set - constructor ", "[set][constructor]" )
 		REQUIRE(*fifth.find(2) == 2);
 	}
 	SECTION( "function ptr as Compare" ) {
-		bool(*fn_pt)(int,int) = fncomp;
+		bool(*fn_pt)(int,int) = fncomp_set;
 		cn::set<int,bool(*)(int,int)> sixth (fn_pt);
 
 		sixth.insert(1);

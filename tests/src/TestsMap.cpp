@@ -397,3 +397,32 @@ TEST_CASE( "map - Modifiers - clear ", "[map][modifier][clear]" )
 		REQUIRE( mymap.size() == 0);
 	}
 }
+
+TEST_CASE( "map - Observers - key_comp ", "[map][observer][key_comp]" )
+{
+	cn::map<char,int> mymap;
+
+	cn::map<char,int>::key_compare mycomp = mymap.key_comp();
+	SECTION( "Default constructor should use std::less as default key_comp" )
+	{
+		cn::map<char,int>::key_compare stdless;
+		REQUIRE(typeid(mycomp).name() == typeid(stdless).name());
+		REQUIRE(typeid(mycomp).hash_code() == typeid(stdless).hash_code());
+
+		REQUIRE( mycomp(4, 5) == true );
+		REQUIRE( mycomp(5, 5) == false );
+		REQUIRE( mycomp(6, 5) == false );
+	}
+	SECTION( "Default constructor should use std::less as default key_comp" )
+	{
+		cn::map<char,int, classcomp_map>::key_compare mycustomComp;
+
+		REQUIRE(typeid(mycomp).name() != typeid(mycustomComp).name());
+		REQUIRE(typeid(mycomp).hash_code() != typeid(mycustomComp).hash_code());
+	
+		REQUIRE( mycustomComp(4, 5) == false );
+		REQUIRE( mycustomComp(5, 5) == false );
+		REQUIRE( mycustomComp(6, 5) == true );
+
+	}
+}

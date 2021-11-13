@@ -2,6 +2,8 @@
 
 #include "set.hpp"
 
+#include <typeinfo>
+
 bool fncomp_set (int lhs, int rhs) {return lhs>rhs;}
 
 struct classcomp_set {
@@ -347,5 +349,34 @@ TEST_CASE( "set - Modifiers - clear ", "[set][modifier][clear]" )
 	{
 		REQUIRE( myset.empty() );
 		REQUIRE( myset.size() == 0);
+	}
+}
+
+TEST_CASE( "set - Observers - key_comp ", "[set][observer][key_comp]" )
+{
+	cn::set<int> myset;
+
+	cn::set<int>::key_compare mycomp = myset.key_comp();
+	SECTION( "Default constructor should use std::less as default key_comp" )
+	{
+		cn::set<int>::key_compare stdless;
+		REQUIRE(typeid(mycomp).name() == typeid(stdless).name());
+		REQUIRE(typeid(mycomp).hash_code() == typeid(stdless).hash_code());
+
+		REQUIRE( mycomp(4, 5) == true );
+		REQUIRE( mycomp(5, 5) == false );
+		REQUIRE( mycomp(6, 5) == false );
+	}
+	SECTION( "Default constructor should use std::less as default key_comp" )
+	{
+		cn::set<int, classcomp_set>::key_compare mycustomComp;
+
+		REQUIRE(typeid(mycomp).name() != typeid(mycustomComp).name());
+		REQUIRE(typeid(mycomp).hash_code() != typeid(mycustomComp).hash_code());
+
+		REQUIRE( mycustomComp(4, 5) == false );
+		REQUIRE( mycustomComp(5, 5) == false );
+		REQUIRE( mycustomComp(6, 5) == true );
+
 	}
 }

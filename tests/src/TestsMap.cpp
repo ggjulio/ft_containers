@@ -140,26 +140,26 @@ TEST_CASE( "map - iterator ", "[map][iterator]" )
 
 TEST_CASE( "map - reverse iterator ", "[map][reverse_iterator]" )
 {
-	cn::map<char,int> first;
+	cn::map<char,int> mymap;
 	SECTION( "empty container should have begin() == end()" )
 	{
-		REQUIRE( first.rbegin() == first.rend() );
+		REQUIRE( mymap.rbegin() == mymap.rend() );
 	}
-	first.insert(cn::pair('a', 10));
+	mymap.insert(cn::pair('a', 10));
 	SECTION( "container with one element should have consistant boundary" )
 	{
-		REQUIRE( ++first.rbegin() == first.rend() );
-		REQUIRE( first.rbegin() == --first.rend() );
-		REQUIRE( first.rbegin().operator*().second == 10 );
-		REQUIRE( first.rbegin().operator->() == &*first.rbegin() );
+		REQUIRE( ++mymap.rbegin() == mymap.rend() );
+		REQUIRE( mymap.rbegin() == --mymap.rend() );
+		REQUIRE( mymap.rbegin().operator*().second == 10 );
+		REQUIRE( mymap.rbegin().operator->() == &*mymap.rbegin() );
 	}
-	first.insert(cn::pair('b', 20));
-	first.insert(cn::pair('c', 30));
+	mymap.insert(cn::pair('b', 20));
+	mymap.insert(cn::pair('c', 30));
 	SECTION( "container with three elements should loop properly" )
 	{
-		auto it = first.rbegin();
+		auto it = mymap.rbegin();
 		int i = 40;
-		while (it != first.rend())
+		while (it != mymap.rend())
 		{
 			i -= 10;
 			REQUIRE(it->second == i);
@@ -169,9 +169,9 @@ TEST_CASE( "map - reverse iterator ", "[map][reverse_iterator]" )
 	}
 	SECTION( "container with three elements should loop properly in reverse" )
 	{
-		auto it = first.rend();
+		auto it = mymap.rend();
 		int i = 0;
-		while (--it != first.rbegin())
+		while (--it != mymap.rbegin())
 		{
 			i += 10;
 			REQUIRE(it->second == i);
@@ -182,28 +182,28 @@ TEST_CASE( "map - reverse iterator ", "[map][reverse_iterator]" )
 
 TEST_CASE( "map - capacity ", "[map][capacity]" )
 {
-	cn::map<char, int> first;
+	cn::map<char, int> mymap;
 
 	SECTION( "empty container should be empty (insightful)" )
 	{
-		REQUIRE(first.empty());
-		REQUIRE(first.size() == 0);
+		REQUIRE(mymap.empty());
+		REQUIRE(mymap.size() == 0);
 	}
-	first.insert(cn::pair('a', 10));
+	mymap.insert(cn::pair('a', 10));
 	SECTION( "container with one element should be of size one (and not empty, of course)" )
 	{
-		REQUIRE(!first.empty());
-		REQUIRE(first.size() == 1);
+		REQUIRE(!mymap.empty());
+		REQUIRE(mymap.size() == 1);
 	}
-	first.erase(first.begin());
+	mymap.erase(mymap.begin());
 	SECTION( "delete the single element, should become an empty container again." )
 	{
-		REQUIRE(first.size() == 0);
-		REQUIRE(first.empty());
+		REQUIRE(mymap.size() == 0);
+		REQUIRE(mymap.empty());
 	}
 	SECTION( "max_size(), For now I don't know which value is suposed to be equal to (probably depend on the underlying implementation)" )
 	{
-		REQUIRE(first.max_size() == 230584300921369395);
+		REQUIRE(mymap.max_size() == 230584300921369395);
 	}
 }
 

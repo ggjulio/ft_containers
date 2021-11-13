@@ -75,6 +75,55 @@ TEST_CASE( "vector - operator - assignment ", "[vector][operator][assignment]" )
 	REQUIRE(first.empty());
 }
 
+TEST_CASE( "vector - iterator ", "[vector][iterator]" )
+{
+	cn::vector<int> myvector;
+	SECTION( "empty container should have begin() == end()" )
+	{
+		REQUIRE( myvector.begin() == myvector.end() );
+	}
+	myvector.push_back(10);
+	SECTION( "container with one element should have consistant boundary" )
+	{
+		REQUIRE( ++myvector.begin() == myvector.end() );
+		REQUIRE( myvector.begin() == --myvector.end() );
+		REQUIRE( myvector.begin().operator*() == 10 );
+		REQUIRE( myvector.begin().operator->() == &*myvector.begin() );
+	}
+	myvector.push_back(20);
+	myvector.push_back(30);
+	SECTION( "container with three elements should loop properly" )
+	{
+		auto it = myvector.begin();
+		int i = 0;
+		while (it != myvector.end())
+		{
+			i += 10;
+			REQUIRE(*it == i);
+			++it;
+		}
+		REQUIRE(i == 30);
+	}
+	SECTION( "container with three elements should loop properly in reverse" )
+	{
+		auto it = myvector.end();
+		int i = 40;
+		while (--it != myvector.begin())
+		{
+			i -= 10;
+			REQUIRE(*it == i);
+		}
+		REQUIRE(*it == 10);
+	}
+}
+
+
+
+
+
+
+
+
 
 
 

@@ -180,3 +180,89 @@ TEST_CASE( "map - reverse iterator ", "[map][reverse_iterator]" )
 		REQUIRE(it->second == 30);
 	}
 }
+
+TEST_CASE( "map - capacity ", "[map][capacity]" )
+{
+	cn::map<char, int> first;
+
+	SECTION( "empty container should be empty (insightful)" )
+	{
+		REQUIRE(first.empty());
+		REQUIRE(first.size() == 0);
+	}
+	first.insert(cn::pair('a', 10));
+	SECTION( "container with one element should be of size one (and not empty, of course)" )
+	{
+		REQUIRE(!first.empty());
+		REQUIRE(first.size() == 1);
+	}
+	first.erase(first.begin());
+	SECTION( "delete the single element, should become an empty container again." )
+	{
+		REQUIRE(first.size() == 0);
+		REQUIRE(first.empty());
+	}
+	SECTION( "max_size(), For now I don't know which value is suposed to be equal to (probably depend on the underlying implementation)" )
+	{
+		REQUIRE(first.max_size() == 230584300921369395);
+	}
+}
+
+TEST_CASE( "map - Modifiers ", "[map][modifier][insert]" )
+{
+	cn::map<char,int> mymap;
+	cn::map<char,int>::iterator it_res;
+	cn::pair<cn::map<char,int>::iterator,bool> ret;
+	
+	ret = mymap.insert(cn::pair('c', 42));
+	SECTION( "Insert single value" )
+	{
+		REQUIRE(ret.second == true);
+		REQUIRE((*ret.first).first == 'c');
+		REQUIRE((*ret.first).second == 42);
+		REQUIRE(mymap.size() == 1);
+	}
+	ret = mymap.insert(cn::pair('c', -42000));
+	SECTION( "Already inserted value should not be inserted" )
+	{
+		REQUIRE(ret.second == false);
+		REQUIRE(ret.first->first == 'c');
+		REQUIRE(ret.first->second == 42);
+		REQUIRE(mymap.size() == 1);
+	}
+	it_res = mymap.insert(ret.first, cn::pair('d', 43));
+	SECTION( "Insert with hint" )
+	{
+		REQUIRE(it_res->first == 'd');
+		REQUIRE(it_res->second == 43);
+		REQUIRE(mymap.size() == 2);
+	}
+	it_res = mymap.insert(ret.first, cn::pair('d', -43000));
+	SECTION( "Already inserted value even with hint should not be inserted" )
+	{
+		REQUIRE(it_res->first == 'd');
+		REQUIRE(it_res->second == 43);
+		REQUIRE(mymap.size() == 2);
+	}
+
+	cn::pair<char,int> myints[]= {
+		cn::pair('a',40),
+		cn::pair('b',41),
+		cn::pair('c',42),
+		cn::pair('d',43)};
+	mymap.insert(myints, myints+4);
+	SECTION( "Insert range, with some values already inserted should not be inserted twice")
+	{
+		REQUIRE(mymap.size() == 4);
+		int i = 39;
+		char c = 'a' - 1;
+		auto it = mymap.begin();
+		while (it != mymap.end())
+		{
+			REQUIRE(it->first == ++c);
+			REQUIRE((it++)->second == ++i);
+		}
+		REQUIRE(c == 'd');
+		REQUIRE(i == 43);
+	}
+}

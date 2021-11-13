@@ -199,3 +199,49 @@ TEST_CASE( "set - capacity ", "[set][capacity]" )
 		REQUIRE(first.max_size() == 230584300921369395);
 	}
 }
+
+TEST_CASE( "set - Modifiers - insert ", "[set][modifier][insert]" )
+{
+	cn::set<int> myset;
+	cn::set<int>::iterator it_res;
+	cn::pair<cn::set<int>::iterator,bool> ret;
+	
+	ret = myset.insert(42);
+	SECTION( "Insert single value" )
+	{
+		REQUIRE(ret.second == true);
+		REQUIRE(*ret.first == 42);
+		REQUIRE(myset.size() == 1);
+	}
+	ret = myset.insert(42);
+	SECTION( "Already inserted value should not be inserted" )
+	{
+		REQUIRE(ret.second == false);
+		REQUIRE(*ret.first == 42);
+		REQUIRE(myset.size() == 1);
+	}
+	it_res = myset.insert(ret.first, 43);
+	SECTION( "Insert with hint" )
+	{
+		REQUIRE(*it_res == 43);
+		REQUIRE(myset.size() == 2);
+	}
+	it_res = myset.insert(ret.first, 43);
+	SECTION( "Already inserted value even with hint should not be inserted" )
+	{
+		REQUIRE(*it_res == 43);
+		REQUIRE(myset.size() == 2);
+	}
+
+	int myints[]= {40,41,42,43};
+	myset.insert(myints, myints+4);
+	SECTION( "Insert range, with some values already inserted should not be inserted twice")
+	{
+		REQUIRE(myset.size() == 4);
+		int i = 39;
+		auto it = myset.begin();
+		while (it != myset.end())
+			REQUIRE(*it++ == ++i);
+		REQUIRE(i == 43);
+	}
+}

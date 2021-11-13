@@ -430,3 +430,20 @@ TEST_CASE( "map - Observers - key_comp ", "[map][observer][key_comp][value_comp]
 		REQUIRE(typeid(mymap.key_comp()).hash_code() != typeid(mymap.value_comp()).hash_code());
 	}
 }
+
+TEST_CASE( "map - Operations - find ", "[map][operation][find]" )
+{
+	std::map<char,int> mymap;
+	std::map<char,int>::iterator it;
+
+	mymap['a']=10;
+	mymap['b']=20;
+	mymap['c']=30;
+	mymap['d']=30;
+
+	REQUIRE( mymap.find('a')->first == 'a');
+	REQUIRE( mymap.find('b')->first == 'b');
+	REQUIRE( mymap.find('c')->first == 'c');
+	REQUIRE( mymap.find('e') == mymap.end());
+	
+}

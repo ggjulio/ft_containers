@@ -384,3 +384,17 @@ TEST_CASE( "set - Observers - key_comp and value_comp ", "[set][observer][key_co
 		REQUIRE(typeid(myset.key_comp()).hash_code() == typeid(myset.value_comp()).hash_code());
 	}
 }
+
+TEST_CASE( "set - Operations - find ", "[set][operation][find]" )
+{
+	std::set<int> myset;
+	std::set<int>::iterator it;
+
+	for (int i=1; i<=5; i++)
+		myset.insert(i*10);    // set: 10 20 30 40 50
+
+	REQUIRE( *myset.find(10) == 10);
+	REQUIRE( *myset.find(20) == 20);
+	REQUIRE( *myset.find(50) == 50);
+	REQUIRE( myset.find(42) == myset.end());
+}

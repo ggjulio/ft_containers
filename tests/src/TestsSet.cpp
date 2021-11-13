@@ -245,3 +245,46 @@ TEST_CASE( "set - Modifiers - insert ", "[set][modifier][insert]" )
 		REQUIRE(i == 43);
 	}
 }
+
+TEST_CASE( "set - Modifiers - erase ", "[set][modifier][erase]" )
+{
+	cn::set<int> myset;
+
+	for (int i=1; i<10; i++)
+		myset.insert(i*10);  // 10 20 30 40 50 60 70 80 90
+	REQUIRE(myset.size() == 9);
+	
+	myset.erase (++myset.begin());
+	SECTION( "erase 20 by iterator" )
+	{
+		REQUIRE(*++myset.begin() == 30);
+		REQUIRE(myset.size() == 8);
+	}
+	myset.erase (30);
+	SECTION( "erase 30 by value" )
+	{
+		REQUIRE(*++myset.begin() == 40);
+		REQUIRE(myset.size() == 7);
+	}
+	
+	cn::set<int>::iterator it = ++myset.begin();
+	cn::set<int>::iterator endRange =  ++myset.end();
+	--endRange; --endRange; --endRange;
+	REQUIRE(*it == 40);
+	REQUIRE(*endRange == 60);
+	myset.erase(it, endRange);
+	SECTION( "erase range 40 to 60 (60 excluded)" )
+	{
+		REQUIRE(*++myset.begin() == 60);
+		REQUIRE(myset.size() == 5);
+	}
+
+	myset.erase (myset.begin(), myset.end());
+	SECTION( "erase range from begin to end, must be empty" )
+	{
+		REQUIRE(myset.begin() == myset.end());
+		REQUIRE(myset.size() == 0);
+		REQUIRE(myset.empty());
+	}
+
+}

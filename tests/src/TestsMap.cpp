@@ -266,3 +266,56 @@ TEST_CASE( "map - Modifiers ", "[map][modifier][insert]" )
 		REQUIRE(i == 43);
 	}
 }
+
+
+TEST_CASE( "map - Modifiers - erase ", "[map][modifier][erase]" )
+{
+	cn::map<char,int> mymap;
+
+	mymap['a']=10;
+	mymap['b']=20;
+	mymap['c']=30;
+	mymap['d']=40;
+	mymap['e']=50;
+	mymap['f']=60;
+	mymap['g']=70;
+	mymap['h']=80;
+	mymap['i']=90;
+	REQUIRE(mymap.size() == 9);
+	
+	mymap.erase (++mymap.begin());
+	SECTION( "erase 'b' by iterator" )
+	{
+		REQUIRE((++mymap.begin())->first == 'c');
+		REQUIRE((++mymap.begin())->second == 30);
+		REQUIRE(mymap.size() == 8);
+	}
+	mymap.erase('c');
+	SECTION( "erase 'c' by value" )
+	{
+		REQUIRE((++mymap.begin())->first == 'd');
+		REQUIRE(mymap.size() == 7);
+	}
+	
+	cn::map<char,int>::iterator it = ++mymap.begin();
+	cn::map<char,int>::iterator endRange =  ++mymap.end();
+	--endRange; --endRange; --endRange;
+	REQUIRE(it->first == 'd');
+	REQUIRE(endRange->first == 'f');
+	mymap.erase(it, endRange);
+	SECTION( "erase range 'd' to 'f' ('f' excluded)" )
+	{
+		REQUIRE((++mymap.begin())->first == 'f');
+		REQUIRE((++mymap.begin())->second == 60);
+		REQUIRE(mymap.size() == 5);
+	}
+
+	mymap.erase (mymap.begin(), mymap.end());
+	SECTION( "erase range from begin to end, must be empty" )
+	{
+		REQUIRE(mymap.begin() == mymap.end());
+		REQUIRE(mymap.size() == 0);
+		REQUIRE(mymap.empty());
+	}
+
+}

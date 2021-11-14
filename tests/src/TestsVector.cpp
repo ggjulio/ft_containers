@@ -10,6 +10,7 @@ TEST_CASE( "vector - construct", "[vector][constructors]" )
 		cn::vector<int> first;
 		REQUIRE( first.size() == 0);
 		REQUIRE( first.empty());
+		REQUIRE( first.capacity() == 0);
 	}
 	cn::vector<int> second (4,100);
 	SECTION( "fill constructor" )
@@ -20,6 +21,7 @@ TEST_CASE( "vector - construct", "[vector][constructors]" )
 		CHECK( second[3] == 100);
 		REQUIRE( second.size() == 4);
 		REQUIRE( !second.empty());
+		REQUIRE( second.capacity() == 4);
 	}
 	cn::vector<int> third (second.begin(),second.end());
 	SECTION( "range constructor" )
@@ -30,7 +32,7 @@ TEST_CASE( "vector - construct", "[vector][constructors]" )
 		CHECK( third[3] == 100);
 		REQUIRE( third.size() == 4);
 		REQUIRE( !third.empty());
-
+		REQUIRE( second.capacity() == 4);
 	}
 	cn::vector<int> fourth (third);
 	SECTION( "copy constructor" )
@@ -41,6 +43,7 @@ TEST_CASE( "vector - construct", "[vector][constructors]" )
 		CHECK( fourth[3] == 100);
 		REQUIRE( fourth.size() == 4);
 		REQUIRE( !fourth.empty());
+		REQUIRE( second.capacity() == 4);
 	}
 	SECTION( "the iterator constructor can also be used to construct from arrays" )
 	{
@@ -54,6 +57,7 @@ TEST_CASE( "vector - construct", "[vector][constructors]" )
 		CHECK( fifth[4] == 42);
 		REQUIRE( !fifth.empty());
 		REQUIRE( fifth.size() == 5);
+		REQUIRE( second.capacity() == 4);
 	}
 }
 
@@ -259,4 +263,77 @@ TEST_CASE( "vector - Element access - back() ", "[vector][element_access][back]"
 	REQUIRE( v.back() == -42);
 }
 
-// im at Modifiers
+TEST_CASE( "vector - Modifiers - assign() ", "[vector][modifier][assign]" )
+{
+	cn::vector<int>::iterator it;
+	cn::vector<int> first;
+
+	REQUIRE( first.empty());
+	first.assign(7,100);
+	SECTION( "assign fill should work" )
+	{
+		REQUIRE( first.size() == 7);
+	}
+
+	it = first.begin()+1;
+	cn::vector<int> second;
+	SECTION( "assign range should work" )
+	{
+		second.assign (it, first.end()-1); // the 5 central values of first
+		REQUIRE( second.size() == 5);
+	}
+	SECTION( "assign range from simple array" )
+	{
+		int myints[] = {1776,7,4};
+		cn::vector<int> third;
+		third.assign (myints, myints+3);
+		REQUIRE( third.size() == 3);
+	}
+}
+
+TEST_CASE( "vector - Modifiers - push_back() and pop_back() ", "[vector][modifier][push_back][pop_back]" )
+{
+	cn::vector<int> myvector;
+
+	myvector.push_back(42);
+	REQUIRE( myvector.size() == 1);
+	REQUIRE( myvector[0] == 42);
+
+	myvector.push_back(43);
+	REQUIRE( myvector.size() == 2);
+	REQUIRE( myvector[1] == 43);
+
+	myvector.push_back(44);
+	REQUIRE( myvector.size() == 3);
+	REQUIRE( myvector[2] == 44);
+
+	myvector.pop_back();
+	REQUIRE( myvector.size() == 2);
+
+	myvector.pop_back();
+	REQUIRE( myvector.size() == 1);
+
+	myvector.pop_back();
+	REQUIRE( myvector.size() == 0);
+	REQUIRE( myvector.empty());
+
+
+	myvector.pop_back();
+	SECTION( "pop_back an empty vector" )
+	{
+		REQUIRE( myvector.size() == (size_t)-1);
+		REQUIRE( !myvector.empty());
+	}
+
+	// also add tests for resize when size > capacity
+
+}
+
+TEST_CASE( "vector - Modifiers - insert() ", "[vector][modifier][insert]" )
+{
+	std::vector<int> myvector (3,100);
+
+	REQUIRE( myvector.capacity() == 3);
+
+
+}

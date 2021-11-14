@@ -37,7 +37,8 @@ public:
 	typedef typename __tree::const_pointer					const_pointer;
 	typedef typename __tree::size_type						size_type;
 	typedef typename __tree::difference_type				difference_type ;
-	typedef typename __tree::const_iterator 				iterator;
+	typedef typename __tree::const_iterator 				iterator; 	// this is not an error, iterator is required to be modifiable,
+																		//  but this allows modification of keys. libstdc++ does that too
 	typedef typename __tree::const_iterator 				const_iterator;
 	typedef typename ft::reverse_iterator<iterator>			reverse_iterator;
 	typedef typename ft::reverse_iterator<const_iterator>	const_reverse_iterator;
@@ -86,7 +87,10 @@ public:
 // modifiers
 	/// Insert single element
 	pair<iterator,bool>	insert (const value_type& val)
-		{ return _tree.insert_unique(val);}
+	{
+		pair<typename __tree::iterator,bool> res = _tree.insert_unique(val);
+		return pair<iterator,bool>(res.first, res.second);
+	}
 
 	/**
 	 *  @brief Attempts to insert an element into the %set.
@@ -129,7 +133,7 @@ public:
 	size_type				count(const value_type& val) const			{ return _tree.find(val) != _tree.end() ? 1: 0;}
 	iterator				lower_bound(const value_type& val) const	{ return _tree.lower_bound(val);}
 	iterator				upper_bound(const value_type& val) const	{ return _tree.upper_bound(val);}
-	pair<iterator,iterator> equal_range(const value_type& val) const	{ return _tree.equal_range_unique(val);}
+	pair<iterator,iterator> equal_range(const value_type& val) const	{ return _tree.equal_range(val);}
 	allocator_type			get_allocator() const 						{ return _tree.get_allocator();}
 
 }; /* class set */

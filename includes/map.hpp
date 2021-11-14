@@ -49,7 +49,7 @@ private:
 	typedef rbTree<	key_type,
 					value_type,
 					_Select1st<value_type>,
-					value_compare,
+					key_compare,
 					allocator_type>
 			__tree;
 	__tree _tree;
@@ -111,7 +111,10 @@ public:
 
 // modifiers
 	pair<iterator,bool>	insert(const value_type& val)
-		{ return _tree.insert_unique(val);}
+	{
+		pair<typename __tree::iterator, bool> res = _tree.insert_unique(val);
+		return pair<typename __tree::iterator, bool>(res.first, res.second) ;
+	}
 	iterator			insert(iterator position, const value_type& val)
 		{ return _tree.insert_unique(position, val);}
 
@@ -138,9 +141,9 @@ public:
 	iterator		upper_bound (const key_type& k)			{ return _tree.upper_bound(k); }
 	const_iterator	upper_bound (const key_type& k) const	{ return _tree.upper_bound(k); }
 	pair<iterator,iterator>             equal_range(const key_type& k)
-											{ return _tree.equal_range_unique(k); }
+											{ return _tree.equal_range(k); }
 	pair<const_iterator,const_iterator> equal_range(const key_type& k) const
-											{ return _tree.equal_range_unique(k); }
+											{ return _tree.equal_range(k); }
 
 	allocator_type	get_allocator() const 	{ return _tree.get_allocator(); }
 

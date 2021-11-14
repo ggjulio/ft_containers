@@ -115,22 +115,22 @@ struct RbTree_iterator
 	typedef node_base::base_ptr base_ptr;
 	typedef node<T> *link_type;
 
-	RbTree_iterator()						: _node() {}
-	RbTree_iterator(base_ptr ptr) throw()	: _node(ptr) {}
+	RbTree_iterator()								: _m_node() {}
+	RbTree_iterator(base_ptr ptr) throw()	: _m_node(ptr) {}
 
-	reference operator*() const throw() { return *static_cast<link_type>(_node)->_m_dataPtr(); }
-	pointer operator->() const throw()	{ return static_cast<link_type>(_node)->_m_dataPtr(); }
+	reference operator*() const throw() { return *static_cast<link_type>(_m_node)->_m_dataPtr(); }
+	pointer operator->() const throw()	{ return static_cast<link_type>(_m_node)->_m_dataPtr(); }
 
-	Self &operator++() throw()	{ _node = _rb_tree_increment(_node); return *this; }
-	Self operator++(int) throw(){ Self tmp = *this; _node = _rb_tree_increment(_node); return tmp; }
+	Self &operator++() throw()	{ _m_node = _rb_tree_increment(_m_node); return *this; }
+	Self operator++(int) throw(){ Self tmp = *this; _m_node = _rb_tree_increment(_m_node); return tmp; }
 
-	Self &operator--() throw()	{ _node = _rb_tree_decrement(_node); return *this; }
-	Self operator--(int) throw(){ Self __tmp = *this; _node = _rb_tree_decrement(_node); return __tmp; }
+	Self &operator--() throw()	{ _m_node = _rb_tree_decrement(_m_node); return *this; }
+	Self operator--(int) throw(){ Self __tmp = *this; _m_node = _rb_tree_decrement(_m_node); return __tmp; }
 
-	friend bool operator==(const Self &x, const Self &y) throw() { return x._node == y._node; }
-	friend bool operator!=(const Self &x, const Self &y) throw() { return !(x._node == y._node); }
+	friend bool operator==(const Self &x, const Self &y) throw() { return x._m_node == y._m_node; }
+	friend bool operator!=(const Self &x, const Self &y) throw() { return !(x._m_node == y._m_node); }
 
-	base_ptr _node;
+	base_ptr _m_node;
 }; /* struct RbTree_iterator */
 
 template <typename T>
@@ -140,6 +140,8 @@ struct RbTree_const_iterator
 	typedef const T &reference;
 	typedef const T *pointer;
 
+	typedef RbTree_iterator<T> iterator;
+
 	typedef std::bidirectional_iterator_tag iterator_category;
 	typedef std::ptrdiff_t difference_type;
 
@@ -147,22 +149,25 @@ struct RbTree_const_iterator
 	typedef node_base::const_base_ptr base_ptr;
 	typedef const node<T> *link_type;
 
-	RbTree_const_iterator()						: _node() {}
-	RbTree_const_iterator(base_ptr ptr) throw()	: _node(ptr) {}
+	RbTree_const_iterator()								: _m_node() {}
+	RbTree_const_iterator(base_ptr ptr) throw(): _m_node(ptr) {}
+	RbTree_const_iterator(const iterator& it) throw()	: _m_node(it._m_node) {}
 
-	reference operator*() const throw() { return *static_cast<link_type>(_node)->_m_dataPtr(); }
-	pointer operator->() const throw()	{ return static_cast<link_type>(_node)->_m_dataPtr(); }
+	reference operator*() const throw() { return *static_cast<link_type>(_m_node)->_m_dataPtr(); }
+	pointer operator->() const throw()	{ return static_cast<link_type>(_m_node)->_m_dataPtr(); }
 
-	Self &operator++() throw()	{ _node = _rb_tree_increment(_node); return *this; }
-	Self operator++(int) throw(){ Self tmp = *this; _node = _rb_tree_increment(_node); return tmp; }
+	Self &operator++() throw()	{ _m_node = _rb_tree_increment(_m_node); return *this; }
+	Self operator++(int) throw(){ Self tmp = *this; _m_node = _rb_tree_increment(_m_node); return tmp; }
 
-	Self &operator--() throw()	{ _node = _rb_tree_decrement(_node); return *this; }
-	Self operator--(int) throw(){ Self __tmp = *this; _node = _rb_tree_decrement(_node); return __tmp; }
+	Self &operator--() throw()	{ _m_node = _rb_tree_decrement(_m_node); return *this; }
+	Self operator--(int) throw(){ Self __tmp = *this; _m_node = _rb_tree_decrement(_m_node); return __tmp; }
 
-	friend bool operator==(const Self &x, const Self &y) throw() { return x._node == y._node; }
-	friend bool operator!=(const Self &x, const Self &y) throw() { return !(x._node == y._node); }
+	iterator _m_const_cast() throw() { return iterator(const_cast<typename iterator::base_ptr>(_m_node)); }
 
-	base_ptr _node;
+	friend bool operator==(const Self &x, const Self &y) throw() { return x._m_node == y._m_node; }
+	friend bool operator!=(const Self &x, const Self &y) throw() { return !(x._m_node == y._m_node); }
+
+	base_ptr _m_node;
 }; /* struct RbTree_const_iterator */
 
 struct rb_tree_header
@@ -253,10 +258,10 @@ public:
 		_m_erase(_m_begin());
 	}
 
-	iterator				begin()		  	{ return iterator(_m_impl._header.left);}
+	iterator				begin()			{ return iterator(_m_impl._header.left);}
 	const_iterator			begin() const 	{ return const_iterator(_m_impl._header.left);}
-	iterator 				end()		  	{ return iterator(&_m_impl._header);}
-	const_iterator			end() const	  	{ return const_iterator(&_m_impl._header);}
+	iterator 				end()			{ return iterator(&_m_impl._header);}
+	const_iterator			end() const		{ return const_iterator(&_m_impl._header);}
 	reverse_iterator		rbegin()		{ return reverse_iterator(end()); }
 	const_reverse_iterator	rbegin() const	{ return const_reverse_iterator(end()); }
 	reverse_iterator		rend() 			{ return reverse_iterator(begin()); }
@@ -287,8 +292,22 @@ public:
 		assert (position != end());
 		_m_erase_and_fix(position);
 	}
-	void erase(iterator first, iterator last) {(void)first;(void)last;}
-	void erase_unique(const _Key& k) {(void)k;}
+	void erase(const_iterator position)
+	{
+		assert (position != end());
+		_m_erase_and_fix(position);
+	}
+	void erase(iterator first, iterator last)
+	{
+		(void)first;(void)last;
+	}
+	void erase_unique(const _Key& k) {
+		(void)k;
+		// pair<iterator, iterator> res = equal_range(k);
+		// const size_type old_size = size();
+		// _m_erase_and_fix(position);
+		// return old_size();
+	}
 
 	void swap(rbTree& other)	{(void)other;}
 	void clear() {
@@ -298,13 +317,13 @@ public:
 
 	_Compare	key_comp() const { return _m_impl._m_key_compare;}
 
-	iterator		find(const _Key& k)	{
+	iterator		find(const _Key& k) {
 		iterator res = _m_lower_bound(_m_begin(), _m_end(), k);
-		return _m_impl._m_key_compare(k, _s_key(res._node)) ? end() : res;
+		return _m_impl._m_key_compare(k, _s_key(res._m_node)) ? end() : res;
 	}
-	const_iterator	find(const _Key& k) const			{
+	const_iterator	find(const _Key& k) const {
 		const_iterator res = _m_lower_bound(_m_begin(), _m_end(), k);
-		return _m_impl._m_key_compare(k, _s_key(res._node)) ? end() : res;
+		return _m_impl._m_key_compare(k, _s_key(res._m_node)) ? end() : res;
 	}
 	iterator		lower_bound(const _Key& k)		 	{ return _m_lower_bound(_m_begin(), _m_end(), k); }
 	const_iterator	lower_bound(const _Key& k)const		{ return _m_lower_bound(_m_begin(), _m_end(), k); }
@@ -332,7 +351,7 @@ private:
 	link_type				_m_end()					throw() { return static_cast<link_type>(&_m_impl._header);}
 	const_link_type			_m_end()const 				throw() { return static_cast<const_link_type>(&_m_impl._header);}
 
-	static const _Key&		_s_key(const_link_type x) 	throw()	{ return *x->_m_dataPtr();}
+	static const _Key&		_s_key(const_link_type x) 	throw()	{ return _KeyOfValue()(*x->_m_dataPtr());}
 	static const _Key&		_s_key(const_base_ptr x)  	throw()	{ return _s_key(static_cast<const_link_type>(x)) ;}
 
 	static link_type		_s_left(base_ptr x)		 	throw() { return static_cast<link_type>(x->left);}
@@ -347,7 +366,7 @@ private:
 	static base_ptr 		_s_maximum(base_ptr x)		throw()	{ return node_base::_s_maximum(x); }
 	static const_base_ptr 	_s_maximum(const_base_ptr x)throw()	{ return node_base::_s_maximum(x); }
 
-	pair<base_ptr, base_ptr> _m_get_insert_pos(const value_type& v)
+	pair<base_ptr, base_ptr> _m_get_insert_pos(const _Key& k)
 	{
 		base_ptr x = static_cast<link_type>(_m_begin());
 		base_ptr y = _m_end();
@@ -355,7 +374,7 @@ private:
 		while (x != NULL)
 		{
 			y = x;
-			comp = _m_impl._m_key_compare(v, _s_key(x));
+			comp = _m_impl._m_key_compare(k, _s_key(x));
 			x = comp ? _s_left(x) : _s_right(x);
 		}
 		iterator j(y);
@@ -366,20 +385,20 @@ private:
 			else //else decrease to then check if --j.value < v 
 				--j;
 		}
-		if (_m_impl._m_key_compare(_s_key(j._node), v)) //if false then, there is already a node with same value
+		if (_m_impl._m_key_compare(_s_key(j._m_node), k)) //if false then, there is already a node with same value
 			return pair<base_ptr, base_ptr>(x, y);
-		return pair<base_ptr, base_ptr>(j._node, 0);
+		return pair<base_ptr, base_ptr>(j._m_node, 0);
 	}
 
 	pair<iterator, bool> _m_insert_unique(const value_type& v)
 	{
-		pair<base_ptr, base_ptr> result = _m_get_insert_pos(v);
+		pair<base_ptr, base_ptr> result = _m_get_insert_pos(_KeyOfValue()(v));
 
 		if (result.second)
 			return pair<iterator, bool>(
 						_m_insert_(result.first, result.second, v),
 						true);
-		return pair<iterator, bool>(result.first, false);
+		return pair<iterator, bool>(iterator(result.first), false);
 	}
 
 	iterator _m_insert_(base_ptr x, base_ptr parent, const value_type& v)
@@ -392,7 +411,7 @@ private:
 		_m_tree_insert_and_rebalance(z, parent);
 
 		++_m_impl._nodeCount;
-		return z;
+		return iterator(z);
 	}
 
 	// z is the node to insert
@@ -505,9 +524,17 @@ private:
 			v->parent = u->parent;
 	}
 
-	void _m_erase_and_fix(iterator position)
+	void _m_erase_and_fix(const_iterator first, const_iterator last)
 	{
-		base_ptr z = position._node;
+		if (first == begin() && last == end())
+			clear();
+		else
+			while (first != last)
+				_m_erase_and_fix(first++);
+	}
+	void _m_erase_and_fix(const_iterator position)
+	{
+		base_ptr z = const_cast<base_ptr>(position._m_node);
 		base_ptr x = NULL;
 		enum color yOriginalColor = z->color;
 		--_m_impl._nodeCount;
@@ -704,7 +731,7 @@ private:
 			}
 		}
 	}
-	iterator _m_lower_bound(link_type x, base_ptr y, const _Key& k) 
+	iterator _m_lower_bound(link_type x, base_ptr y, const _Key& k)
 	{
 		while (x != NULL)
 		{
@@ -719,7 +746,7 @@ private:
 		return iterator(y);
 	}
 
-	const_iterator _m_lower_bound(link_type x, base_ptr y, const _Key& k) const
+	const_iterator _m_lower_bound(const_link_type x, const_base_ptr y, const _Key& k) const
 	{
 		while (x != NULL)
 		{
@@ -769,7 +796,7 @@ public:
 		const_iterator it = begin();
 		while (it != end())
 		{
-			const_link_type x = static_cast<const_link_type>(it._node);
+			const_link_type x = static_cast<const_link_type>(it._m_node);
 			const_link_type left = _s_left(x);
 			const_link_type right = _s_right(x);
 

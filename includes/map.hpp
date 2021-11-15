@@ -59,7 +59,7 @@ public:
 	typedef typename __tree::const_pointer					const_pointer;
 	typedef typename __tree::size_type						size_type;
 	typedef typename __tree::difference_type				difference_type;
-	typedef typename __tree::const_iterator 				iterator;
+	typedef typename __tree::iterator		 				iterator;
 	typedef typename __tree::const_iterator 				const_iterator;
 	typedef typename ft::reverse_iterator<iterator>			reverse_iterator;
 	typedef typename ft::reverse_iterator<const_iterator>	const_reverse_iterator;

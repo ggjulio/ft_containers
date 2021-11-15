@@ -277,6 +277,11 @@ public:
 	{
 		return _m_insert_unique(v);
 	}
+	pair<iterator, bool> insert_unique(const_iterator position, const value_type& v)
+	{
+		(void)position;
+		return _m_insert_unique(v);
+	}
 
 	template <typename _InputIterator>
 	void insert_range_unique(_InputIterator first, _InputIterator last)
@@ -299,14 +304,17 @@ public:
 	}
 	void erase(iterator first, iterator last)
 	{
-		(void)first;(void)last;
+		_m_erase_and_fix(first, last);
 	}
-	void erase_unique(const _Key& k) {
-		(void)k;
-		// pair<iterator, iterator> res = equal_range(k);
-		// const size_type old_size = size();
-		// _m_erase_and_fix(position);
-		// return old_size();
+	void erase(const_iterator first, const_iterator last)
+	{
+		_m_erase_and_fix(first, last);
+	}
+	size_type erase_unique(const _Key& k) {
+		pair<iterator, iterator> res = equal_range(k);
+		const size_type old_size = size();
+		_m_erase_and_fix(res.first, res.second);
+		return old_size - size();
 	}
 
 	void swap(rbTree& other)	{(void)other;}
@@ -352,6 +360,7 @@ private:
 	const_link_type			_m_end()const 				throw() { return static_cast<const_link_type>(&_m_impl._header);}
 
 	static const _Key&		_s_key(const_link_type x) 	throw()	{ return _KeyOfValue()(*x->_m_dataPtr());}
+	// static const _Key&		_s_key(const_link_type x) 	throw()	{ return (*x->_m_dataPtr());}
 	static const _Key&		_s_key(const_base_ptr x)  	throw()	{ return _s_key(static_cast<const_link_type>(x)) ;}
 
 	static link_type		_s_left(base_ptr x)		 	throw() { return static_cast<link_type>(x->left);}
@@ -393,6 +402,7 @@ private:
 	pair<iterator, bool> _m_insert_unique(const value_type& v)
 	{
 		pair<base_ptr, base_ptr> result = _m_get_insert_pos(_KeyOfValue()(v));
+		// pair<base_ptr, base_ptr> result = _m_get_insert_pos((v));
 
 		if (result.second)
 			return pair<iterator, bool>(
@@ -510,12 +520,12 @@ private:
 		}
 	}
 
-	void _m_transplant(base_ptr u, base_ptr v, node_base header)
+	void _m_transplant(base_ptr u, base_ptr v, base_ptr header)
 	{
 		assert(_m_root()->parent == &_m_impl._header);
 		assert(_m_root()->parent == _m_impl._header.parent->parent );
-		if (u->parent == header.parent->parent)
-			header.parent = v;
+		if (u->parent == header->parent->parent)
+			header->parent = v;
 		else if (u == u->parent->left)
 			u->parent->left = v;
 		else
@@ -550,12 +560,12 @@ private:
 			if (z->left != NULL)
 			{
 				x = z->left;
-				_m_transplant(z, z->left, _m_impl._header);
+				_m_transplant(z, z->left, &_m_impl._header);
 			}
 			else if (z->right != NULL)
 			{
 				x = z->right;
-				_m_transplant(z, z->right, _m_impl._header);
+				_m_transplant(z, z->right, &_m_impl._header);
 			}
 			else
 			{
@@ -566,105 +576,43 @@ private:
 				}
 				else
 					x = NULL;
-				_m_transplant(z, x, _m_impl._header);
+				_m_transplant(z, x, &_m_impl._header);
 			}
 		}
 		else
 		{
 			base_ptr y = _s_minimum(z->right);
-			x = y->right;
+			if (y->right)
+				x = y->right;
+			else{
+				x = &nil_node;
+				y->right = x;
+				x->parent = z->right;
+			}
 			yOriginalColor = y->color;
 			if (y->parent != z)
 			{
-				_m_transplant(y, y->right, _m_impl._header);
+				_m_transplant(y, y->right, &_m_impl._header);
 				y->right = z->right;
 				y->right->parent = y;
 			}
 			else
 				x->parent = y;
-			_m_transplant(z, y, _m_impl._header);
+			_m_transplant(z, y, &_m_impl._header);
 			y->left = z->left;
 			y->left->parent = y;
 			y->color = z->color;
 		}
-		// if black, we've may break rb tree rules, then fix
-		// if (yOriginalColor == kBlack)
-		// {
-		// 	while (x && x != _m_root() && x->color == kBlack)
-		// 	{
-		// 		if (x == x->parent->left)
-		// 		{
-		// 			base_ptr w = x->parent->right;
-		// 			if (w->color == kRed)
-		// 			{
-		// 				w->color = kBlack;
-		// 				x->parent->color = kRed;
-		// 				_leftRotate(x->parent, _m_root());
-		// 				w = x->parent->right;
-		// 			}
-		// 			if (w->left->color == kBlack && w->right->color == kBlack)
-		// 			{
-		// 				w->color = kRed;
-		// 				x = x->parent;
-		// 			}
-		// 			else if (w->right->color == kBlack)
-		// 			{
-		// 				w->left->color = kBlack;
-		// 				w->color = kRed;
-		// 				_rightRotate(w, _m_root());
-		// 				w = x->parent->right;
-		// 			}
-		// 			w->color = x->parent->color;
-		// 			x->parent->color = kBlack;
-		// 			w->right->color = kBlack;
-		// 			_leftRotate(x->parent, _m_root());
-		// 			x = _m_root();
-		// 		}
-		// 		else
-		// 		{
-		// 			base_ptr w = x->parent->left;
-		// 			if (w->color == kRed)
-		// 			{
-		// 				w->color = kBlack;
-		// 				x->parent->color = kRed;
-		// 				_rightRotate(x->parent, _m_root());
-		// 				w = x->parent->left;
-		// 			}
-		// 			if (w->left->color == kBlack && w->right->color == kBlack)
-		// 			{
-		// 				w->color = kRed;
-		// 				x = x->parent;
-		// 			}
-		// 			else if (w->right->color == kBlack)
-		// 			{
-		// 				w->left->color = kBlack;
-		// 				w->color = kRed;
-		// 				_rightRotate(w, _m_root());
-		// 				w = x->parent->right;
-		// 			}
-		// 			w->color = x->parent->color;
-		// 			x->parent->color = kBlack;
-		// 			w->right->color = kBlack;
-		// 			_leftRotate(x->parent, _m_root());
-		// 			x = _m_root();
-		// 		}
-				
-		// 	}
-		// 	if (x)
-		// 		x->color = kBlack;
-		// }
 		if (yOriginalColor == kBlack)
 			fixShit(x);
 		if (x == &nil_node)
-		{
-			_m_transplant(x, NULL, _m_impl._header);
-		}
+			_m_transplant(x, NULL, &_m_impl._header);
 
 		// maintain leftmost and rightmost pointers
 		if (z == _m_impl._header.left)
-			_m_impl._header.left = _s_minimum(_m_root());
+			_m_impl._header.left = _m_impl._header.parent == NULL ? &_m_impl._header : _s_minimum(_m_root());
 		if (z == _m_impl._header.right)
-			_m_impl._header.right = _s_maximum(_m_root());
+			_m_impl._header.right = _m_impl._header.parent == NULL ? &_m_impl._header : _s_maximum(_m_root());
 		_nodeAlloc.destroy(static_cast<link_type>(z));
 		_nodeAlloc.deallocate(static_cast<link_type>(z), 1);
 	}
@@ -773,7 +721,7 @@ private:
 		return iterator(y);
 	}
 
-	const_iterator _m_upper_bound(link_type x, base_ptr y, const _Key& k) const
+	const_iterator _m_upper_bound(const_link_type x, const_base_ptr y, const _Key& k) const
 	{
 		while (x != NULL)
 		{

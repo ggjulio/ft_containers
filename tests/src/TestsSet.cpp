@@ -24,19 +24,19 @@ TEST_CASE( "set - constructor ", "[set][constructor]" )
 		REQUIRE(!second.empty());
 		REQUIRE(second.size() == 5);
 	}
-	SECTION( "copy construtor" ) {
-		cn::set<int> third (second);
-		REQUIRE(!third.empty());
-		REQUIRE(third.size() == 5);
+	// SECTION( "copy construtor" ) {
+	// 	cn::set<int> third (second);
+		// REQUIRE(!third.empty());
+		// REQUIRE(third.size() == 5);
 	
-		SECTION( "A deep_copy/clone must be made" ) {
-			third.erase(third.begin());
-			REQUIRE(third.size() == 4);
-			REQUIRE(third.find(10) == third.end());
-			REQUIRE(second.size() == 5);
-			REQUIRE(*second.find(10) == 10);
-		}
-	}
+		// SECTION( "A deep_copy/clone must be made" ) {
+		// 	third.erase(third.begin());
+		// 	REQUIRE(third.size() == 4);
+		// 	REQUIRE(third.find(10) == third.end());
+		// 	REQUIRE(second.size() == 5);
+		// 	REQUIRE(*second.find(10) == 10);
+		// }
+	// }
 	SECTION( "iterator construtor" ) {
 		cn::set<int> fourth (second.begin(), second.end());
 		REQUIRE(!fourth.empty());
@@ -91,47 +91,47 @@ TEST_CASE( "set - constructor ", "[set][constructor]" )
 // 	}
 // }
 
-// TEST_CASE( "set - iterator ", "[set][iterator]" )
-// {
-// 	cn::set<int> myset;
-// 	SECTION( "empty container should have begin() == end()" )
-// 	{
-// 		REQUIRE( myset.begin() == myset.end() );
-// 	}
-// 	myset.insert(10);
-// 	SECTION( "container with one element should have consistant boundary" )
-// 	{
-// 		REQUIRE( ++myset.begin() == myset.end() );
-// 		REQUIRE( myset.begin() == --myset.end() );
-// 		REQUIRE( myset.begin().operator*() == 10 );
-// 		REQUIRE( myset.begin().operator->() == &*myset.begin() );
-// 	}
-// 	myset.insert(20);
-// 	myset.insert(30);
-// 	SECTION( "container with three elements should loop properly" )
-// 	{
-// 		auto it = myset.begin();
-// 		int i = 0;
-// 		while (it != myset.end())
-// 		{
-// 			i += 10;
-// 			REQUIRE(*it == i);
-// 			++it;
-// 		}
-// 		REQUIRE(i == 30);
-// 	}
-// 	SECTION( "container with three elements should loop properly in reverse" )
-// 	{
-// 		auto it = myset.end();
-// 		int i = 40;
-// 		while (--it != myset.begin())
-// 		{
-// 			i -= 10;
-// 			REQUIRE(*it == i);
-// 		}
-// 		REQUIRE(*it == 10);
-// 	}
-// }
+TEST_CASE( "set - iterator ", "[set][iterator]" )
+{
+	cn::set<int> myset;
+	SECTION( "empty container should have begin() == end()" )
+	{
+		REQUIRE( myset.begin() == myset.end() );
+	}
+	myset.insert(10);
+	SECTION( "container with one element should have consistant boundary" )
+	{
+		REQUIRE( ++myset.begin() == myset.end() );
+		REQUIRE( myset.begin() == --myset.end() );
+		REQUIRE( myset.begin().operator*() == 10 );
+		REQUIRE( myset.begin().operator->() == &*myset.begin() );
+	}
+	myset.insert(20);
+	myset.insert(30);
+	SECTION( "container with three elements should loop properly" )
+	{
+		auto it = myset.begin();
+		int i = 0;
+		while (it != myset.end())
+		{
+			i += 10;
+			REQUIRE(*it == i);
+			++it;
+		}
+		REQUIRE(i == 30);
+	}
+	SECTION( "container with three elements should loop properly in reverse" )
+	{
+		auto it = myset.end();
+		int i = 40;
+		while (--it != myset.begin())
+		{
+			i -= 10;
+			REQUIRE(*it == i);
+		}
+		REQUIRE(*it == 10);
+	}
+}
 
 // TEST_CASE( "set - reverse iterator ", "[set][reverse_iterator]" )
 // {
@@ -175,121 +175,121 @@ TEST_CASE( "set - constructor ", "[set][constructor]" )
 // 	}
 // }
 
-// TEST_CASE( "set - capacity ", "[set][capacity]" )
-// {
-// 	cn::set<int> first;
+TEST_CASE( "set - capacity ", "[set][capacity]" )
+{
+	cn::set<int> first;
 
-// 	SECTION( "empty container should be empty (insightful)" )
-// 	{
-// 		REQUIRE(first.empty());
-// 		REQUIRE(first.size() == 0);
-// 	}
-// 	first.insert(10);
-// 	SECTION( "container with one element should be of size one (and not empty, of course)" )
-// 	{
-// 		REQUIRE(!first.empty());
-// 		REQUIRE(first.size() == 1);
-// 	}
-// 	first.erase(first.begin());
-// 	SECTION( "delete the single element, should become an empty container again." )
-// 	{
-// 		REQUIRE(first.size() == 0);
-// 		REQUIRE(first.empty());
-// 	}
-// 	SECTION( "max_size(), For now I don't know which value is suposed to be equal to (probably depend on the underlying implementation)" )
-// 	{
-// 		REQUIRE(first.max_size() == 230584300921369395);
-// 	}
-// }
+	SECTION( "empty container should be empty (insightful)" )
+	{
+		REQUIRE(first.empty());
+		REQUIRE(first.size() == 0);
+	}
+	first.insert(10);
+	SECTION( "container with one element should be of size one (and not empty, of course)" )
+	{
+		REQUIRE(!first.empty());
+		REQUIRE(first.size() == 1);
+	}
+	first.erase(first.begin());
+	SECTION( "delete the single element, should become an empty container again." )
+	{
+		REQUIRE(first.size() == 0);
+		REQUIRE(first.empty());
+	}
+	SECTION( "max_size(), For now I don't know which value is suposed to be equal to (probably depend on the underlying implementation)" )
+	{
+		REQUIRE(first.max_size() == 230584300921369395);
+	}
+}
 
-// TEST_CASE( "set - Modifiers - insert ", "[set][modifier][insert]" )
-// {
-// 	cn::set<int> myset;
-// 	cn::set<int>::iterator it_res;
-// 	cn::pair<cn::set<int>::iterator,bool> ret;
+TEST_CASE( "set - Modifiers - insert ", "[set][modifier][insert]" )
+{
+	cn::set<int> myset;
+	cn::set<int>::iterator it_res;
+	cn::pair<cn::set<int>::iterator,bool> ret;
 	
-// 	ret = myset.insert(42);
-// 	SECTION( "Insert single value" )
-// 	{
-// 		REQUIRE(ret.second == true);
-// 		REQUIRE(*ret.first == 42);
-// 		REQUIRE(myset.size() == 1);
-// 	}
-// 	ret = myset.insert(42);
-// 	SECTION( "Already inserted value should not be inserted" )
-// 	{
-// 		REQUIRE(ret.second == false);
-// 		REQUIRE(*ret.first == 42);
-// 		REQUIRE(myset.size() == 1);
-// 	}
-// 	it_res = myset.insert(ret.first, 43);
-// 	SECTION( "Insert with hint" )
-// 	{
-// 		REQUIRE(*it_res == 43);
-// 		REQUIRE(myset.size() == 2);
-// 	}
-// 	it_res = myset.insert(ret.first, 43);
-// 	SECTION( "Already inserted value even with hint should not be inserted" )
-// 	{
-// 		REQUIRE(*it_res == 43);
-// 		REQUIRE(myset.size() == 2);
-// 	}
+	ret = myset.insert(42);
+	SECTION( "Insert single value" )
+	{
+		REQUIRE(ret.second == true);
+		REQUIRE(*ret.first == 42);
+		REQUIRE(myset.size() == 1);
+	}
+	ret = myset.insert(42);
+	SECTION( "Already inserted value should not be inserted" )
+	{
+		REQUIRE(ret.second == false);
+		REQUIRE(*ret.first == 42);
+		REQUIRE(myset.size() == 1);
+	}
+	it_res = myset.insert(ret.first, 43);
+	SECTION( "Insert with hint" )
+	{
+		REQUIRE(*it_res == 43);
+		REQUIRE(myset.size() == 2);
+	}
+	it_res = myset.insert(ret.first, 43);
+	SECTION( "Already inserted value even with hint should not be inserted" )
+	{
+		REQUIRE(*it_res == 43);
+		REQUIRE(myset.size() == 2);
+	}
 
-// 	int myints[]= {40,41,42,43};
-// 	myset.insert(myints, myints+4);
-// 	SECTION( "Insert range, with some values already inserted should not be inserted twice")
-// 	{
-// 		REQUIRE(myset.size() == 4);
-// 		int i = 39;
-// 		auto it = myset.begin();
-// 		while (it != myset.end())
-// 			REQUIRE(*it++ == ++i);
-// 		REQUIRE(i == 43);
-// 	}
-// }
+	int myints[]= {40,41,42,43};
+	myset.insert(myints, myints+4);
+	SECTION( "Insert range, with some values already inserted should not be inserted twice")
+	{
+		REQUIRE(myset.size() == 4);
+		int i = 39;
+		auto it = myset.begin();
+		while (it != myset.end())
+			REQUIRE(*it++ == ++i);
+		REQUIRE(i == 43);
+	}
+}
 
-// TEST_CASE( "set - Modifiers - erase ", "[set][modifier][erase]" )
-// {
-// 	cn::set<int> myset;
+TEST_CASE( "set - Modifiers - erase ", "[set][modifier][erase]" )
+{
+	cn::set<int> myset;
 
-// 	for (int i=1; i<10; i++)
-// 		myset.insert(i*10);  // 10 20 30 40 50 60 70 80 90
-// 	REQUIRE(myset.size() == 9);
+	for (int i=1; i<10; i++)
+		myset.insert(i*10);  // 10 20 30 40 50 60 70 80 90
+	REQUIRE(myset.size() == 9);
 	
-// 	myset.erase (++myset.begin());
-// 	SECTION( "erase 20 by iterator" )
-// 	{
-// 		REQUIRE(*++myset.begin() == 30);
-// 		REQUIRE(myset.size() == 8);
-// 	}
-// 	myset.erase (30);
-// 	SECTION( "erase 30 by value" )
-// 	{
-// 		REQUIRE(*++myset.begin() == 40);
-// 		REQUIRE(myset.size() == 7);
-// 	}
+	myset.erase (++myset.begin());
+	SECTION( "erase 20 by iterator" )
+	{
+		REQUIRE(*++myset.begin() == 30);
+		REQUIRE(myset.size() == 8);
+	}
+	myset.erase (30);
+	SECTION( "erase 30 by value" )
+	{
+		REQUIRE(*++myset.begin() == 40);
+		REQUIRE(myset.size() == 7);
+	}
 	
-// 	cn::set<int>::iterator it = ++myset.begin();
-// 	cn::set<int>::iterator endRange =  ++myset.end();
-// 	--endRange; --endRange; --endRange;
-// 	REQUIRE(*it == 40);
-// 	REQUIRE(*endRange == 60);
-// 	myset.erase(it, endRange);
-// 	SECTION( "erase range 40 to 60 (60 excluded)" )
-// 	{
-// 		REQUIRE(*++myset.begin() == 60);
-// 		REQUIRE(myset.size() == 5);
-// 	}
+	cn::set<int>::iterator it = ++myset.begin();
+	cn::set<int>::iterator endRange =  ++myset.end();
+	--endRange; --endRange; --endRange;
+	REQUIRE(*it == 40);
+	REQUIRE(*endRange == 60);
+	myset.erase(it, endRange);
+	SECTION( "erase range 40 to 60 (60 excluded)" )
+	{
+		REQUIRE(*++myset.begin() == 60);
+		REQUIRE(myset.size() == 5);
+	}
 
-// 	myset.erase (myset.begin(), myset.end());
-// 	SECTION( "erase range from begin to end, must be empty" )
-// 	{
-// 		REQUIRE(myset.begin() == myset.end());
-// 		REQUIRE(myset.size() == 0);
-// 		REQUIRE(myset.empty());
-// 	}
+	myset.erase (myset.begin(), myset.end());
+	SECTION( "erase range from begin to end, must be empty" )
+	{
+		REQUIRE(myset.begin() == myset.end());
+		REQUIRE(myset.size() == 0);
+		REQUIRE(myset.empty());
+	}
 
-// }
+}
 
 // TEST_CASE( "set - Modifiers - swap ", "[set][modifier][swap]" )
 // {
@@ -324,172 +324,172 @@ TEST_CASE( "set - constructor ", "[set][constructor]" )
 // 	REQUIRE(it == second.end());
 // }
 
-// TEST_CASE( "set - Modifiers - clear ", "[set][modifier][clear]" )
-// {
-// 	cn::set<int> emptySet;
-// 	SECTION( "Empty set being clear should be okay" )
-// 	{
-// 		emptySet.clear();
-// 		REQUIRE( emptySet.empty() );
-// 		REQUIRE( emptySet.size() == 0);
-// 	}
+TEST_CASE( "set - Modifiers - clear ", "[set][modifier][clear]" )
+{
+	cn::set<int> emptySet;
+	SECTION( "Empty set being clear should be okay" )
+	{
+		emptySet.clear();
+		REQUIRE( emptySet.empty() );
+		REQUIRE( emptySet.size() == 0);
+	}
 
-// 	int myints[]={12,75,10,32,20,25};
-// 	cn::set<int> myset (myints,myints+6);
-// 	REQUIRE( !myset.empty() );
-// 	REQUIRE( myset.size() == 6);
-// 	myset.clear();
-// 	SECTION( "Clear set who contain element should be ok" )
-// 	{
-// 		REQUIRE( myset.empty() );
-// 		REQUIRE( myset.size() == 0);
-// 	}
-// 	myset.clear();
-// 	SECTION( "Clear two times should be ok" )
-// 	{
-// 		REQUIRE( myset.empty() );
-// 		REQUIRE( myset.size() == 0);
-// 	}
-// }
+	int myints[]={12,75,10,32,20,25};
+	cn::set<int> myset (myints,myints+6);
+	REQUIRE( !myset.empty() );
+	REQUIRE( myset.size() == 6);
+	myset.clear();
+	SECTION( "Clear set who contain element should be ok" )
+	{
+		REQUIRE( myset.empty() );
+		REQUIRE( myset.size() == 0);
+	}
+	myset.clear();
+	SECTION( "Clear two times should be ok" )
+	{
+		REQUIRE( myset.empty() );
+		REQUIRE( myset.size() == 0);
+	}
+}
 
-// TEST_CASE( "set - Observers - key_comp and value_comp ", "[set][observer][key_comp][value_comp]" )
-// {
-// 	cn::set<int> myset;
+TEST_CASE( "set - Observers - key_comp and value_comp ", "[set][observer][key_comp][value_comp]" )
+{
+	cn::set<int> myset;
 
-// 	cn::set<int>::key_compare mycomp = myset.key_comp();
-// 	SECTION( "Default constructor should use std::less as default key_comp" )
-// 	{
-// 		cn::set<int>::key_compare stdless;
-// 		REQUIRE(typeid(mycomp).name() == typeid(stdless).name());
-// 		REQUIRE(typeid(mycomp).hash_code() == typeid(stdless).hash_code());
+	cn::set<int>::key_compare mycomp = myset.key_comp();
+	SECTION( "Default constructor should use std::less as default key_comp" )
+	{
+		cn::set<int>::key_compare stdless;
+		REQUIRE(typeid(mycomp).name() == typeid(stdless).name());
+		REQUIRE(typeid(mycomp).hash_code() == typeid(stdless).hash_code());
 
-// 		REQUIRE( mycomp(4, 5) == true );
-// 		REQUIRE( mycomp(5, 5) == false );
-// 		REQUIRE( mycomp(6, 5) == false );
-// 	}
-// 	SECTION( "Default constructor should use std::less as default key_comp" )
-// 	{
-// 		cn::set<int, classcomp_set>::key_compare mycustomComp;
+		REQUIRE( mycomp(4, 5) == true );
+		REQUIRE( mycomp(5, 5) == false );
+		REQUIRE( mycomp(6, 5) == false );
+	}
+	SECTION( "Default constructor should use std::less as default key_comp" )
+	{
+		cn::set<int, classcomp_set>::key_compare mycustomComp;
 
-// 		REQUIRE(typeid(mycomp).name() != typeid(mycustomComp).name());
-// 		REQUIRE(typeid(mycomp).hash_code() != typeid(mycustomComp).hash_code());
+		REQUIRE(typeid(mycomp).name() != typeid(mycustomComp).name());
+		REQUIRE(typeid(mycomp).hash_code() != typeid(mycustomComp).hash_code());
 
-// 		REQUIRE( mycustomComp(4, 5) == false );
-// 		REQUIRE( mycustomComp(5, 5) == false );
-// 		REQUIRE( mycustomComp(6, 5) == true );
-// 	}
-// 	SECTION( "Set should have equal key_comp and value_comp" )
-// 	{
-// 		REQUIRE(typeid(myset.key_comp()).name() == typeid(myset.value_comp()).name());
-// 		REQUIRE(typeid(myset.key_comp()).hash_code() == typeid(myset.value_comp()).hash_code());
-// 	}
-// }
+		REQUIRE( mycustomComp(4, 5) == false );
+		REQUIRE( mycustomComp(5, 5) == false );
+		REQUIRE( mycustomComp(6, 5) == true );
+	}
+	SECTION( "Set should have equal key_comp and value_comp" )
+	{
+		REQUIRE(typeid(myset.key_comp()).name() == typeid(myset.value_comp()).name());
+		REQUIRE(typeid(myset.key_comp()).hash_code() == typeid(myset.value_comp()).hash_code());
+	}
+}
 
-// TEST_CASE( "set - Operations - find ", "[set][operation][find]" )
-// {
-// 	cn::set<int> myset;
-// 	cn::set<int>::iterator it;
+TEST_CASE( "set - Operations - find ", "[set][operation][find]" )
+{
+	cn::set<int> myset;
+	cn::set<int>::iterator it;
 
-// 	for (int i=1; i<=5; i++)
-// 		myset.insert(i*10);    // set: 10 20 30 40 50
+	for (int i=1; i<=5; i++)
+		myset.insert(i*10);    // set: 10 20 30 40 50
 
-// 	REQUIRE( *myset.find(10) == 10);
-// 	REQUIRE( *myset.find(20) == 20);
-// 	REQUIRE( *myset.find(50) == 50);
-// 	REQUIRE( myset.find(42) == myset.end());
-// }
+	REQUIRE( *myset.find(10) == 10);
+	REQUIRE( *myset.find(20) == 20);
+	REQUIRE( *myset.find(50) == 50);
+	REQUIRE( myset.find(42) == myset.end());
+}
 
-// TEST_CASE( "set - Operations - count ", "[set][operation][count]" )
-// {
-// 	cn::set<int> myset;
+TEST_CASE( "set - Operations - count ", "[set][operation][count]" )
+{
+	cn::set<int> myset;
 
-// 	for (int i=1; i<5; ++i)
-// 		myset.insert(i*3); // 3 6 9 12
+	for (int i=1; i<5; ++i)
+		myset.insert(i*3); // 3 6 9 12
 
-// 	REQUIRE( myset.count(0) == 0);
-// 	REQUIRE( myset.count(1) == 0);
-// 	REQUIRE( myset.count(3) == 1);
-// 	REQUIRE( myset.count(12) == 1);
-// }
+	REQUIRE( myset.count(0) == 0);
+	REQUIRE( myset.count(1) == 0);
+	REQUIRE( myset.count(3) == 1);
+	REQUIRE( myset.count(12) == 1);
+}
 
-// TEST_CASE( "set - Operations - lower_bound and upper_bound ", "[set][operation][lower_bound][upper_bound]" )
-// {
-// 	cn::set<int> myset;
-// 	cn::set<int>::iterator itlow,itup;
+TEST_CASE( "set - Operations - lower_bound and upper_bound ", "[set][operation][lower_bound][upper_bound]" )
+{
+	cn::set<int> myset;
+	cn::set<int>::iterator itlow,itup;
 
-// 	auto itLow = myset.lower_bound(30);
-// 	auto itUp = myset.upper_bound(60);
+	auto itLow = myset.lower_bound(30);
+	auto itUp = myset.upper_bound(60);
 
-// 	CHECK(itLow == myset.end());
-// 	CHECK(itUp == myset.end());
+	CHECK(itLow == myset.end());
+	CHECK(itUp == myset.end());
 
-// 	for (int i=1; i<10; i++)
-// 		myset.insert(i*10); // 10 20 30 40 50 60 70 80 90
+	for (int i=1; i<10; i++)
+		myset.insert(i*10); // 10 20 30 40 50 60 70 80 90
 
-// 	itLow = myset.lower_bound(30);
-// 	itUp = myset.upper_bound(60);
+	itLow = myset.lower_bound(30);
+	itUp = myset.upper_bound(60);
 
-// 	CHECK(*itLow == 30);
-// 	CHECK(*itUp == 70);
-// }
+	CHECK(*itLow == 30);
+	CHECK(*itUp == 70);
+}
 
-// TEST_CASE( "set - Operations - equal_range ", "[set][operation][equal_range]" )
-// {
-// 	cn::set<int> myset;
+TEST_CASE( "set - Operations - equal_range ", "[set][operation][equal_range]" )
+{
+	cn::set<int> myset;
 
-// 	// empty set
-// 	auto res = myset.equal_range(42);
-// 	CHECK( res.first == myset.begin());
-// 	CHECK( res.second == myset.begin());
-// 	CHECK( res.first == myset.end());
-// 	CHECK( res.second == myset.end());
-// 	REQUIRE( res.first == res.second);
+	// empty set
+	auto res = myset.equal_range(42);
+	CHECK( res.first == myset.begin());
+	CHECK( res.second == myset.begin());
+	CHECK( res.first == myset.end());
+	CHECK( res.second == myset.end());
+	REQUIRE( res.first == res.second);
 
-// 	for (int i=1; i<10; i++)
-// 		myset.insert(i*10); // 10 20 30 40 50 60 70 80 90
+	for (int i=1; i<10; i++)
+		myset.insert(i*10); // 10 20 30 40 50 60 70 80 90
 
-// 	// min limit
-// 	res = myset.equal_range(9);
-// 	CHECK( res.first == myset.begin());
-// 	CHECK( res.second == myset.begin());
-// 	REQUIRE( res.first == res.second);
+	// min limit
+	res = myset.equal_range(9);
+	CHECK( res.first == myset.begin());
+	CHECK( res.second == myset.begin());
+	REQUIRE( res.first == res.second);
 
 
-// 	res = myset.equal_range(10);
-// 	CHECK( res.first == myset.begin());
-// 	REQUIRE( *res.second == 20);
+	res = myset.equal_range(10);
+	CHECK( res.first == myset.begin());
+	REQUIRE( *res.second == 20);
 
-// 	// middle
-// 	res = myset.equal_range(35);
-// 	CHECK( *res.first == 40);
-// 	CHECK( *res.second == 40);
-// 	REQUIRE( res.first == res.second);
+	// middle
+	res = myset.equal_range(35);
+	CHECK( *res.first == 40);
+	CHECK( *res.second == 40);
+	REQUIRE( res.first == res.second);
 
-// 	res = myset.equal_range(50);
-// 	CHECK( *res.first == 50);
-// 	REQUIRE( *res.second == 60);
+	res = myset.equal_range(50);
+	CHECK( *res.first == 50);
+	REQUIRE( *res.second == 60);
 
-// 	// max limits
-// 	res = myset.equal_range(90);
-// 	CHECK( *res.first == 90);
-// 	REQUIRE( res.second == myset.end());
+	// max limits
+	res = myset.equal_range(90);
+	CHECK( *res.first == 90);
+	REQUIRE( res.second == myset.end());
 
-// 	res = myset.equal_range(91);
-// 	CHECK( res.first == myset.end());
-// 	CHECK( res.second == myset.end());
-// 	REQUIRE( res.first == res.second);
-// }
+	res = myset.equal_range(91);
+	CHECK( res.first == myset.end());
+	CHECK( res.second == myset.end());
+	REQUIRE( res.first == res.second);
+}
 
-// TEST_CASE( "set - Allocator - get_allocator ", "[set][allocator][get_allocator]" )
-// {
-// 	cn::set<int> myset;
-// 	int * p;
-// 	unsigned int i;
+TEST_CASE( "set - Allocator - get_allocator ", "[set][allocator][get_allocator]" )
+{
+	cn::set<int> myset;
+	int * p;
+	unsigned int i;
 
-// 	p = myset.get_allocator().allocate(5);
+	p = myset.get_allocator().allocate(5);
 
-// 	for (i=0; i<5; i++)
-// 		p[i]=(i+1)*10; // 10 20 30
+	for (i=0; i<5; i++)
+		p[i]=(i+1)*10; // 10 20 30
 
-// 	myset.get_allocator().deallocate(p,5);
-// }
+	myset.get_allocator().deallocate(p,5);
+}

@@ -115,8 +115,11 @@ public:
 		pair<typename __tree::iterator, bool> res = _tree.insert_unique(val);
 		return pair<typename __tree::iterator, bool>(res.first, res.second) ;
 	}
-	iterator			insert(iterator position, const value_type& val)
-		{ return _tree.insert_unique(position, val);}
+	iterator	insert(iterator position, const value_type& val)
+	{
+		pair<typename __tree::iterator,bool> res = _tree.insert_unique(position, val);
+		return res.first;
+	}
 
 	template <class InputIterator>
   	 void insert(InputIterator first, InputIterator last)

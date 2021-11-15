@@ -6,7 +6,7 @@
 #include <iostream>
 #include <set>
 
-void insert_v(ft::rbTree<int,int, int>& tree, int value, size_t actualTreeSize)
+void insert_v(ft::rbTree<int,int, ft::_Identity<int> >& tree, int value, size_t actualTreeSize)
 {
 	CHECK( tree.size() == actualTreeSize);
 	tree.insert_unique(value);
@@ -16,7 +16,7 @@ void insert_v(ft::rbTree<int,int, int>& tree, int value, size_t actualTreeSize)
 
 TEST_CASE( "rbTree::insert_unique - random insert value + decrease insert", "[rb_tree][insert_unique][basic]" )
 {
-	ft::rbTree<int, int, int> tree;
+	ft::rbTree<int, int, ft::_Identity<int> > tree;
 	CHECK( tree.size() == 0);	
 	REQUIRE( tree.__rb_verify());
 
@@ -61,7 +61,7 @@ TEST_CASE( "rbTree::insert_unique - test insert increase value", "[rb_tree][inse
 
 TEST_CASE( "rbTree - lower_bound and upper_bound ", "[rb_tree][lower_bound][upper_bound]" )
 {
-	ft::rbTree<int, int, int> tree;
+	ft::rbTree<int, int, ft::_Identity<int> > tree;
 	
 	auto itLow = tree.lower_bound(30);
 	auto itUp = tree.upper_bound(60);
@@ -82,7 +82,7 @@ TEST_CASE( "rbTree - lower_bound and upper_bound ", "[rb_tree][lower_bound][uppe
 
 TEST_CASE( "rbTree::find ", "[rb_tree][find]" )
 {
-	ft::rbTree<int, int, int> tree;
+	ft::rbTree<int, int, ft::_Identity<int> > tree;
 
 	CHECK( tree.find(30) == tree.end() );
 
@@ -99,7 +99,7 @@ TEST_CASE( "rbTree::find ", "[rb_tree][find]" )
 
 TEST_CASE( "rbTree::equal_range ", "[rb_tree][equal_range]" )
 {
-	ft::rbTree<int, int, int> tree;
+	ft::rbTree<int, int, ft::_Identity<int> > tree;
 
 	// empty tree
 	auto res = tree.equal_range(42);
@@ -158,9 +158,9 @@ TEST_CASE( "rbTree::equal_range ", "[rb_tree][equal_range]" )
 // 	REQUIRE( tree.__rb_verify());
 // }
 
-TEST_CASE( "rbTree::erase node with no childs", "[rb_tree][erase][iterator][position][no]" )
+TEST_CASE( "rbTree::erase node with no childs", "[rb_tree][erase][iterator][position][no][child]" )
 {
-	ft::rbTree<int, int, int> tree;
+	ft::rbTree<int, int, ft::_Identity<int> > tree;
 	
 	for (int i=1; i<10; i++)
 		insert_v(tree, i*10, i - 1); // 10 20 30 40 50 60 70 80 90
@@ -173,7 +173,7 @@ TEST_CASE( "rbTree::erase node with no childs", "[rb_tree][erase][iterator][posi
 
 TEST_CASE( "rbTree::erase leftmost node", "[rb_tree][erase][iterator][position][leftmost]" )
 {
-	ft::rbTree<int, int, int> tree;
+	ft::rbTree<int, int, ft::_Identity<int> > tree;
 	
 	for (int i=1; i<10; i++)
 		insert_v(tree, i*10, i - 1); // 10 20 30 40 50 60 70 80 90
@@ -186,7 +186,7 @@ TEST_CASE( "rbTree::erase leftmost node", "[rb_tree][erase][iterator][position][
 
 TEST_CASE( "rbTree::erase rightmost node", "[rb_tree][erase][iterator][position][rightmost]" )
 {
-	ft::rbTree<int, int, int> tree;
+	ft::rbTree<int, int, ft::_Identity<int> > tree;
 	
 	for (int i=1; i<10; i++)
 		insert_v(tree, i*10, i - 1); // 10 20 30 40 50 60 70 80 90
@@ -200,7 +200,7 @@ TEST_CASE( "rbTree::erase rightmost node", "[rb_tree][erase][iterator][position]
 
 TEST_CASE( "rbTree::erase node with no left childs", "[rb_tree][erase][iterator][position][l][no]" )
 {
-	ft::rbTree<int, int, int> tree;
+	ft::rbTree<int, int, ft::_Identity<int> > tree;
 	
 	for (int i=1; i<10; i++)
 		insert_v(tree, i*10, i - 1); // 10 20 30 40 50 60 70 80 90
@@ -226,7 +226,7 @@ TEST_CASE( "rbTree::erase node with no left childs", "[rb_tree][erase][iterator]
 
 TEST_CASE( "rbTree::erase node with no right childs", "[rb_tree][erase][iterator][position][r][no]" )
 {
-	ft::rbTree<int, int, int> tree;
+	ft::rbTree<int, int, ft::_Identity<int> > tree;
 	
 	for (int i=1; i<10; i++)
 		insert_v(tree, i*10, i - 1); // 10 20 30 40 50 60 70 80 90
@@ -252,7 +252,7 @@ TEST_CASE( "rbTree::erase node with no right childs", "[rb_tree][erase][iterator
 
 TEST_CASE( "rbTree::erase node with no left sibbling", "[rb_tree][erase][iterator][position][l][sibling]" )
 {
-	ft::rbTree<int, int, int> tree;
+	ft::rbTree<int, int, ft::_Identity<int> > tree;
 	
 	for (int i=1; i<10; i++)
 		insert_v(tree, i*10, i - 1); // 10 20 30 40 50 60 70 80 90
@@ -278,7 +278,7 @@ TEST_CASE( "rbTree::erase node with no left sibbling", "[rb_tree][erase][iterato
 
 TEST_CASE( "rbTree::erase node with no right sibling", "[rb_tree][erase][iterator][position][r][sibling]" )
 {
-	ft::rbTree<int, int, int> tree;
+	ft::rbTree<int, int, ft::_Identity<int> > tree;
 	
 	for (int i=1; i<10; i++)
 		insert_v(tree, i*10, i - 1); // 10 20 30 40 50 60 70 80 90
@@ -305,7 +305,7 @@ TEST_CASE( "rbTree::erase node with no right sibling", "[rb_tree][erase][iterato
 
 TEST_CASE( "rbTree::erase node with two childs", "[rb_tree][erase][iterator][position][two]" )
 {
-	ft::rbTree<int, int, int> tree;
+	ft::rbTree<int, int, ft::_Identity<int> > tree;
 	
 	for (int i=1; i<10; i++)
 		insert_v(tree, i*10, i - 1); // 10 20 30 40 50 60 70 80 90

@@ -177,28 +177,29 @@ TEST_CASE( "set - iterator ", "[set][iterator]" )
 
 TEST_CASE( "set - capacity ", "[set][capacity]" )
 {
-	cn::set<int> first;
+	cn::set<int> mine;
+	std::set<int> std_set;
 
 	SECTION( "empty container should be empty (insightful)" )
 	{
-		REQUIRE(first.empty());
-		REQUIRE(first.size() == 0);
+		REQUIRE(mine.empty());
+		REQUIRE(mine.size() == 0);
 	}
-	first.insert(10);
+	mine.insert(10);
 	SECTION( "container with one element should be of size one (and not empty, of course)" )
 	{
-		REQUIRE(!first.empty());
-		REQUIRE(first.size() == 1);
+		REQUIRE(!mine.empty());
+		REQUIRE(mine.size() == 1);
 	}
-	first.erase(first.begin());
+	mine.erase(mine.begin());
 	SECTION( "delete the single element, should become an empty container again." )
 	{
-		REQUIRE(first.size() == 0);
-		REQUIRE(first.empty());
+		REQUIRE(mine.size() == 0);
+		REQUIRE(mine.empty());
 	}
 	SECTION( "max_size(), For now I don't know which value is suposed to be equal to (probably depend on the underlying implementation)" )
 	{
-		REQUIRE(first.max_size() == 230584300921369395);
+		CHECK_NOFAIL(std_set.max_size() == mine.max_size());
 	}
 }
 

@@ -252,7 +252,8 @@ public:
 	rbTree(const rbTree& other)
 		: _m_impl(other._m_impl)
 	{
-		// do deep copy
+		if (other._m_root())
+			_m_impl._header.parent = _m_copy(other);
 	}
 	~rbTree() {
 		_m_erase(_m_begin());
@@ -615,6 +616,8 @@ private:
 			_m_impl._header.right = _m_impl._header.parent == NULL ? &_m_impl._header : _s_maximum(_m_root());
 		_nodeAlloc.destroy(static_cast<link_type>(z));
 		_nodeAlloc.deallocate(static_cast<link_type>(z), 1);
+
+		assert( __rb_verify() == true);
 	}
 	void fixShit(base_ptr x)
 	{
@@ -731,6 +734,29 @@ private:
 				y = x, x = _s_left(x);
 		}
 		return const_iterator(y);
+	}
+
+	link_type _m_copy(const rbTree& x)
+	{
+		link_type root = _m_copy_node(x._m_begin());
+		_m_impl._nodeCount = x._m_impl._nodeCount;
+		_m_impl._header.left = _s_minimum(_m_root());
+		_m_impl._header.right = _s_maximum(_m_root());
+		return root;
+	}
+	link_type _m_copy_node(const_link_type root)
+	{
+		if (root == NULL)
+			return NULL;
+		link_type x = _nodeAlloc.allocate(1);
+		_nodeAlloc.construct(x, root->data);
+
+		x->parent = root->parent;
+		x->left = _m_copy_node(_s_left(root));
+		x->right = _m_copy_node(_s_right(root));
+		x->color = root->color;
+		// x->data = root->data;
+		return x;
 	}
 
 public:

@@ -107,7 +107,7 @@ public:
 
 // element access 
 	mapped_type& operator[] (const key_type& k)
-		{ return (*((this->insert(make_pair(k,mapped_type()))).first)).second;}
+		{ return (*((this->insert(value_type(k,mapped_type()))).first)).second;}
 
 // modifiers
 	pair<iterator,bool>	insert(const value_type& val)

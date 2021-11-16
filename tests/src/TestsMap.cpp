@@ -346,51 +346,51 @@ TEST_CASE( "map - Modifiers - erase ", "[map][modifier][erase]" )
 }
 
 
-// TEST_CASE( "map - Modifiers - swap ", "[map][modifier][swap]" )
-// {
-// 	cn::map<char,int> first,second;
+TEST_CASE( "map - Modifiers - swap ", "[map][modifier][swap]" )
+{
+	cn::map<char,int> first,second;
 
-// 	first['x']=100;
-// 	first['y']=200;
+	first['x']=100;
+	first['y']=200;
 
-// 	second['a']=11;
-// 	second['b']=22;
-// 	second['c']=33;
+	second['a']=11;
+	second['b']=22;
+	second['c']=33;
 
-// 	auto it = first.begin();
-// 	REQUIRE( it->first == 'x');
-// 	REQUIRE( it++->second == 100);
-// 	REQUIRE( it->first == 'y');
-// 	REQUIRE( it++->second == 200);
-// 	REQUIRE( it == first.end());
+	auto it = first.begin();
+	REQUIRE( it->first == 'x');
+	REQUIRE( it++->second == 100);
+	REQUIRE( it->first == 'y');
+	REQUIRE( it++->second == 200);
+	REQUIRE( it == first.end());
 
-// 	it = second.begin();
-// 	REQUIRE( it->first == 'a');
-// 	REQUIRE( it++->second == 11);
-// 	REQUIRE( it->first == 'b');
-// 	REQUIRE( it++->second == 22);
-// 	REQUIRE( it->first == 'c');
-// 	REQUIRE( it++->second == 33);
-// 	REQUIRE(it == second.end());
+	it = second.begin();
+	REQUIRE( it->first == 'a');
+	REQUIRE( it++->second == 11);
+	REQUIRE( it->first == 'b');
+	REQUIRE( it++->second == 22);
+	REQUIRE( it->first == 'c');
+	REQUIRE( it++->second == 33);
+	REQUIRE(it == second.end());
 
-// 	first.swap(second);
+	first.swap(second);
 
-// 	it = first.begin();
-// 	REQUIRE( it->first == 'a');
-// 	REQUIRE( it++->second == 11);
-// 	REQUIRE( it->first == 'b');
-// 	REQUIRE( it++->second == 22);
-// 	REQUIRE( it->first == 'c');
-// 	REQUIRE( it++->second == 33);
-// 	REQUIRE(it == first.end());
+	it = first.begin();
+	REQUIRE( it->first == 'a');
+	REQUIRE( it++->second == 11);
+	REQUIRE( it->first == 'b');
+	REQUIRE( it++->second == 22);
+	REQUIRE( it->first == 'c');
+	REQUIRE( it++->second == 33);
+	REQUIRE(it == first.end());
 
-// 	it = second.begin();
-// 	REQUIRE( it->first == 'x');
-// 	REQUIRE( it++->second == 100);
-// 	REQUIRE( it->first == 'y');
-// 	REQUIRE( it++->second == 200);
-// 	REQUIRE(it == second.end());
-// }
+	it = second.begin();
+	REQUIRE( it->first == 'x');
+	REQUIRE( it++->second == 100);
+	REQUIRE( it->first == 'y');
+	REQUIRE( it++->second == 200);
+	REQUIRE(it == second.end());
+}
 
 TEST_CASE( "map - Modifiers - clear ", "[map][modifier][clear]" )
 {

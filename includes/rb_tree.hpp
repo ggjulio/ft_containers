@@ -329,7 +329,12 @@ public:
 		return old_size - size();
 	}
 
-	void swap(rbTree& other)	{(void)other;}
+	void swap(rbTree& other)
+	{
+		if (this == &other)
+			return;
+		ft::swap(*this, other);
+	}
 	void clear() {
 		_m_erase(_m_begin());
 		_m_impl.reset();

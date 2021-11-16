@@ -202,9 +202,9 @@ TEST_CASE( "map - capacity ", "[map][capacity]" )
 		REQUIRE(mine.size() == 0);
 		REQUIRE(mine.empty());
 	}
-	SECTION( "max_size(), For now I don't know which value is suposed to be equal to (probably depend on the underlying implementation)" )
+	SECTION( "max_size(), May not be equal to the std because depend on the underlying implementation of the node. (also OS dependant linux_side != macos_size)" )
 	{
-		CHECK_NOFAIL(std_map.max_size() == mine.max_size());
+		REQUIRE(std_map.max_size() == mine.max_size());
 	}
 }
 

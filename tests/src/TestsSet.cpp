@@ -24,19 +24,19 @@ TEST_CASE( "set - constructor ", "[set][constructor]" )
 		REQUIRE(!second.empty());
 		REQUIRE(second.size() == 5);
 	}
-	// SECTION( "copy construtor" ) {
-	// 	cn::set<int> third (second);
-		// REQUIRE(!third.empty());
-		// REQUIRE(third.size() == 5);
+	SECTION( "copy construtor" ) {
+		cn::set<int> third (second);
+		REQUIRE(!third.empty());
+		REQUIRE(third.size() == 5);
 	
-		// SECTION( "A deep_copy/clone must be made" ) {
-		// 	third.erase(third.begin());
-		// 	REQUIRE(third.size() == 4);
-		// 	REQUIRE(third.find(10) == third.end());
-		// 	REQUIRE(second.size() == 5);
-		// 	REQUIRE(*second.find(10) == 10);
-		// }
-	// }
+		SECTION( "A deep_copy/clone must be made" ) {
+			third.erase(third.begin());
+			REQUIRE(third.size() == 4);
+			REQUIRE(third.find(10) == third.end());
+			REQUIRE(second.size() == 5);
+			REQUIRE(*second.find(10) == 10);
+		}
+	}
 	SECTION( "iterator construtor" ) {
 		cn::set<int> fourth (second.begin(), second.end());
 		REQUIRE(!fourth.empty());
@@ -63,33 +63,33 @@ TEST_CASE( "set - constructor ", "[set][constructor]" )
 
 }
 
-// TEST_CASE( "set - operator - assignment ", "[set][operator][assignment]" )
-// {
-// 	int myints[] = { 10,20,30,40,50 };
-// 	cn::set<int> first (myints,myints+5);
-// 	cn::set<int> second;
+TEST_CASE( "set - operator - assignment ", "[set][operator][assignment]" )
+{
+	int myints[] = { 10,20,30,40,50 };
+	cn::set<int> first (myints,myints+5);
+	cn::set<int> second;
 	
-// 	REQUIRE(!first.empty());
-// 	REQUIRE(first.size() == 5);
-// 	REQUIRE(second.empty());
-// 	REQUIRE(second.size() == 0);
+	REQUIRE(!first.empty());
+	REQUIRE(first.size() == 5);
+	REQUIRE(second.empty());
+	REQUIRE(second.size() == 0);
 
 
-// 	second = first;
-// 	REQUIRE(!second.empty());
-// 	REQUIRE(second.size() == 5);
+	second = first;
+	REQUIRE(!second.empty());
+	REQUIRE(second.size() == 5);
 	
-// 	SECTION( "A deep_copy/clone must be made" ) {
-// 		second.erase(second.begin());
-// 		REQUIRE(second.size() == 4);
-// 		REQUIRE(second.find(10) == second.end());
-// 		REQUIRE(first.size() == 5);
-// 		REQUIRE(*first.find(10) == 10);
-// 	}
-// 	SECTION( "Must have no leaks when running w ur fav leak detect prog" ) {
-// 		first = cn::set<int>();
-// 	}
-// }
+	SECTION( "A deep_copy/clone must be made" ) {
+		second.erase(second.begin());
+		REQUIRE(second.size() == 4);
+		REQUIRE(second.find(10) == second.end());
+		REQUIRE(first.size() == 5);
+		REQUIRE(*first.find(10) == 10);
+	}
+	SECTION( "Must have no leaks when running w ur fav leak detect prog" ) {
+		first = cn::set<int>();
+	}
+}
 
 TEST_CASE( "set - iterator ", "[set][iterator]" )
 {
@@ -292,38 +292,38 @@ TEST_CASE( "set - Modifiers - erase ", "[set][modifier][erase]" )
 
 }
 
-// TEST_CASE( "set - Modifiers - swap ", "[set][modifier][swap]" )
-// {
-// 	int myints[]={12,75,10,32,20,25};
-// 	cn::set<int> first (myints,myints+2);     // 12,75
-// 	cn::set<int> second (myints+2,myints+6);  // 10,20,25,32,75
+TEST_CASE( "set - Modifiers - swap ", "[set][modifier][swap]" )
+{
+	int myints[]={12,75,10,32,20,25};
+	cn::set<int> first (myints,myints+2);     // 12,75
+	cn::set<int> second (myints+2,myints+6);  // 10,20,25,32,75
 
-// 	auto it = first.begin();
-// 	REQUIRE(*it++ == 12);
-// 	REQUIRE(*it++ == 75);
-// 	REQUIRE(it == first.end());
+	auto it = first.begin();
+	REQUIRE(*it++ == 12);
+	REQUIRE(*it++ == 75);
+	REQUIRE(it == first.end());
 
-// 	it = second.begin();
-// 	REQUIRE(*it++ == 10);
-// 	REQUIRE(*it++ == 20);
-// 	REQUIRE(*it++ == 25);
-// 	REQUIRE(*it++ == 32);
-// 	REQUIRE(it == second.end());
+	it = second.begin();
+	REQUIRE(*it++ == 10);
+	REQUIRE(*it++ == 20);
+	REQUIRE(*it++ == 25);
+	REQUIRE(*it++ == 32);
+	REQUIRE(it == second.end());
 
-// 	first.swap(second);
+	first.swap(second);
 
-// 	it = first.begin();
-// 	REQUIRE(*it++ == 10);
-// 	REQUIRE(*it++ == 20);
-// 	REQUIRE(*it++ == 25);
-// 	REQUIRE(*it++ == 32);
-// 	REQUIRE(it == first.end());
+	it = first.begin();
+	REQUIRE(*it++ == 10);
+	REQUIRE(*it++ == 20);
+	REQUIRE(*it++ == 25);
+	REQUIRE(*it++ == 32);
+	REQUIRE(it == first.end());
 
-// 	it = second.begin();
-// 	REQUIRE(*it++ == 12);
-// 	REQUIRE(*it++ == 75);
-// 	REQUIRE(it == second.end());
-// }
+	it = second.begin();
+	REQUIRE(*it++ == 12);
+	REQUIRE(*it++ == 75);
+	REQUIRE(it == second.end());
+}
 
 TEST_CASE( "set - Modifiers - clear ", "[set][modifier][clear]" )
 {

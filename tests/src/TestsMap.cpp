@@ -28,19 +28,19 @@ TEST_CASE( "map - construct", "[map][constructors]" )
 		REQUIRE(!second.empty());
 		REQUIRE(second.size() == 5);
 	}
-	// SECTION( "copy construtor" ) {
-	// 	cn::map<char,int> third (second);
-	// 	REQUIRE(!third.empty());
-	// 	REQUIRE(third.size() == 5);
+	SECTION( "copy construtor" ) {
+		cn::map<char,int> third (second);
+		REQUIRE(!third.empty());
+		REQUIRE(third.size() == 5);
 
-	// 	SECTION( "A deep_copy/clone must be made" ) {
-	// 		third.erase(--third.end());
-	// 		REQUIRE(third.size() == 4);
-	// 		REQUIRE(third.find('e') == third.end());
-	// 		REQUIRE(second.size() == 5);
-	// 		REQUIRE(second.find('e')->second == 50);
-	// 	}
-	// }
+		SECTION( "A deep_copy/clone must be made" ) {
+			third.erase(--third.end());
+			REQUIRE(third.size() == 4);
+			REQUIRE(third.find('e') == third.end());
+			REQUIRE(second.size() == 5);
+			REQUIRE(second.find('e')->second == 50);
+		}
+	}
 	SECTION( "iterator construtor" ) {
 		cn::map<char,int> fourth (second.begin(), second.end());
 		REQUIRE(!fourth.empty());
@@ -66,35 +66,35 @@ TEST_CASE( "map - construct", "[map][constructors]" )
 	}
 }
 
-// TEST_CASE( "map - operator - assignment ", "[map][operator][assignment]" )
-// {
-// 	cn::map<char,int> first;
-//   	cn::map<char,int> second;
+TEST_CASE( "map - operator - assignment ", "[map][operator][assignment]" )
+{
+	cn::map<char,int> first;
+  	cn::map<char,int> second;
 	
-// 	first['x']=10;
-// 	first['y']=20;
-// 	first['z']=30;
+	first['x']=10;
+	first['y']=20;
+	first['z']=30;
 
-// 	REQUIRE(!first.empty());
-// 	REQUIRE(first.size() == 3);
-// 	REQUIRE(second.empty());
-// 	REQUIRE(second.size() == 0);
+	REQUIRE(!first.empty());
+	REQUIRE(first.size() == 3);
+	REQUIRE(second.empty());
+	REQUIRE(second.size() == 0);
 
-// 	second = first;
-// 	REQUIRE(!second.empty());
-// 	REQUIRE(second.size() == 3);
+	second = first;
+	REQUIRE(!second.empty());
+	REQUIRE(second.size() == 3);
 	
-// 	SECTION( "A deep_copy/clone must be made" ) {
-// 		second.erase(second.begin());
-// 		REQUIRE(second.size() == 2);
-// 		REQUIRE(second.find('x') == second.end());
-// 		REQUIRE(first.size() == 3);
-// 		REQUIRE(first.find('x')->second == 10);
-// 	}
-// 	SECTION( "Must have no leaks when running w ur fav leak detect prog" ) {
-// 		first = cn::map<char,int>();
-// 	}
-// }
+	SECTION( "A deep_copy/clone must be made" ) {
+		second.erase(second.begin());
+		REQUIRE(second.size() == 2);
+		REQUIRE(second.find('x') == second.end());
+		REQUIRE(first.size() == 3);
+		REQUIRE(first.find('x')->second == 10);
+	}
+	SECTION( "Must have no leaks when running w ur fav leak detect prog" ) {
+		first = cn::map<char,int>();
+	}
+}
 
 TEST_CASE( "map - iterator ", "[map][iterator]" )
 {

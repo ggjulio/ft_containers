@@ -250,13 +250,24 @@ public:
 	rbTree(const _Compare& comp, const allocator_type& alloc = allocator_type())
 		: _m_impl(comp) { (void)alloc;}
 	rbTree(const rbTree& other)
-		: _m_impl(other._m_impl)
 	{
 		if (other._m_root())
 			_m_impl._header.parent = _m_copy(other);
 	}
 	~rbTree() {
 		_m_erase(_m_begin());
+	}
+
+	rbTree& operator=(const rbTree& other)
+	{
+		if (this != &other)
+		{
+			clear();
+			_m_impl._m_key_compare = other._m_impl._m_key_compare;
+			if (other._m_root())
+				_m_impl._header.parent = _m_copy(other);
+		}
+		return *this;
 	}
 
 	iterator				begin()			{ return iterator(_m_impl._header.left);}
@@ -738,22 +749,22 @@ private:
 
 	link_type _m_copy(const rbTree& x)
 	{
-		link_type root = _m_copy_node(x._m_begin());
+		link_type root = _m_copy_node(x._m_begin(), &_m_impl._header);
 		_m_impl._nodeCount = x._m_impl._nodeCount;
-		_m_impl._header.left = _s_minimum(_m_root());
-		_m_impl._header.right = _s_maximum(_m_root());
+		_m_impl._header.left = _s_minimum(root);
+		_m_impl._header.right = _s_maximum(root);
 		return root;
 	}
-	link_type _m_copy_node(const_link_type root)
+	link_type _m_copy_node(const_link_type root, base_ptr parent)
 	{
 		if (root == NULL)
 			return NULL;
 		link_type x = _nodeAlloc.allocate(1);
 		_nodeAlloc.construct(x, root->data);
 
-		x->parent = root->parent;
-		x->left = _m_copy_node(_s_left(root));
-		x->right = _m_copy_node(_s_right(root));
+		x->parent = parent;
+		x->left = _m_copy_node(_s_left(root), x);
+		x->right = _m_copy_node(_s_right(root), x);
 		x->color = root->color;
 		// x->data = root->data;
 		return x;

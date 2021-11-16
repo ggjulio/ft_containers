@@ -138,47 +138,47 @@ TEST_CASE( "map - iterator ", "[map][iterator]" )
 	}
 }
 
-// TEST_CASE( "map - reverse iterator ", "[map][reverse_iterator]" )
-// {
-// 	cn::map<char,int> mymap;
-// 	SECTION( "empty container should have begin() == end()" )
-// 	{
-// 		REQUIRE( mymap.rbegin() == mymap.rend() );
-// 	}
-// 	mymap.insert(cn::pair('a', 10));
-// 	SECTION( "container with one element should have consistant boundary" )
-// 	{
-// 		REQUIRE( ++mymap.rbegin() == mymap.rend() );
-// 		REQUIRE( mymap.rbegin() == --mymap.rend() );
-// 		REQUIRE( mymap.rbegin().operator*().second == 10 );
-// 		REQUIRE( mymap.rbegin().operator->() == &*mymap.rbegin() );
-// 	}
-// 	mymap.insert(cn::pair('b', 20));
-// 	mymap.insert(cn::pair('c', 30));
-// 	SECTION( "container with three elements should loop properly" )
-// 	{
-// 		auto it = mymap.rbegin();
-// 		int i = 40;
-// 		while (it != mymap.rend())
-// 		{
-// 			i -= 10;
-// 			REQUIRE(it->second == i);
-// 			++it;
-// 		}
-// 		REQUIRE(i == 10);
-// 	}
-// 	SECTION( "container with three elements should loop properly in reverse" )
-// 	{
-// 		auto it = mymap.rend();
-// 		int i = 0;
-// 		while (--it != mymap.rbegin())
-// 		{
-// 			i += 10;
-// 			REQUIRE(it->second == i);
-// 		}
-// 		REQUIRE(it->second == 30);
-// 	}
-// }
+TEST_CASE( "map - reverse iterator ", "[map][reverse_iterator]" )
+{
+	cn::map<char,int> mymap;
+	SECTION( "empty container should have begin() == end()" )
+	{
+		REQUIRE( mymap.rbegin() == mymap.rend() );
+	}
+	mymap.insert(cn::pair('a', 10));
+	SECTION( "container with one element should have consistant boundary" )
+	{
+		REQUIRE( ++mymap.rbegin() == mymap.rend() );
+		REQUIRE( mymap.rbegin() == --mymap.rend() );
+		REQUIRE( mymap.rbegin().operator*().second == 10 );
+		REQUIRE( mymap.rbegin().operator->() == &*mymap.rbegin() );
+	}
+	mymap.insert(cn::pair('b', 20));
+	mymap.insert(cn::pair('c', 30));
+	SECTION( "container with three elements should loop properly" )
+	{
+		auto it = mymap.rbegin();
+		int i = 40;
+		while (it != mymap.rend())
+		{
+			i -= 10;
+			REQUIRE(it->second == i);
+			++it;
+		}
+		REQUIRE(i == 10);
+	}
+	SECTION( "container with three elements should loop properly in reverse" )
+	{
+		auto it = mymap.rend();
+		int i = 0;
+		while (--it != mymap.rbegin())
+		{
+			i += 10;
+			REQUIRE(it->second == i);
+		}
+		REQUIRE(it->second == 30);
+	}
+}
 
 TEST_CASE( "map - capacity ", "[map][capacity]" )
 {

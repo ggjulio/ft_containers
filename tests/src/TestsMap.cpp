@@ -324,7 +324,7 @@ TEST_CASE( "map - Modifiers - erase ", "[map][modifier][erase]" )
 	}
 	
 	cn::map<char,int>::iterator it = ++mymap.begin();
-	cn::map<char,int>::iterator endRange =  ++mymap.end();
+	cn::map<char,int>::iterator endRange =  --mymap.end();
 	--endRange; --endRange; --endRange;
 	REQUIRE(it->first == 'd');
 	REQUIRE(endRange->first == 'f');

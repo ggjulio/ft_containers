@@ -271,7 +271,7 @@ TEST_CASE( "set - Modifiers - erase ", "[set][modifier][erase]" )
 	}
 	
 	cn::set<int>::iterator it = ++myset.begin();
-	cn::set<int>::iterator endRange =  ++myset.end();
+	cn::set<int>::iterator endRange =  --myset.end();
 	--endRange; --endRange; --endRange;
 	REQUIRE(*it == 40);
 	REQUIRE(*endRange == 60);

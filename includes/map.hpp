@@ -61,8 +61,8 @@ public:
 	typedef typename __tree::difference_type				difference_type;
 	typedef typename __tree::iterator		 				iterator;
 	typedef typename __tree::const_iterator 				const_iterator;
-	typedef typename ft::reverse_iterator<iterator>			reverse_iterator;
-	typedef typename ft::reverse_iterator<const_iterator>	const_reverse_iterator;
+	typedef typename __tree::reverse_iterator				reverse_iterator;
+	typedef typename __tree::const_reverse_iterator			const_reverse_iterator;
 
 
 // construct

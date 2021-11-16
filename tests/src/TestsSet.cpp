@@ -133,47 +133,47 @@ TEST_CASE( "set - iterator ", "[set][iterator]" )
 	}
 }
 
-// TEST_CASE( "set - reverse iterator ", "[set][reverse_iterator]" )
-// {
-// 	cn::set<int> myset;
-// 	SECTION( "empty container should have begin() == end()" )
-// 	{
-// 		REQUIRE( myset.rbegin() == myset.rend() );
-// 	}
-// 	myset.insert(10);
-// 	SECTION( "container with one element should have consistant boundary" )
-// 	{
-// 		REQUIRE( ++myset.rbegin() == myset.rend() );
-// 		REQUIRE( myset.rbegin() == --myset.rend() );
-// 		REQUIRE( myset.rbegin().operator*() == 10 );
-// 		REQUIRE( myset.rbegin().operator->() == &*myset.rbegin() );
-// 	}
-// 	myset.insert(20);
-// 	myset.insert(30);
-// 	SECTION( "container with three elements should loop properly" )
-// 	{
-// 		auto it = myset.rbegin();
-// 		int i = 40;
-// 		while (it != myset.rend())
-// 		{
-// 			i -= 10;
-// 			REQUIRE(*it == i);
-// 			++it;
-// 		}
-// 		REQUIRE(i == 10);
-// 	}
-// 	SECTION( "container with three elements should loop properly in reverse" )
-// 	{
-// 		auto it = myset.rend();
-// 		int i = 0;
-// 		while (--it != myset.rbegin())
-// 		{
-// 			i += 10;
-// 			REQUIRE(*it == i);
-// 		}
-// 		REQUIRE(*it == 30);
-// 	}
-// }
+TEST_CASE( "set - reverse iterator ", "[set][reverse_iterator]" )
+{
+	cn::set<int> myset;
+	SECTION( "empty container should have begin() == end()" )
+	{
+		REQUIRE( myset.rbegin() == myset.rend() );
+	}
+	myset.insert(10);
+	SECTION( "container with one element should have consistant boundary" )
+	{
+		REQUIRE( ++myset.rbegin() == myset.rend() );
+		REQUIRE( myset.rbegin() == --myset.rend() );
+		REQUIRE( myset.rbegin().operator*() == 10 );
+		REQUIRE( myset.rbegin().operator->() == &*myset.rbegin() );
+	}
+	myset.insert(20);
+	myset.insert(30);
+	SECTION( "container with three elements should loop properly" )
+	{
+		auto it = myset.rbegin();
+		int i = 40;
+		while (it != myset.rend())
+		{
+			i -= 10;
+			REQUIRE(*it == i);
+			++it;
+		}
+		REQUIRE(i == 10);
+	}
+	SECTION( "container with three elements should loop properly in reverse" )
+	{
+		auto it = myset.rend();
+		int i = 0;
+		while (--it != myset.rbegin())
+		{
+			i += 10;
+			REQUIRE(*it == i);
+		}
+		REQUIRE(*it == 30);
+	}
+}
 
 TEST_CASE( "set - capacity ", "[set][capacity]" )
 {

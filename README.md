@@ -28,6 +28,9 @@
 - https://gcc.gnu.org/onlinedocs/libstdc++/manual/containers.html
 
 - https://www.happycoders.eu/algorithms/red-black-tree-java/
+
+
+- https://kaltofen.math.ncsu.edu/courses/Languages/C++Examples/iso14882.pdf
 #### intro to algorithms (rb tree insertion, deletion algorithm page 315)
 - https://edutechlearners.com/download/Introduction_to_algorithms-3rd%20Edition.pdf
 

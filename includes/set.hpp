@@ -40,8 +40,8 @@ public:
 	typedef typename __tree::const_iterator 				iterator; 	// this is not an error, iterator is required to be modifiable,
 																		//  but this allows modification of keys. libstdc++ does that too
 	typedef typename __tree::const_iterator 				const_iterator;
-	typedef typename ft::reverse_iterator<iterator>			reverse_iterator;
-	typedef typename ft::reverse_iterator<const_iterator>	const_reverse_iterator;
+	typedef typename __tree::reverse_iterator				reverse_iterator;
+	typedef typename __tree::const_reverse_iterator			const_reverse_iterator;
 
 
 // construct

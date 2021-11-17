@@ -6,15 +6,6 @@
 #include <vector>
 #include <typeinfo>
 
-namespace NS_NAME
-{
-	// std::ostream&	operator<<(std::ostream& os, const cn::& tag)
-	// {
-	// 	os << ;
-	// 	return os;
-	// }
-}
-
 /////////////////////
 // iterator traits //
 /////////////////////

@@ -2,13 +2,11 @@
 #define MAP_HPP
 
 #include <memory>
-#include <utility>
-#include <map>
-
-#include "utility.hpp"
-#include "function.hpp"
 
 #include "rb_tree.hpp"
+#include "function.hpp"
+#include "utility.hpp"
+
 
 namespace ft
 {

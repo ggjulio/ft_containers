@@ -1,6 +1,7 @@
 #include "tests.hpp"
 
 #include "map.hpp"
+#include <map>
 
 bool fncomp_map (int lhs, int rhs) {return lhs>rhs;}
 

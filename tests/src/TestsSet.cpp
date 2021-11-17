@@ -1,6 +1,7 @@
 #include "tests.hpp"
 
 #include "set.hpp"
+#include <set>
 
 #include <typeinfo>
 

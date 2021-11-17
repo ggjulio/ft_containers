@@ -1,8 +1,6 @@
 #ifndef SET_HPP
 #define SET_HPP
 
-#include <set>
-
 #include "rb_tree.hpp"
 #include "function.hpp"
 

@@ -1,3 +1,5 @@
+[![C/C++ CI](https://github.com/ggjulio/ft_containers/actions/workflows/ci.yml/badge.svg)](https://github.com/ggjulio/ft_containers/actions/workflows/ci.yml)
+
 #### ft_containers
 
 - https://users.cs.northwestern.edu/~riesbeck/programming/c++/stl-iterator-define.html

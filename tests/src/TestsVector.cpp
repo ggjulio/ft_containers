@@ -551,3 +551,67 @@ TEST_CASE( "vector - Allocator - get_allocator ", "[vector][allocator][get_alloc
 
 	myvector.get_allocator().deallocate(p,5);
 }
+
+TEST_CASE( "vector - non-member - relational operators", "[vector][non-member][relational][operator]" )
+{
+	std::vector<int> foo (3,100);
+	std::vector<int> bar (2,200);
+	std::vector<int> bare (2,200);
+
+
+	REQUIRE( foo != bar );
+	REQUIRE( foo < bar );
+	REQUIRE( foo <= bar );
+
+	REQUIRE( bar > foo );
+	REQUIRE( bar >= foo );
+
+	REQUIRE( bar == bare );
+	REQUIRE( bar <= bare );
+
+	REQUIRE( bare  >= bar );
+
+}
+
+TEST_CASE( "vector - non-member - swap", "[vector][non-member][swap]" )
+{
+	int myints[]={12,75,10,32,20,25};
+	cn::vector<int> first (myints,myints+2);     // 12,75
+	cn::vector<int> second (myints+2,myints+6);  // 10,20,25,32
+
+	REQUIRE( first.size() == 2 );
+	REQUIRE( first.capacity() == 2 );
+	REQUIRE( second.size() == 4 );
+	REQUIRE( second.capacity() == 4 );
+
+	auto it = first.begin();
+	REQUIRE(*it++ == 12);
+	REQUIRE(*it++ == 75);
+	REQUIRE(it == first.end());
+
+	it = second.begin();
+	REQUIRE(*it++ == 10);
+	REQUIRE(*it++ == 32);
+	REQUIRE(*it++ == 20);
+	REQUIRE(*it++ == 25);
+	REQUIRE(it == second.end());
+
+	cn::swap(first, second);
+
+	REQUIRE( first.size() == 4 );
+	REQUIRE( first.capacity() == 4 );
+	REQUIRE( second.size() == 2 );
+	REQUIRE( second.capacity() == 2 );
+
+	it = first.begin();
+	REQUIRE(*it++ == 10);
+	REQUIRE(*it++ == 32);
+	REQUIRE(*it++ == 20);
+	REQUIRE(*it++ == 25);
+	REQUIRE(it == first.end());
+
+	it = second.begin();
+	REQUIRE(*it++ == 12);
+	REQUIRE(*it++ == 75);
+	REQUIRE(it == second.end());
+}

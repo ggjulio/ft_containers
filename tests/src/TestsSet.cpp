@@ -296,7 +296,7 @@ TEST_CASE( "set - Modifiers - swap ", "[set][modifier][swap]" )
 {
 	int myints[]={12,75,10,32,20,25};
 	cn::set<int> first (myints,myints+2);     // 12,75
-	cn::set<int> second (myints+2,myints+6);  // 10,20,25,32,75
+	cn::set<int> second (myints+2,myints+6);  // 10,20,25,32
 
 	auto it = first.begin();
 	REQUIRE(*it++ == 12);

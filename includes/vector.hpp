@@ -55,6 +55,8 @@ struct _vector_impl
 
 	_vector_impl() {};
 
+
+
 };
 
 template<typename _T, typename _Alloc = std::allocator<_T> >
@@ -74,14 +76,19 @@ public:
 
 	typedef pointer									iterator;
 	typedef const_pointer							const_iterator;
-	typedef reverse_iterator<iterator>				reverse_iterator;
-	typedef reverse_iterator<const_iterator>		const_reverse_iterator;
+	// typedef reverse_iterator<iterator>				reverse_iterator;
+	// typedef reverse_iterator<const_iterator>		const_reverse_iterator;
 
 private:
-	_vector_impl _m_impl;
+	_vector_impl<value_type> _m_impl;
+	static node_allocator _nodeAlloc;
+
 public:
 	// default	
-	explicit vector (const allocator_type& alloc = allocator_type()) {}
+	explicit vector (const allocator_type& alloc = allocator_type())
+	{
+		(void)alloc;
+	}
 	// fill
 	explicit vector (size_type n, const value_type& val = value_type(),
 			const allocator_type& alloc = allocator_type())
@@ -111,33 +118,33 @@ public:
 	}
 
 	// iterators
-	iterator 				begin()			{ return 0; }
-	const_iterator			begin() const	{ return 0; }
-	iterator				end()			{ return 0; }
-	const_iterator			end() const		{ return 0; }
-	reverse_iterator 		rbegin()		{ return 0; }
-	const_reverse_iterator 	rbegin() const	{ return 0; }
-	reverse_iterator		rend()			{ return 0; }
-	const_reverse_iterator	rend() const	{ return 0; }
+	iterator 				begin()			{ return _m_impl._m_start; }
+	const_iterator			begin() const	{ return _m_impl._m_start; }
+	iterator				end()			{ return _m_impl._m_finish; }
+	const_iterator			end() const		{ return _m_impl._m_finish; }
+	// reverse_iterator 		rbegin()		{ return 0; }
+	// const_reverse_iterator 	rbegin() const	{ return 0; }
+	// reverse_iterator		rend()			{ return 0; }
+	// const_reverse_iterator	rend() const	{ return 0; }
 
 	// capacity
-	size_type	size() const										{ return 0; }
+	size_type	size() const										{ return _m_impl._m_finish - _m_impl._m_start; }
 	size_type	max_size() const									{ return 0; }
 	void		resize (size_type n, value_type val = value_type()) {(void)n; (void)val; }
-	size_type	capacity() const									{ return 0; }
-	bool		empty() const										{ return true;}
+	size_type	capacity() const									{ return _m_impl._m_end_of_storage - _m_impl._m_start; }
+	bool		empty() const										{ return begin() == end();}
 	void		reserve(size_type n) 								{ (void)n; }
 
 
 	// Element access
-	reference			operator[](size_type n)			{ (void)n; return NULL; }
-	const_reference		operator[](size_type n) const	{ (void)n; return NULL; }
-	reference 			at(size_type n) 				{ (void)n; return NULL; }
-	const_reference 	at(size_type n) const			{ (void)n; return NULL; }
-	reference 			front()							{ return NULL; }
-	const_reference		front() const					{ return NULL; }
-	reference			back()							{ return NULL; }
-	const_reference		back() const					{ return NULL; }
+	reference			operator[](size_type n)			{ return *(_m_impl._m_start + n); }
+	const_reference		operator[](size_type n) const	{ return *(_m_impl._m_start + n); }
+	reference 			at(size_type n) 				{ return (*this)[n]; }
+	const_reference 	at(size_type n) const			{ return (*this)[n]; }
+	reference 			front()							{ return *begin(); }
+	const_reference		front() const					{ return *begin(); }
+	reference			back()							{ return *(end() - 1); }
+	const_reference		back() const					{ return *(end() - 1); }
 
 	// Modifiers
 	template <class InputIterator>

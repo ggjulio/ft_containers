@@ -98,7 +98,7 @@ public:
 	}
 	// range
 	template <class InputIterator,
-		typename enable_if<!is_integral<InputIterator>::value, bool>::type = true>
+		typename enable_if<!is_integral<InputIterator>::value, bool>::type>
 	vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type())
 	{
 		(void)alloc;

@@ -52,11 +52,6 @@ struct _vector_impl
 	pointer  _m_start;
 	pointer  _m_finish;
 	pointer  _m_end_of_storage;
-
-	_vector_impl() {};
-
-
-
 };
 
 template<typename _T, typename _Alloc = std::allocator<_T> >
@@ -81,7 +76,7 @@ public:
 
 private:
 	_vector_impl<value_type> _m_impl;
-	static node_allocator _nodeAlloc;
+	static allocator_type _m_alloc;
 
 public:
 	// default	
@@ -93,13 +88,21 @@ public:
 	explicit vector (size_type n, const value_type& val = value_type(),
 			const allocator_type& alloc = allocator_type())
 	{
-		(void)n;(void)val;(void)alloc;
+		(void)alloc;
+		_m_create_storage(n);
+		std::uninitialized_fill_n(_m_impl._m_start, n, val);
 	}
 	// range
+	
 	template <class InputIterator>
 	 vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type())
 	 {
-		(void)first;(void)last;(void)alloc; 
+		(void)alloc;
+		while (first != last)
+		{
+			push_back(*first);
+			++first;
+		}
 	 }
 	
 	vector(const vector& other)
@@ -129,7 +132,7 @@ public:
 
 	// capacity
 	size_type	size() const										{ return _m_impl._m_finish - _m_impl._m_start; }
-	size_type	max_size() const									{ return 0; }
+	size_type	max_size() const									{ return _m_alloc.max_size(); }
 	void		resize (size_type n, value_type val = value_type()) {(void)n; (void)val; }
 	size_type	capacity() const									{ return _m_impl._m_end_of_storage - _m_impl._m_start; }
 	bool		empty() const										{ return begin() == end();}
@@ -164,11 +167,17 @@ public:
 	// Allocator
 	allocator_type get_allocator() const;
 
-
-
-
-
 private:
+
+	void _m_create_storage(size_type n)
+	{
+		_m_impl._m_start = _m_alloc.allocate(n);
+		_m_impl._m_finish = _m_impl._m_start;
+		_m_impl._m_end_of_storage = _m_impl._m_start + n;
+	}
+
+
+
 	template<class _T1, class _Alloc1>
 	friend bool operator==(const vector<_T1, _Alloc1>&, const vector<_T1, _Alloc1>&);
 	
@@ -208,6 +217,11 @@ template<class _T, class _Alloc>
 
 template <class _T, class _Alloc>
   void swap (vector<_T, _Alloc>& x, vector<_T, _Alloc>& y) {(void)x;(void)y;}
+
+template<class _T, class _Alloc>
+typename vector<_T, _Alloc>::allocator_type  vector<_T, _Alloc>::_m_alloc;
+
+
 
 } /* namespace ft */
 

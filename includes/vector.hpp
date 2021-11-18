@@ -4,7 +4,8 @@
 
 #include <memory>
 #include <vector> 
-#include "iterator.hpp"
+// #include "iterator.hpp"
+#include "type_traits.hpp"
 
 namespace ft{
 
@@ -69,6 +70,8 @@ public:
 	typedef value_type								*pointer;
 	typedef const value_type						*const_pointer;
 
+	// typedef iterator_traits<pointer>								iterator;
+	// typedef iterator_traits<const pointer>								iterator;
 	typedef pointer									iterator;
 	typedef const_pointer							const_iterator;
 	// typedef reverse_iterator<iterator>				reverse_iterator;
@@ -91,19 +94,20 @@ public:
 		(void)alloc;
 		_m_create_storage(n);
 		std::uninitialized_fill_n(_m_impl._m_start, n, val);
+		_m_impl._m_finish += n;
 	}
 	// range
-	
-	template <class InputIterator>
-	 vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type())
-	 {
+	template <class InputIterator,
+		typename enable_if<!is_integral<InputIterator>::value, bool>::type = true>
+	vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type())
+	{
 		(void)alloc;
 		while (first != last)
 		{
 			push_back(*first);
 			++first;
 		}
-	 }
+	}
 	
 	vector(const vector& other)
 	{

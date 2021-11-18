@@ -37,3 +37,7 @@
 - https://edutechlearners.com/download/Introduction_to_algorithms-3rd%20Edition.pdf
 
 - https://www.cs.dartmouth.edu/~thc/cs10/lectures/0428/0428.html
+
+
+### std::tag...
+- https://stackoverflow.com/questions/8054273/how-to-implement-an-stl-style-iterator-and-avoid-common-pitfalls

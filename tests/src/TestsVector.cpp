@@ -23,42 +23,42 @@ TEST_CASE( "vector - construct", "[vector][constructors]" )
 		REQUIRE( !second.empty());
 		REQUIRE( second.capacity() == 4);
 	}
-	cn::vector<int> third (second.begin(),second.end());
-	SECTION( "range constructor" )
-	{
-		CHECK( third[0] == 100);
-		CHECK( third[1] == 100);
-		CHECK( third[2] == 100);
-		CHECK( third[3] == 100);
-		REQUIRE( third.size() == 4);
-		REQUIRE( !third.empty());
-		REQUIRE( second.capacity() == 4);
-	}
-	cn::vector<int> fourth (third);
-	SECTION( "copy constructor" )
-	{
-		CHECK( fourth[0] == 100);
-		CHECK( fourth[1] == 100);
-		CHECK( fourth[2] == 100);
-		CHECK( fourth[3] == 100);
-		REQUIRE( fourth.size() == 4);
-		REQUIRE( !fourth.empty());
-		REQUIRE( second.capacity() == 4);
-	}
-	SECTION( "the iterator constructor can also be used to construct from arrays" )
-	{
-		int myints[] = {16,2,77,29, 42};
-		cn::vector<int> fifth(myints, myints + sizeof(myints) / sizeof(int));
+	// cn::vector<int> third (second.begin(),second.end());
+	// SECTION( "range constructor" )
+	// {
+	// 	CHECK( third[0] == 100);
+	// 	CHECK( third[1] == 100);
+	// 	CHECK( third[2] == 100);
+	// 	CHECK( third[3] == 100);
+	// 	REQUIRE( third.size() == 4);
+	// 	REQUIRE( !third.empty());
+	// 	REQUIRE( second.capacity() == 4);
+	// }
+	// cn::vector<int> fourth (third);
+	// SECTION( "copy constructor" )
+	// {
+	// 	CHECK( fourth[0] == 100);
+	// 	CHECK( fourth[1] == 100);
+	// 	CHECK( fourth[2] == 100);
+	// 	CHECK( fourth[3] == 100);
+	// 	REQUIRE( fourth.size() == 4);
+	// 	REQUIRE( !fourth.empty());
+	// 	REQUIRE( second.capacity() == 4);
+	// }
+	// SECTION( "the iterator constructor can also be used to construct from arrays" )
+	// {
+	// 	int myints[] = {16,2,77,29, 42};
+	// 	cn::vector<int> fifth(myints, myints + sizeof(myints) / sizeof(int));
 
-		CHECK( fifth[0] == 16);
-		CHECK( fifth[1] == 2);
-		CHECK( fifth[2] == 77);
-		CHECK( fifth[3] == 29);
-		CHECK( fifth[4] == 42);
-		REQUIRE( !fifth.empty());
-		REQUIRE( fifth.size() == 5);
-		REQUIRE( second.capacity() == 4);
-	}
+	// 	CHECK( fifth[0] == 16);
+	// 	CHECK( fifth[1] == 2);
+	// 	CHECK( fifth[2] == 77);
+	// 	CHECK( fifth[3] == 29);
+	// 	CHECK( fifth[4] == 42);
+	// 	REQUIRE( !fifth.empty());
+	// 	REQUIRE( fifth.size() == 5);
+	// 	REQUIRE( second.capacity() == 4);
+	// }
 }
 
 // TEST_CASE( "vector - operator - assignment ", "[vector][operator][assignment]" )
@@ -79,47 +79,47 @@ TEST_CASE( "vector - construct", "[vector][constructors]" )
 // 	REQUIRE(first.empty());
 // }
 
-// TEST_CASE( "vector - iterator ", "[vector][iterator]" )
-// {
-// 	cn::vector<int> myvector;
-// 	SECTION( "empty container should have begin() == end()" )
-// 	{
-// 		REQUIRE( myvector.begin() == myvector.end() );
-// 	}
-// 	myvector.push_back(10);
-// 	SECTION( "container with one element should have consistant boundary" )
-// 	{
-// 		REQUIRE( ++myvector.begin() == myvector.end() );
-// 		REQUIRE( myvector.begin() == --myvector.end() );
-// 		REQUIRE( myvector.begin().operator*() == 10 );
-// 		REQUIRE( myvector.begin().operator->() == &*myvector.begin() );
-// 	}
-// 	myvector.push_back(20);
-// 	myvector.push_back(30);
-// 	SECTION( "container with three elements should loop properly" )
-// 	{
-// 		auto it = myvector.begin();
-// 		int i = 0;
-// 		while (it != myvector.end())
-// 		{
-// 			i += 10;
-// 			REQUIRE(*it == i);
-// 			++it;
-// 		}
-// 		REQUIRE(i == 30);
-// 	}
-// 	SECTION( "container with three elements should loop properly in reverse" )
-// 	{
-// 		auto it = myvector.end();
-// 		int i = 40;
-// 		while (--it != myvector.begin())
-// 		{
-// 			i -= 10;
-// 			REQUIRE(*it == i);
-// 		}
-// 		REQUIRE(*it == 10);
-// 	}
-// }
+TEST_CASE( "vector - iterator ", "[vector][iterator]" )
+{
+	cn::vector<int> myvector;
+	SECTION( "empty container should have begin() == end()" )
+	{
+		REQUIRE( myvector.begin() == myvector.end() );
+	}
+	myvector.push_back(10);
+	SECTION( "container with one element should have consistant boundary" )
+	{
+		REQUIRE( ++myvector.begin() == myvector.end() );
+		REQUIRE( myvector.begin() == --myvector.end() );
+		REQUIRE( myvector.begin().operator*() == 10 );
+		REQUIRE( myvector.begin().operator->() == &*myvector.begin() );
+	}
+	// myvector.push_back(20);
+	// myvector.push_back(30);
+	// SECTION( "container with three elements should loop properly" )
+	// {
+	// 	auto it = myvector.begin();
+	// 	int i = 0;
+	// 	while (it != myvector.end())
+	// 	{
+	// 		i += 10;
+	// 		REQUIRE(*it == i);
+	// 		++it;
+	// 	}
+	// 	REQUIRE(i == 30);
+	// }
+	// SECTION( "container with three elements should loop properly in reverse" )
+	// {
+	// 	auto it = myvector.end();
+	// 	int i = 40;
+	// 	while (--it != myvector.begin())
+	// 	{
+	// 		i -= 10;
+	// 		REQUIRE(*it == i);
+	// 	}
+	// 	REQUIRE(*it == 10);
+	// }
+}
 
 // TEST_CASE( "vector - reverse iterator ", "[vector][reverse_iterator]" )
 // {

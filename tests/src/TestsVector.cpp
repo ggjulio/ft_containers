@@ -223,45 +223,45 @@ TEST_CASE( "vector - iterator ", "[vector][iterator]" )
 // 	}
 // }
 
-// TEST_CASE( "vector - Element access - operator[] (subscript) ", "[vector][element_access][operator][subscript]" )
-// {
-// 	cn::vector<int> v(5, 42);
+TEST_CASE( "vector - Element access - operator[] (subscript) ", "[vector][element_access][operator][subscript]" )
+{
+	cn::vector<int> v(5, 42);
 
-// 	REQUIRE( v[0] == 42);
-// 	v[0] = -42;
-// 	REQUIRE( v[0] == -42);
-// 	v[1] = v[0];
-// 	REQUIRE( v[1] == -42);
-// }
+	REQUIRE( v[0] == 42);
+	v[0] = -42;
+	REQUIRE( v[0] == -42);
+	v[1] = v[0];
+	REQUIRE( v[1] == -42);
+}
 
-// TEST_CASE( "vector - Element access - at() ", "[vector][element_access][at]" )
-// {
-// 	cn::vector<int> v(5, 42);
+TEST_CASE( "vector - Element access - at() ", "[vector][element_access][at]" )
+{
+	cn::vector<int> v(5, 42);
 
-// 	REQUIRE( v.at(0) == 42);
-// 	v.at(0) = -42;
-// 	REQUIRE( v.at(0) == -42);
-// 	v.at(1) = v.at(0);
-// 	REQUIRE( v.at(1) == -42);
-// }
+	REQUIRE( v.at(0) == 42);
+	v.at(0) = -42;
+	REQUIRE( v.at(0) == -42);
+	v.at(1) = v.at(0);
+	REQUIRE( v.at(1) == -42);
+}
 
-// TEST_CASE( "vector - Element access - front() ", "[vector][element_access][front]" )
-// {
-// 	cn::vector<int> v(5, 42);
+TEST_CASE( "vector - Element access - front() ", "[vector][element_access][front]" )
+{
+	cn::vector<int> v(5, 42);
 
-// 	REQUIRE( v.front() == 42);
-// 	v.at(0) = -42;
-// 	REQUIRE( v.front() == -42);
-// }
+	REQUIRE( v.front() == 42);
+	v.at(0) = -42;
+	REQUIRE( v.front() == -42);
+}
 
-// TEST_CASE( "vector - Element access - back() ", "[vector][element_access][back]" )
-// {
-// 	cn::vector<int> v(5, 42);
+TEST_CASE( "vector - Element access - back() ", "[vector][element_access][back]" )
+{
+	cn::vector<int> v(5, 42);
 
-// 	REQUIRE( v.back() == 42);
-// 	v.at(4) = -42;
-// 	REQUIRE( v.back() == -42);
-// }
+	REQUIRE( v.back() == 42);
+	v.at(4) = -42;
+	REQUIRE( v.back() == -42);
+}
 
 // TEST_CASE( "vector - Modifiers - assign() ", "[vector][modifier][assign]" )
 // {
@@ -291,43 +291,49 @@ TEST_CASE( "vector - iterator ", "[vector][iterator]" )
 // 	}
 // }
 
-// TEST_CASE( "vector - Modifiers - push_back() and pop_back() ", "[vector][modifier][push_back][pop_back]" )
-// {
-// 	cn::vector<int> myvector;
+TEST_CASE( "vector - Modifiers - push_back() and pop_back() ", "[vector][modifier][push_back][pop_back]" )
+{
+	cn::vector<int> myvector;
 
-// 	myvector.push_back(42);
-// 	REQUIRE( myvector.size() == 1);
-// 	REQUIRE( myvector[0] == 42);
+	myvector.push_back(42);
+	REQUIRE( myvector.size() == 1);
+	REQUIRE( myvector.capacity() == 1);
+	REQUIRE( myvector[0] == 42);
 
-// 	myvector.push_back(43);
-// 	REQUIRE( myvector.size() == 2);
-// 	REQUIRE( myvector[1] == 43);
+	myvector.push_back(43);
+	REQUIRE( myvector.size() == 2);
+	REQUIRE( myvector.capacity() == 2);
+	REQUIRE( myvector[1] == 43);
 
-// 	myvector.push_back(44);
-// 	REQUIRE( myvector.size() == 3);
-// 	REQUIRE( myvector[2] == 44);
+	myvector.push_back(44);
+	REQUIRE( myvector.size() == 3);
+	REQUIRE( myvector.capacity() == 4);
+	REQUIRE( myvector[2] == 44);
 
-// 	myvector.pop_back();
-// 	REQUIRE( myvector.size() == 2);
+	myvector.pop_back();
+	REQUIRE( myvector.size() == 2);
+	REQUIRE( myvector.capacity() == 4);
 
-// 	myvector.pop_back();
-// 	REQUIRE( myvector.size() == 1);
+	myvector.pop_back();
+	REQUIRE( myvector.size() == 1);
+	REQUIRE( myvector.capacity() == 4);
 
-// 	myvector.pop_back();
-// 	REQUIRE( myvector.size() == 0);
-// 	REQUIRE( myvector.empty());
+	myvector.pop_back();
+	REQUIRE( myvector.size() == 0);
+	REQUIRE( myvector.capacity() == 4);
+	REQUIRE( myvector.empty());
 
 
-// 	myvector.pop_back();
-// 	SECTION( "pop_back an empty vector" )
-// 	{
-// 		REQUIRE( myvector.size() == (size_t)-1);
-// 		REQUIRE( !myvector.empty());
-// 	}
+	myvector.pop_back();
+	SECTION( "pop_back an empty vector" )
+	{
+		REQUIRE( myvector.size() == (size_t)-1);
+		REQUIRE( !myvector.empty());
+	}
 
-// 	// also add tests for resize when size > capacity
+	// also add tests for resize when size > capacity
 
-// }
+}
 
 // TEST_CASE( "vector - Modifiers - insert() ", "[vector][modifier][insert]" )
 // {
@@ -506,37 +512,37 @@ TEST_CASE( "vector - iterator ", "[vector][iterator]" )
 // 	REQUIRE(it == second.end());
 // }
 
-// TEST_CASE( "vector - Modifiers - clear ", "[vector][modifier][clear]" )
-// {
-// 	cn::vector<int> emptyVector;
-// 	SECTION( "Empty vector being clear should be okay" )
-// 	{
-// 		emptyVector.clear();
-// 		REQUIRE( emptyVector.empty() );
-// 		REQUIRE( emptyVector.size() == 0);
-// 		REQUIRE( emptyVector.capacity() == 0);
-// 	}
+TEST_CASE( "vector - Modifiers - clear ", "[vector][modifier][clear]" )
+{
+	cn::vector<int> emptyVector;
+	SECTION( "Empty vector being clear should be okay" )
+	{
+		emptyVector.clear();
+		REQUIRE( emptyVector.empty() );
+		REQUIRE( emptyVector.size() == 0);
+		REQUIRE( emptyVector.capacity() == 0);
+	}
 
-// 	int myints[]={12,75,10,32,20,25};
-// 	cn::vector<int> myvector (myints,myints+6);
-// 	REQUIRE( !myvector.empty() );
-// 	REQUIRE( myvector.size() == 6);
-// 	REQUIRE( myvector.capacity() == 6);
-// 	myvector.clear();
-// 	SECTION( "Clear set who contain element should be ok" )
-// 	{
-// 		REQUIRE( myvector.empty() );
-// 		REQUIRE( myvector.size() == 0);
-// 		REQUIRE( myvector.capacity() == 6);
-// 	}
-// 	myvector.clear();
-// 	SECTION( "Clear two times should be ok" )
-// 	{
-// 		REQUIRE( myvector.empty() );
-// 		REQUIRE( myvector.size() == 0);
-// 		REQUIRE( myvector.capacity() == 6);
-// 	}
-// }
+	int myints[]={12,75,10,32,20,25};
+	cn::vector<int> myvector (myints,myints+6);
+	REQUIRE( !myvector.empty() );
+	REQUIRE( myvector.size() == 6);
+	REQUIRE( myvector.capacity() == 6);
+	myvector.clear();
+	SECTION( "Clear set who contain element should be ok" )
+	{
+		REQUIRE( myvector.empty() );
+		REQUIRE( myvector.size() == 0);
+		REQUIRE( myvector.capacity() == 6);
+	}
+	myvector.clear();
+	SECTION( "Clear two times should be ok" )
+	{
+		REQUIRE( myvector.empty() );
+		REQUIRE( myvector.size() == 0);
+		REQUIRE( myvector.capacity() == 6);
+	}
+}
 
 // TEST_CASE( "vector - Allocator - get_allocator ", "[vector][allocator][get_allocator]" )
 // {

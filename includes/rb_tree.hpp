@@ -125,7 +125,7 @@ struct RbTree_iterator
 	Self operator++(int) throw(){ Self tmp = *this; _m_node = _rb_tree_increment(_m_node); return tmp; }
 
 	Self &operator--() throw()	{ _m_node = _rb_tree_decrement(_m_node); return *this; }
-	Self operator--(int) throw(){ Self __tmp = *this; _m_node = _rb_tree_decrement(_m_node); return __tmp; }
+	Self operator--(int) throw(){ Self tmp = *this; _m_node = _rb_tree_decrement(_m_node); return tmp; }
 
 	friend bool operator==(const Self &x, const Self &y) throw() { return x._m_node == y._m_node; }
 	friend bool operator!=(const Self &x, const Self &y) throw() { return !(x._m_node == y._m_node); }

@@ -10,37 +10,43 @@
 namespace ft{
 
 
-// template <typename T>
-// struct vector_iterator
-// {
-// 	typedef T value_type;
-// 	typedef T &reference;
-// 	typedef T *pointer;
+template <typename T>
+struct vector_iterator
+{
+	typedef T	value_type;
+	typedef value_type	&reference;
+	typedef value_type	*pointer;
 
-// 	typedef std::random_access_iterator_tag iterator_category;
-// 	typedef std::ptrdiff_t difference_type;
+	typedef std::random_access_iterator_tag		iterator_category;
+	typedef std::ptrdiff_t						difference_type;
 
-// 	typedef vector_iterator<T> Self;
-// 	typedef node_base::base_ptr base_ptr;
-// 	typedef node<T> *link_type;
+	typedef vector_iterator<value_type> Self;
 
-// 	vector_iterator()						: _m_node() {}
-// 	vector_iterator(base_ptr ptr) throw()	: _m_node(ptr) {}
+	vector_iterator()						: _m_ptr(0) {}
+	vector_iterator(pointer ptr) throw()	: _m_ptr(ptr) {}
 
-// 	reference operator*() const throw() { return *static_cast<link_type>(_m_node)->_m_dataPtr(); }
-// 	pointer operator->() const throw()	{ return static_cast<link_type>(_m_node)->_m_dataPtr(); }
+	reference	operator*() const throw()		{ return *_m_ptr; }
+	pointer		operator->() const throw()		{ return _m_ptr; }
+	reference	operator[](size_t n) const		{ return *(_m_ptr + n); }
 
-// 	Self &operator++() throw()	{ _m_node = _rb_tree_increment(_m_node); return *this; }
-// 	Self operator++(int) throw(){ Self tmp = *this; _m_node = _rb_tree_increment(_m_node); return tmp; }
+	Self &operator++() throw()		{ ++_m_ptr; return *this; }
+	Self operator++(int) throw()	{ Self tmp = *this; ++_m_ptr; return tmp; }
 
-// 	Self &operator--() throw()	{ _m_node = _rb_tree_decrement(_m_node); return *this; }
-// 	Self operator--(int) throw(){ Self __tmp = *this; _m_node = _rb_tree_decrement(_m_node); return __tmp; }
+	Self &operator--() throw()		{ _m_ptr -= 1; return *this; }
+	Self operator--(int) throw()	{ Self tmp = *this; _m_ptr -= 1; return tmp; }
 
-// 	friend bool operator==(const Self &x, const Self &y) throw() { return x._m_node == y._m_node; }
-// 	friend bool operator!=(const Self &x, const Self &y) throw() { return !(x._m_node == y._m_node); }
+	Self  operator+ (difference_type n) const	{ return _m_ptr + n;}
+	Self& operator+=(difference_type n)			{ _m_ptr += n; return *this;}
+	Self  operator- (difference_type n) const	{ return _m_ptr - n;}
+	Self& operator-=(difference_type n) 		{ _m_ptr -= n; return *this;}
 
-// 	base_ptr _m_node;
-// }; /* struct RbTree_iterator */
+
+	friend bool operator==(const Self &x, const Self &y) throw() { return x._m_ptr == y._m_ptr; }
+	friend bool operator!=(const Self &x, const Self &y) throw() { return !(x._m_ptr == y._m_ptr); }
+
+private:
+	pointer _m_ptr;
+}; /* struct vector_iterator */
 
 
 
@@ -53,6 +59,12 @@ struct _vector_impl
 	pointer  _m_start;
 	pointer  _m_finish;
 	pointer  _m_end_of_storage;
+
+	_vector_impl()
+	{
+		_m_start = _m_finish = _m_end_of_storage = 0;
+	}
+
 };
 
 template<typename _T, typename _Alloc = std::allocator<_T> >
@@ -70,11 +82,9 @@ public:
 	typedef value_type								*pointer;
 	typedef const value_type						*const_pointer;
 
-	typedef iterator_traits<pointer>								iterator;
-	typedef iterator_traits<const pointer>					const_iterator;
-	typedef pointer									iterator;
-	typedef const_pointer							const_iterator;
-	// typedef reverse_iterator<iterator>				reverse_iterator;
+	typedef vector_iterator<value_type>				iterator;
+	typedef vector_iterator<const value_type>		const_iterator;
+	typedef reverse_iterator<iterator>				reverse_iterator;
 	// typedef reverse_iterator<const_iterator>		const_reverse_iterator;
 
 private:
@@ -157,13 +167,20 @@ public:
 	template <class InputIterator>
 	 void		assign(InputIterator first, InputIterator last)	{ (void)first; (void)last;}
 	void 		assign(size_type n, const value_type& val)		{ (void)n; (void)val; }
-	void 		push_back(const value_type& val)				{ (void) val; }
+	void 		push_back(const value_type& val)
+	{
+		if (_m_impl._m_finish == _m_impl._m_end_of_storage)
+		{
+			_m_grow();
+		}
+		_m_alloc.construct(_m_impl._m_finish++, val);
+	}
 	void		pop_back()										{}
 	iterator 	insert(iterator position, const value_type& val) {(void)position; (void)val;}
 	void		insert (iterator position, size_type n, const value_type& val) {(void)position; (void)val; (void)n;}
 	template <class InputIterator>
 	 void		insert (iterator position, InputIterator first, InputIterator last)	{ (void)position; (void)first; (void)last; }
-	iterator	erase (iterator position)											{ (void)position; }
+	iterator	erase (iterator position)											{ (void)position; return position; }
 	iterator	erase (iterator first, iterator last)								{ (void)first; (void)last; }
 	void		swap (vector& other)												{ (void)other; }
 	void		clear()																{  }
@@ -178,6 +195,28 @@ private:
 		_m_impl._m_start = _m_alloc.allocate(n);
 		_m_impl._m_finish = _m_impl._m_start;
 		_m_impl._m_end_of_storage = _m_impl._m_start + n;
+	}
+
+	void _m_deallocate(pointer p, size_type n)
+	{
+		pointer it = p + n;
+		while(it != p)
+			_m_alloc.destroy(--it);
+		_m_alloc.deallocate(p, n);
+		_m_impl._m_start = _m_impl._m_finish = _m_impl._m_end_of_storage = 0;
+	}
+
+	void _m_grow()
+	{
+		const size_type actualSize = _m_impl._m_end_of_storage - _m_impl._m_finish;
+		const size_type newSize = std::max(2 * actualSize, size_type(1));
+
+		const pointer newBuffer = _m_alloc.allocate(newSize);
+		std::uninitialized_copy(_m_impl._m_start, _m_impl._m_finish, newBuffer);
+		_m_deallocate(_m_impl._m_start, actualSize);
+		_m_impl._m_start = newBuffer;
+		_m_impl._m_finish = newBuffer + actualSize;
+		_m_impl._m_end_of_storage = newBuffer + newSize;
 	}
 
 

@@ -108,10 +108,11 @@ public:
 	}
 	// range
 	template <class InputIterator,
-		typename enable_if<!is_integral<InputIterator>::value, bool>::type>
+		typename enable_if<!is_integral<InputIterator>::value, bool>::type = true>
 	vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type())
 	{
 		(void)alloc;
+		_m_create_storage(std::distance(first, last));
 		while (first != last)
 		{
 			push_back(*first);
@@ -171,11 +172,16 @@ public:
 	{
 		if (_m_impl._m_finish == _m_impl._m_end_of_storage)
 		{
-			_m_grow();
+			if (_m_impl._m_start != _m_impl._m_finish)
+				_m_grow();
+			else
+				_m_create_storage(1);
 		}
 		_m_alloc.construct(_m_impl._m_finish++, val);
 	}
-	void		pop_back()										{}
+	void		pop_back() {
+		_m_alloc.destroy(--_m_impl._m_finish);
+	}
 	iterator 	insert(iterator position, const value_type& val) {(void)position; (void)val;}
 	void		insert (iterator position, size_type n, const value_type& val) {(void)position; (void)val; (void)n;}
 	template <class InputIterator>
@@ -183,7 +189,11 @@ public:
 	iterator	erase (iterator position)											{ (void)position; return position; }
 	iterator	erase (iterator first, iterator last)								{ (void)first; (void)last; }
 	void		swap (vector& other)												{ (void)other; }
-	void		clear()																{  }
+	void		clear()
+	{
+		_m_impl._m_start = _m_impl._m_finish = _m_impl._m_end_of_storage = 0;
+
+	}
 
 	// Allocator
 	allocator_type get_allocator() const;
@@ -203,12 +213,11 @@ private:
 		while(it != p)
 			_m_alloc.destroy(--it);
 		_m_alloc.deallocate(p, n);
-		_m_impl._m_start = _m_impl._m_finish = _m_impl._m_end_of_storage = 0;
 	}
 
 	void _m_grow()
 	{
-		const size_type actualSize = _m_impl._m_end_of_storage - _m_impl._m_finish;
+		const size_type actualSize = _m_impl._m_end_of_storage - _m_impl._m_start;
 		const size_type newSize = std::max(2 * actualSize, size_type(1));
 
 		const pointer newBuffer = _m_alloc.allocate(newSize);

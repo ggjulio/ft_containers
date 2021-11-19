@@ -4,7 +4,7 @@
 
 #include <memory>
 #include <vector> 
-// #include "iterator.hpp"
+#include "iterator.hpp"
 #include "type_traits.hpp"
 
 namespace ft{
@@ -64,14 +64,14 @@ public:
 	typedef _Alloc							allocator_type;
 
 	typedef size_t									size_type; 
-	typedef ptrdiff_t								difference_type;
+	typedef std::ptrdiff_t								difference_type;
 	typedef value_type&								reference;
 	typedef const value_type&						const_reference;
 	typedef value_type								*pointer;
 	typedef const value_type						*const_pointer;
 
-	// typedef iterator_traits<pointer>								iterator;
-	// typedef iterator_traits<const pointer>								iterator;
+	typedef iterator_traits<pointer>								iterator;
+	typedef iterator_traits<const pointer>					const_iterator;
 	typedef pointer									iterator;
 	typedef const_pointer							const_iterator;
 	// typedef reverse_iterator<iterator>				reverse_iterator;

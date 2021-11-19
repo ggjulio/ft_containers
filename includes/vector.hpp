@@ -3,6 +3,7 @@
 
 
 #include <memory>
+#include <algorithm>
 #include <vector> 
 #include "iterator.hpp"
 #include "type_traits.hpp"
@@ -186,17 +187,16 @@ public:
 	void		insert (iterator position, size_type n, const value_type& val) {(void)position; (void)val; (void)n;}
 	template <class InputIterator>
 	 void		insert (iterator position, InputIterator first, InputIterator last)	{ (void)position; (void)first; (void)last; }
-	iterator	erase (iterator position)											{ (void)position; return position; }
+	iterator	erase (iterator position)											{ return _m_erase(position); }
 	iterator	erase (iterator first, iterator last)								{ (void)first; (void)last; }
 	void		swap (vector& other)												{ (void)other; }
 	void		clear()
 	{
-		_m_impl._m_start = _m_impl._m_finish = _m_impl._m_end_of_storage = 0;
-
+		_m_erase_at_end(_m_impl._m_start);
 	}
 
 	// Allocator
-	allocator_type get_allocator() const;
+	allocator_type get_allocator() const { return allocator_type(); }
 
 private:
 
@@ -214,6 +214,31 @@ private:
 			_m_alloc.destroy(--it);
 		_m_alloc.deallocate(p, n);
 	}
+
+	void _m_erase_at_end(pointer p)
+	{
+		const size_type n = _m_impl._m_finish - _m_impl._m_start;
+		pointer it = p + n;
+		while(it != p)
+			_m_alloc.destroy(--it);
+		_m_impl._m_finish = p;
+	}
+
+	iterator _m_erase(pointer position)
+	{
+		if (position + 1 != _m_impl._m_finish)
+			std::copy(position + 1, end(), position);
+		--_m_impl._m_finish;
+		_m_alloc.destroy(_m_impl._m_finish);
+		return position;
+	}
+
+	// void _m_erase(iterator first, iterator last)
+	// {
+	// 	if (position != _m_impl._m_finish)
+	// 		std::copy(,);
+	
+	// }
 
 	void _m_grow()
 	{

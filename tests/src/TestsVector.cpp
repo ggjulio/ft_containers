@@ -385,42 +385,42 @@ TEST_CASE( "vector - Modifiers - push_back() and pop_back() ", "[vector][modifie
 // 	}
 // }
 
-// TEST_CASE( "vector - Modifiers - erase() ", "[vector][modifier][erase]" )
-// {
-// 	 cn::vector<int> myvector;
+TEST_CASE( "vector - Modifiers - erase() ", "[vector][modifier][erase]" )
+{
+	 cn::vector<int> myvector;
 
-// 	for (int i=1; i<=10; i++)
-// 		myvector.push_back(i); // 1 2 3 4 5 6 7 8 9 10
+	for (int i=1; i<=10; i++)
+		myvector.push_back(i); // 1 2 3 4 5 6 7 8 9 10
 
-// 	REQUIRE( myvector.size() == 10);
+	REQUIRE( myvector.size() == 10);
 
-// 	REQUIRE( myvector[0] == 1);
-// 	REQUIRE( myvector[1] == 2);
-// 	REQUIRE( myvector[2] == 3);
-// 	REQUIRE( myvector[3] == 4);
-// 	REQUIRE( myvector[4] == 5);
-// 	REQUIRE( myvector[5] == 6);
-// 	REQUIRE( myvector[6] == 7);
-// 	REQUIRE( myvector[7] == 8);
-// 	REQUIRE( myvector[8] == 9);
-// 	REQUIRE( myvector[9] == 10);
+	REQUIRE( myvector[0] == 1);
+	REQUIRE( myvector[1] == 2);
+	REQUIRE( myvector[2] == 3);
+	REQUIRE( myvector[3] == 4);
+	REQUIRE( myvector[4] == 5);
+	REQUIRE( myvector[5] == 6);
+	REQUIRE( myvector[6] == 7);
+	REQUIRE( myvector[7] == 8);
+	REQUIRE( myvector[8] == 9);
+	REQUIRE( myvector[9] == 10);
 
-// 	myvector.erase (myvector.begin()+5);
-// 	SECTION( "erase position middle")
-// 	{
-// 		REQUIRE( myvector.size() == 9);
+	myvector.erase (myvector.begin()+5);
+	SECTION( "erase position middle")
+	{
+		REQUIRE( myvector.size() == 9);
 
-// 		REQUIRE( myvector[0] == 1);
-// 		REQUIRE( myvector[1] == 2);
-// 		REQUIRE( myvector[2] == 3);
-// 		REQUIRE( myvector[3] == 4);
-// 		REQUIRE( myvector[4] == 5);
-// 		REQUIRE( myvector[5] == 7);
-// 		REQUIRE( myvector[6] == 8);
-// 		REQUIRE( myvector[7] == 9);
-// 		REQUIRE( myvector[8] == 10);
+		REQUIRE( myvector[0] == 1);
+		REQUIRE( myvector[1] == 2);
+		REQUIRE( myvector[2] == 3);
+		REQUIRE( myvector[3] == 4);
+		REQUIRE( myvector[4] == 5);
+		REQUIRE( myvector[5] == 7);
+		REQUIRE( myvector[6] == 8);
+		REQUIRE( myvector[7] == 9);
+		REQUIRE( myvector[8] == 10);
 
-// 	}
+	}
 
 // 	myvector.erase (--myvector.end());
 // 	SECTION( "erase position last")
@@ -467,7 +467,7 @@ TEST_CASE( "vector - Modifiers - push_back() and pop_back() ", "[vector][modifie
 // 	{
 // 		REQUIRE( myvector.size() == 0);
 // 	}
-// }
+}
 
 // TEST_CASE( "vector - Modifiers - swap ", "[vector][modifier][swap]" )
 // {
@@ -544,40 +544,40 @@ TEST_CASE( "vector - Modifiers - clear ", "[vector][modifier][clear]" )
 	}
 }
 
-// TEST_CASE( "vector - Allocator - get_allocator ", "[vector][allocator][get_allocator]" )
-// {
-// 	cn::vector<int> myvector;
-// 	int * p;
-// 	unsigned int i;
+TEST_CASE( "vector - Allocator - get_allocator ", "[vector][allocator][get_allocator]" )
+{
+	cn::vector<int> myvector;
+	int * p;
+	unsigned int i;
 
-// 	p = myvector.get_allocator().allocate(5);
+	p = myvector.get_allocator().allocate(5);
 
-// 	for (i=0; i<5; i++)
-// 		p[i]=(i+1)*10; // 10 20 30
+	for (i=0; i<5; i++)
+		p[i]=(i+1)*10; // 10 20 30
 
-// 	myvector.get_allocator().deallocate(p,5);
-// }
+	myvector.get_allocator().deallocate(p,5);
+}
 
-// TEST_CASE( "vector - non-member - relational operators", "[vector][non-member][relational][operator]" )
-// {
-// 	std::vector<int> foo (3,100);
-// 	std::vector<int> bar (2,200);
-// 	std::vector<int> bare (2,200);
+TEST_CASE( "vector - non-member - relational operators", "[vector][non-member][relational][operator]" )
+{
+	std::vector<int> foo (3,100);
+	std::vector<int> bar (2,200);
+	std::vector<int> bare (2,200);
 
 
-// 	REQUIRE( foo != bar );
-// 	REQUIRE( foo < bar );
-// 	REQUIRE( foo <= bar );
+	REQUIRE( foo != bar );
+	REQUIRE( foo < bar );
+	REQUIRE( foo <= bar );
 
-// 	REQUIRE( bar > foo );
-// 	REQUIRE( bar >= foo );
+	REQUIRE( bar > foo );
+	REQUIRE( bar >= foo );
 
-// 	REQUIRE( bar == bare );
-// 	REQUIRE( bar <= bare );
+	REQUIRE( bar == bare );
+	REQUIRE( bar <= bare );
 
-// 	REQUIRE( bare  >= bar );
+	REQUIRE( bare  >= bar );
 
-// }
+}
 
 // TEST_CASE( "vector - non-member - swap", "[vector][non-member][swap]" )
 // {

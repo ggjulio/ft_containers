@@ -11,44 +11,78 @@
 namespace ft{
 
 
-template <typename T>
-struct vector_iterator
-{
-	typedef T	value_type;
-	typedef value_type	&reference;
-	typedef value_type	*pointer;
+	template <typename T>
+	struct vector_iterator
+	{
+		typedef T	value_type;
+		typedef value_type	&reference;
+		typedef value_type	*pointer;
 
-	typedef std::random_access_iterator_tag		iterator_category;
-	typedef std::ptrdiff_t						difference_type;
+		typedef std::random_access_iterator_tag		iterator_category;
+		typedef std::ptrdiff_t						difference_type;
 
-	typedef vector_iterator<value_type> Self;
+		typedef vector_iterator<value_type> Self;
 
-	vector_iterator()						: _m_ptr(0) {}
-	vector_iterator(pointer ptr) throw()	: _m_ptr(ptr) {}
+		vector_iterator()						: _m_ptr(0) {}
+		vector_iterator(pointer ptr) throw()	: _m_ptr(ptr) {}
+		// vector_iterator(const Self& it) throw()	: _m_ptr(it._m_ptr) {}
 
-	reference	operator*() const throw()		{ return *_m_ptr; }
-	pointer		operator->() const throw()		{ return _m_ptr; }
-	reference	operator[](size_t n) const		{ return *(_m_ptr + n); }
+		reference	operator*() const throw()		{ return *_m_ptr; }
+		pointer		operator->() const throw()		{ return _m_ptr; }
+		reference	operator[](size_t n) const		{ return *(_m_ptr + n); }
 
-	Self &operator++() throw()		{ ++_m_ptr; return *this; }
-	Self operator++(int) throw()	{ Self tmp = *this; ++_m_ptr; return tmp; }
+		Self &operator++() throw()		{ ++_m_ptr; return *this; }
+		Self operator++(int) throw()	{ Self tmp = *this; ++_m_ptr; return tmp; }
 
-	Self &operator--() throw()		{ _m_ptr -= 1; return *this; }
-	Self operator--(int) throw()	{ Self tmp = *this; _m_ptr -= 1; return tmp; }
+		Self &operator--() throw()		{ _m_ptr -= 1; return *this; }
+		Self operator--(int) throw()	{ Self tmp = *this; _m_ptr -= 1; return tmp; }
 
-	Self  operator+ (difference_type n) const	{ return _m_ptr + n;}
-	Self& operator+=(difference_type n)			{ _m_ptr += n; return *this;}
-	Self  operator- (difference_type n) const	{ return _m_ptr - n;}
-	Self& operator-=(difference_type n) 		{ _m_ptr -= n; return *this;}
+		Self  operator+ (difference_type n) const	{ return _m_ptr + n;}
+		Self& operator+=(difference_type n)			{ _m_ptr += n; return *this;}
+		Self  operator- (difference_type n) const	{ return _m_ptr - n;}
+		Self& operator-=(difference_type n) 		{ _m_ptr -= n; return *this;}
+
+		// bool operator==	(const Self &rhs) { return (_m_ptr == rhs._m_ptr); };
+		// bool operator!=	(const Self &rhs) { return (_m_ptr != rhs._m_ptr); };
+		// bool operator<	(const Self &rhs) const { return (_m_ptr < rhs._m_ptr); };
+		// bool operator>	(const Self &rhs) const { return (_m_ptr > rhs._m_ptr); };
+		// bool operator<=	(const Self &rhs) const { return (_m_ptr <= rhs._m_ptr); };
+		// bool operator>=	(const Self &rhs) const { return (_m_ptr >= rhs._m_ptr); };
+
+		friend bool operator==(const Self &x, const Self &y) throw() { return x._m_ptr == y._m_ptr; }
+		friend bool operator!=(const Self &x, const Self &y) throw() { return !(x._m_ptr == y._m_ptr); }
 
 
-	friend bool operator==(const Self &x, const Self &y) throw() { return x._m_ptr == y._m_ptr; }
-	friend bool operator!=(const Self &x, const Self &y) throw() { return !(x._m_ptr == y._m_ptr); }
+		pointer base() const {return _m_ptr; }
 
-private:
-	pointer _m_ptr;
-}; /* struct vector_iterator */
+		// operator Self<const value_type > () const { return _m_ptr; }
+	protected:
+		pointer _m_ptr;
+	}; /* struct vector_iterator */
 
+    template <typename T>
+    typename vector_iterator<T>::difference_type
+     operator-(const vector_iterator<T>& lhs,
+              const vector_iterator<T>& rhs)
+    {
+        return (lhs.base() - rhs.base());
+    }
+
+	template<typename IteratorL, typename IteratorR>
+    typename vector_iterator<IteratorL>::difference_type
+     operator-(const vector_iterator<IteratorL>& lhs,
+              const vector_iterator<IteratorR>& rhs)
+    {
+        return (lhs.base() - rhs.base());
+    }
+
+	template<typename Iterator>
+    vector_iterator<Iterator>
+	 operator+(typename vector_iterator<Iterator>::difference_type n,
+ 				vector_iterator<Iterator>& i)
+	{
+		return i.base() + n;
+	}
 
 
 
@@ -130,10 +164,13 @@ public:
 
 	~vector() {}
 
-	vector& operator= (const vector& x)
+	vector& operator= (const vector& other)
 	{
-		(void)x;
-		return this;
+		if (this != &other)
+		{
+
+		}
+		return *this;
 	}
 
 	// iterators
@@ -141,10 +178,10 @@ public:
 	const_iterator			begin() const	{ return _m_impl._m_start; }
 	iterator				end()			{ return _m_impl._m_finish; }
 	const_iterator			end() const		{ return _m_impl._m_finish; }
-	// reverse_iterator 		rbegin()		{ return 0; }
-	// const_reverse_iterator 	rbegin() const	{ return 0; }
-	// reverse_iterator		rend()			{ return 0; }
-	// const_reverse_iterator	rend() const	{ return 0; }
+	reverse_iterator 		rbegin()		{ return end(); }
+	// const_reverse_iterator 	rbegin() const	{ return end(); }
+	reverse_iterator		rend()			{ return begin(); }
+	// const_reverse_iterator	rend() const	{ return begin(); }
 
 	// capacity
 	size_type	size() const										{ return _m_impl._m_finish - _m_impl._m_start; }
@@ -188,8 +225,13 @@ public:
 	template <class InputIterator>
 	 void		insert (iterator position, InputIterator first, InputIterator last)	{ (void)position; (void)first; (void)last; }
 	iterator	erase (iterator position)											{ return _m_erase(position); }
-	iterator	erase (iterator first, iterator last)								{ (void)first; (void)last; }
-	void		swap (vector& other)												{ (void)other; }
+	iterator	erase (iterator first, iterator last)								{ return _m_erase(first, last); }
+	void		swap (vector& other)
+	{
+		if (this == &other)
+			return;
+		ft::swap(*this, other);
+	}
 	void		clear()
 	{
 		_m_erase_at_end(_m_impl._m_start);
@@ -224,7 +266,7 @@ private:
 		_m_impl._m_finish = p;
 	}
 
-	iterator _m_erase(pointer position)
+	iterator _m_erase(iterator position)
 	{
 		if (position + 1 != _m_impl._m_finish)
 			std::copy(position + 1, end(), position);
@@ -233,12 +275,16 @@ private:
 		return position;
 	}
 
-	// void _m_erase(iterator first, iterator last)
-	// {
-	// 	if (position != _m_impl._m_finish)
-	// 		std::copy(,);
-	
-	// }
+	iterator _m_erase(iterator first, iterator last)
+	{
+		if (first != last)
+		{
+			if (last != end())
+				std::copy(last, end(), first);
+			_m_erase_at_end(first.base() + (end() - last));
+		}
+		return first;
+	}
 
 	void _m_grow()
 	{
@@ -293,7 +339,7 @@ template<class _T, class _Alloc>
 	{ return !(lhs < rhs); }
 
 template <class _T, class _Alloc>
-  void swap (vector<_T, _Alloc>& x, vector<_T, _Alloc>& y) {(void)x;(void)y;}
+  void swap (vector<_T, _Alloc>& x, vector<_T, _Alloc>& y) { x.swap(y); }
 
 template<class _T, class _Alloc>
 typename vector<_T, _Alloc>::allocator_type  vector<_T, _Alloc>::_m_alloc;

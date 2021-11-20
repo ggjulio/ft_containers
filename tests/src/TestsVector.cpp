@@ -94,101 +94,101 @@ TEST_CASE( "vector - iterator ", "[vector][iterator]" )
 		REQUIRE( myvector.begin().operator*() == 10 );
 		REQUIRE( myvector.begin().operator->() == &*myvector.begin() );
 	}
-	// myvector.push_back(20);
-	// myvector.push_back(30);
-	// SECTION( "container with three elements should loop properly" )
-	// {
-	// 	auto it = myvector.begin();
-	// 	int i = 0;
-	// 	while (it != myvector.end())
-	// 	{
-	// 		i += 10;
-	// 		REQUIRE(*it == i);
-	// 		++it;
-	// 	}
-	// 	REQUIRE(i == 30);
-	// }
-	// SECTION( "container with three elements should loop properly in reverse" )
-	// {
-	// 	auto it = myvector.end();
-	// 	int i = 40;
-	// 	while (--it != myvector.begin())
-	// 	{
-	// 		i -= 10;
-	// 		REQUIRE(*it == i);
-	// 	}
-	// 	REQUIRE(*it == 10);
-	// }
+	myvector.push_back(20);
+	myvector.push_back(30);
+	SECTION( "container with three elements should loop properly" )
+	{
+		auto it = myvector.begin();
+		int i = 0;
+		while (it != myvector.end())
+		{
+			i += 10;
+			REQUIRE(*it == i);
+			++it;
+		}
+		REQUIRE(i == 30);
+	}
+	SECTION( "container with three elements should loop properly in reverse" )
+	{
+		auto it = myvector.end();
+		int i = 40;
+		while (--it != myvector.begin())
+		{
+			i -= 10;
+			REQUIRE(*it == i);
+		}
+		REQUIRE(*it == 10);
+	}
 }
 
-// TEST_CASE( "vector - reverse iterator ", "[vector][reverse_iterator]" )
-// {
-// 	cn::vector<int> myvector;
-// 	SECTION( "empty container should have begin() == end()" )
-// 	{
-// 		REQUIRE( myvector.rbegin() == myvector.rend() );
-// 	}
-// 	myvector.push_back(10);
-// 	SECTION( "container with one element should have consistant boundary" )
-// 	{
-// 		REQUIRE( ++myvector.rbegin() == myvector.rend() );
-// 		REQUIRE( myvector.rbegin() == --myvector.rend() );
-// 		REQUIRE( myvector.rbegin().operator*() == 10 );
-// 		REQUIRE( myvector.rbegin().operator->() == &*myvector.rbegin() );
-// 	}
-// 	myvector.push_back(20);
-// 	myvector.push_back(30);
-// 	SECTION( "container with three elements should loop properly" )
-// 	{
-// 		auto it = myvector.rbegin();
-// 		int i = 40;
-// 		while (it != myvector.rend())
-// 		{
-// 			i -= 10;
-// 			REQUIRE(*it == i);
-// 			++it;
-// 		}
-// 		REQUIRE(i == 10);
-// 	}
-// 	SECTION( "container with three elements should loop properly in reverse" )
-// 	{
-// 		auto it = myvector.rend();
-// 		int i = 0;
-// 		while (--it != myvector.rbegin())
-// 		{
-// 			i += 10;
-// 			REQUIRE(*it == i);
-// 		}
-// 		REQUIRE(*it == 30);
-// 	}
-// }
+TEST_CASE( "vector - reverse iterator ", "[vector][reverse_iterator]" )
+{
+	cn::vector<int> myvector;
+	SECTION( "empty container should have begin() == end()" )
+	{
+		REQUIRE( myvector.rbegin() == myvector.rend() );
+	}
+	myvector.push_back(10);
+	SECTION( "container with one element should have consistant boundary" )
+	{
+		REQUIRE( ++myvector.rbegin() == myvector.rend() );
+		REQUIRE( myvector.rbegin() == --myvector.rend() );
+		REQUIRE( myvector.rbegin().operator*() == 10 );
+		REQUIRE( myvector.rbegin().operator->() == &*myvector.rbegin() );
+	}
+	myvector.push_back(20);
+	myvector.push_back(30);
+	SECTION( "container with three elements should loop properly" )
+	{
+		auto it = myvector.rbegin();
+		int i = 40;
+		while (it != myvector.rend())
+		{
+			i -= 10;
+			REQUIRE(*it == i);
+			++it;
+		}
+		REQUIRE(i == 10);
+	}
+	SECTION( "container with three elements should loop properly in reverse" )
+	{
+		auto it = myvector.rend();
+		int i = 0;
+		while (--it != myvector.rbegin())
+		{
+			i += 10;
+			REQUIRE(*it == i);
+		}
+		REQUIRE(*it == 30);
+	}
+}
 
-// TEST_CASE( "vector - capacity ", "[vector][capacity]" )
-// {
-// 	cn::vector<int> myvector;
+TEST_CASE( "vector - capacity ", "[vector][capacity]" )
+{
+	cn::vector<int> myvector;
 
-// 	SECTION( "empty container should be empty (insightful)" )
-// 	{
-// 		REQUIRE(myvector.empty());
-// 		REQUIRE(myvector.size() == 0);
-// 	}
-// 	myvector.push_back(10);
-// 	SECTION( "container with one element should be of size one (and not empty, of course)" )
-// 	{
-// 		REQUIRE(!myvector.empty());
-// 		REQUIRE(myvector.size() == 1);
-// 	}
-// 	myvector.erase(myvector.begin());
-// 	SECTION( "delete the single element, should become an empty container again." )
-// 	{
-// 		REQUIRE(myvector.size() == 0);
-// 		REQUIRE(myvector.empty());
-// 	}
-// 	SECTION( "max_size(), For now I don't know which value is suposed to be equal to (probably depend on the underlying implementation)" )
-// 	{
-// 		REQUIRE(myvector.max_size() == 2305843009213693951);
-// 	}
-// }
+	SECTION( "empty container should be empty (insightful)" )
+	{
+		REQUIRE(myvector.empty());
+		REQUIRE(myvector.size() == 0);
+	}
+	myvector.push_back(10);
+	SECTION( "container with one element should be of size one (and not empty, of course)" )
+	{
+		REQUIRE(!myvector.empty());
+		REQUIRE(myvector.size() == 1);
+	}
+	myvector.erase(myvector.begin());
+	SECTION( "delete the single element, should become an empty container again." )
+	{
+		REQUIRE(myvector.size() == 0);
+		REQUIRE(myvector.empty());
+	}
+	SECTION( "max_size(), For now I don't know which value is suposed to be equal to (probably depend on the underlying implementation)" )
+	{
+		REQUIRE(myvector.max_size() == 2305843009213693951);
+	}
+}
 
 // TEST_CASE( "vector - capacity - vectors can be sized and resized",
 // 	"[vector][capacity]" )
@@ -422,51 +422,51 @@ TEST_CASE( "vector - Modifiers - erase() ", "[vector][modifier][erase]" )
 
 	}
 
-// 	myvector.erase (--myvector.end());
-// 	SECTION( "erase position last")
-// 	{
-// 		REQUIRE( myvector.size() == 8);
+	myvector.erase (--myvector.end());
+	SECTION( "erase position last")
+	{
+		REQUIRE( myvector.size() == 8);
 
-// 		REQUIRE( myvector[0] == 1);
-// 		REQUIRE( myvector[1] == 2);
-// 		REQUIRE( myvector[2] == 3);
-// 		REQUIRE( myvector[3] == 4);
-// 		REQUIRE( myvector[4] == 5);
-// 		REQUIRE( myvector[5] == 7);
-// 		REQUIRE( myvector[6] == 8);
-// 		REQUIRE( myvector[7] == 9);
+		REQUIRE( myvector[0] == 1);
+		REQUIRE( myvector[1] == 2);
+		REQUIRE( myvector[2] == 3);
+		REQUIRE( myvector[3] == 4);
+		REQUIRE( myvector[4] == 5);
+		REQUIRE( myvector[5] == 7);
+		REQUIRE( myvector[6] == 8);
+		REQUIRE( myvector[7] == 9);
 
-// 	}
-// 	myvector.erase (myvector.begin());
-// 	SECTION( "erase position begin")
-// 	{
-// 		REQUIRE( myvector.size() == 7);
+	}
+	myvector.erase (myvector.begin());
+	SECTION( "erase position begin")
+	{
+		REQUIRE( myvector.size() == 7);
 
-// 		REQUIRE( myvector[0] == 2);
-// 		REQUIRE( myvector[1] == 3);
-// 		REQUIRE( myvector[2] == 4);
-// 		REQUIRE( myvector[3] == 5);
-// 		REQUIRE( myvector[4] == 7);
-// 		REQUIRE( myvector[5] == 8);
-// 		REQUIRE( myvector[6] == 9);
-// 	}
+		REQUIRE( myvector[0] == 2);
+		REQUIRE( myvector[1] == 3);
+		REQUIRE( myvector[2] == 4);
+		REQUIRE( myvector[3] == 5);
+		REQUIRE( myvector[4] == 7);
+		REQUIRE( myvector[5] == 8);
+		REQUIRE( myvector[6] == 9);
+	}
 
-// 	myvector.erase (myvector.begin(),myvector.begin()+3);
-// 	SECTION( "erase range 3 elem from begin")
-// 	{
-// 		REQUIRE( myvector.size() == 4);
+	myvector.erase (myvector.begin(),myvector.begin()+3);
+	SECTION( "erase range 3 elem from begin")
+	{
+		REQUIRE( myvector.size() == 4);
 
-// 		REQUIRE( myvector[0] == 5);
-// 		REQUIRE( myvector[1] == 7);
-// 		REQUIRE( myvector[2] == 8);
-// 		REQUIRE( myvector[3] == 9);
-// 	}
+		REQUIRE( myvector[0] == 5);
+		REQUIRE( myvector[1] == 7);
+		REQUIRE( myvector[2] == 8);
+		REQUIRE( myvector[3] == 9);
+	}
 
-// 	myvector.erase (myvector.begin(),myvector.end());
-// 	SECTION( "erase range begin to end")
-// 	{
-// 		REQUIRE( myvector.size() == 0);
-// 	}
+	myvector.erase (myvector.begin(),myvector.end());
+	SECTION( "erase range begin to end")
+	{
+		REQUIRE( myvector.size() == 0);
+	}
 }
 
 // TEST_CASE( "vector - Modifiers - swap ", "[vector][modifier][swap]" )

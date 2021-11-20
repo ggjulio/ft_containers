@@ -23,17 +23,17 @@ TEST_CASE( "vector - construct", "[vector][constructors]" )
 		REQUIRE( !second.empty());
 		REQUIRE( second.capacity() == 4);
 	}
-	// cn::vector<int> third (second.begin(),second.end());
-	// SECTION( "range constructor" )
-	// {
-	// 	CHECK( third[0] == 100);
-	// 	CHECK( third[1] == 100);
-	// 	CHECK( third[2] == 100);
-	// 	CHECK( third[3] == 100);
-	// 	REQUIRE( third.size() == 4);
-	// 	REQUIRE( !third.empty());
-	// 	REQUIRE( second.capacity() == 4);
-	// }
+	cn::vector<int> third (second.begin(),second.end());
+	SECTION( "range constructor" )
+	{
+		CHECK( third[0] == 100);
+		CHECK( third[1] == 100);
+		CHECK( third[2] == 100);
+		CHECK( third[3] == 100);
+		REQUIRE( third.size() == 4);
+		REQUIRE( !third.empty());
+		REQUIRE( second.capacity() == 4);
+	}
 	// cn::vector<int> fourth (third);
 	// SECTION( "copy constructor" )
 	// {
@@ -45,20 +45,20 @@ TEST_CASE( "vector - construct", "[vector][constructors]" )
 	// 	REQUIRE( !fourth.empty());
 	// 	REQUIRE( second.capacity() == 4);
 	// }
-	// SECTION( "the iterator constructor can also be used to construct from arrays" )
-	// {
-	// 	int myints[] = {16,2,77,29, 42};
-	// 	cn::vector<int> fifth(myints, myints + sizeof(myints) / sizeof(int));
+	SECTION( "the iterator constructor can also be used to construct from arrays" )
+	{
+		int myints[] = {16,2,77,29, 42};
+		cn::vector<int> fifth(myints, myints + sizeof(myints) / sizeof(int));
 
-	// 	CHECK( fifth[0] == 16);
-	// 	CHECK( fifth[1] == 2);
-	// 	CHECK( fifth[2] == 77);
-	// 	CHECK( fifth[3] == 29);
-	// 	CHECK( fifth[4] == 42);
-	// 	REQUIRE( !fifth.empty());
-	// 	REQUIRE( fifth.size() == 5);
-	// 	REQUIRE( second.capacity() == 4);
-	// }
+		CHECK( fifth[0] == 16);
+		CHECK( fifth[1] == 2);
+		CHECK( fifth[2] == 77);
+		CHECK( fifth[3] == 29);
+		CHECK( fifth[4] == 42);
+		REQUIRE( !fifth.empty());
+		REQUIRE( fifth.size() == 5);
+		REQUIRE( second.capacity() == 4);
+	}
 }
 
 // TEST_CASE( "vector - operator - assignment ", "[vector][operator][assignment]" )

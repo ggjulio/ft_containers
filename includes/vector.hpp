@@ -4,7 +4,8 @@
 
 #include <memory>
 #include <algorithm>
-#include <vector> 
+#include <cassert>
+#include "utility.hpp"
 #include "iterator.hpp"
 #include "type_traits.hpp"
 
@@ -145,9 +146,11 @@ public:
 		_m_impl._m_finish += n;
 	}
 	// range
-	template <class InputIterator,
-		typename enable_if<!is_integral<InputIterator>::value, bool>::type = true>
-	vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type())
+	// template <class InputIterator,
+	// 	typename enable_if<!is_integral<InputIterator>::value, bool>::type = true>
+	template <class InputIterator>
+	vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type(),
+		typename enable_if<!is_integral<InputIterator>::value, bool>::type = true)
 	{
 		(void)alloc;
 		_m_create_storage(std::distance(first, last));

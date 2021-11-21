@@ -48,6 +48,7 @@ class reverse_iterator
                       typename iterator_traits<_Iter>::pointer,
                       typename iterator_traits<_Iter>::reference>
 {
+	template<typename _Iter1> friend class reverse_iterator;
 protected:
 	_Iter current;
 
@@ -59,12 +60,14 @@ public:
 
 	reverse_iterator(): current() {}
 	reverse_iterator(iterator_type x): current(x) {}
-	template <class _U>
-	  reverse_iterator (const reverse_iterator<_U>& other)	
-	  : current(other.current) {}
+	reverse_iterator(const reverse_iterator& other): current(other.current) {}
 
-	template< class _U>
-	 reverse_iterator& operator=( const reverse_iterator<_U>& other)
+	template <class _Iter1>
+	reverse_iterator(const reverse_iterator<_Iter1>& other)
+		: current(other.current) {}
+
+	template< class _Iter1>
+	 reverse_iterator& operator=( const reverse_iterator<_Iter1>& other)
 	 {
 		current = other.current;
 		return *this;

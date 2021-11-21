@@ -852,6 +852,18 @@ public:
 		__rb_tree_print(static_cast<link_type>(_m_root()), NULL, false);
 	}
 
+	friend bool
+	operator==(const rbTree& __x, const rbTree& __y)
+	{
+		return __x.size() == __y.size()
+			&& std::equal(__x.begin(), __x.end(), __y.begin());
+	}
+
+	friend bool
+	operator<(const rbTree& __x, const rbTree& __y)
+    {
+		return std::lexicographical_compare(__x.begin(), __x.end(), __y.begin(), __y.end());
+    }
 private:
 
 	struct Trunk

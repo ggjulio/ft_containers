@@ -38,8 +38,8 @@ public:
 	typedef typename __tree::const_iterator 				iterator; 	// this is not an error, iterator is required to be modifiable,
 																		//  but this allows modification of keys. libstdc++ does that too
 	typedef typename __tree::const_iterator 				const_iterator;
-	typedef typename __tree::reverse_iterator				reverse_iterator;
-	typedef typename __tree::const_reverse_iterator			const_reverse_iterator;
+	typedef typename ft::reverse_iterator<iterator>			reverse_iterator;
+	typedef typename ft::reverse_iterator<const_iterator>	const_reverse_iterator;
 
 
 // construct
@@ -137,7 +137,45 @@ public:
 	pair<iterator,iterator> equal_range(const value_type& val) const	{ return _tree.equal_range(val);}
 	allocator_type			get_allocator() const 						{ return _tree.get_allocator();}
 
+
+    template<typename _K1, typename _C1, typename _A1>
+	friend bool operator==(const set<_K1, _C1, _A1>&, const set<_K1, _C1, _A1>&);
+
+	template<typename _K1, typename _C1, typename _A1>
+	friend bool operator<(const set<_K1, _C1, _A1>&, const set<_K1, _C1, _A1>&);
+
+
 }; /* class set */
+
+template<typename _Key, typename _Compare, typename _Alloc>
+inline bool
+operator==(const set<_Key, _Compare, _Alloc>& x, const set<_Key, _Compare, _Alloc>& y)
+{ return x._tree == y._tree; }
+
+template<typename _Key, typename _Compare, typename _Alloc>
+inline bool
+operator<(const set<_Key, _Compare, _Alloc>& x, const set<_Key, _Compare, _Alloc>& y)
+{ return x._tree < y._tree; }
+
+template<typename _Key, typename _Compare, typename _Alloc>
+inline bool
+operator!=(const set<_Key, _Compare, _Alloc>& x, const set<_Key, _Compare, _Alloc>& y)
+{ return !(x == y); }
+
+template<typename _Key, typename _Compare, typename _Alloc>
+inline bool
+operator>(const set<_Key, _Compare, _Alloc>& x, const set<_Key, _Compare, _Alloc>& y)
+{ return y < x; }
+
+template<typename _Key, typename _Compare, typename _Alloc>
+inline bool
+operator<=(const set<_Key, _Compare, _Alloc>& x, const set<_Key, _Compare, _Alloc>& y)
+{ return !(y < x); }
+
+template<typename _Key, typename _Compare, typename _Alloc>
+inline bool
+operator>=(const set<_Key, _Compare, _Alloc>& x, const set<_Key, _Compare, _Alloc>& y)
+{ return !(x < y); }
 
 } /* namespace ft */
 

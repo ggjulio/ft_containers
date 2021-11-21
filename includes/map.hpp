@@ -59,8 +59,8 @@ public:
 	typedef typename __tree::difference_type				difference_type;
 	typedef typename __tree::iterator		 				iterator;
 	typedef typename __tree::const_iterator 				const_iterator;
-	typedef typename __tree::reverse_iterator				reverse_iterator;
-	typedef typename __tree::const_reverse_iterator			const_reverse_iterator;
+	typedef typename ft::reverse_iterator<iterator>			reverse_iterator;
+	typedef typename ft::reverse_iterator<const_iterator>	const_reverse_iterator;
 
 
 // construct
@@ -148,8 +148,42 @@ public:
 
 	allocator_type	get_allocator() const 	{ return _tree.get_allocator(); }
 
+	template<typename _K1, typename _T1, typename _C1, typename _A1>
+	friend bool operator==(const map<_K1, _T1, _C1, _A1>&, const map<_K1, _T1, _C1, _A1>&);
+
+	template<typename _K1, typename _T1, typename _C1, typename _A1>
+	friend bool operator<(const map<_K1, _T1, _C1, _A1>&, const map<_K1, _T1, _C1, _A1>&);
 
 }; /* class map */
+
+template<typename _Key, typename _Tp, typename _Compare, typename _Alloc>
+inline bool operator==(const map<_Key, _Tp, _Compare, _Alloc>& x, const map<_Key, _Tp, _Compare, _Alloc>& y)
+{ return x._tree == y._tree; }
+
+template<typename _Key, typename _Tp, typename _Compare, typename _Alloc>
+inline bool
+operator<(const map<_Key, _Tp, _Compare, _Alloc>& x, const map<_Key, _Tp, _Compare, _Alloc>& y)
+{ return x._tree < y._tree; }
+
+template<typename _Key, typename _Tp, typename _Compare, typename _Alloc>
+inline bool
+operator!=(const map<_Key, _Tp, _Compare, _Alloc>& x, const map<_Key, _Tp, _Compare, _Alloc>& y)
+{ return !(x == y); }
+
+template<typename _Key, typename _Tp, typename _Compare, typename _Alloc>
+inline bool
+operator>(const map<_Key, _Tp, _Compare, _Alloc>& x, const map<_Key, _Tp, _Compare, _Alloc>& y)
+{ return y < x; }
+
+template<typename _Key, typename _Tp, typename _Compare, typename _Alloc>
+inline bool
+operator<=(const map<_Key, _Tp, _Compare, _Alloc>& x, const map<_Key, _Tp, _Compare, _Alloc>& y)
+{ return !(y < x); }
+
+template<typename _Key, typename _Tp, typename _Compare, typename _Alloc>
+inline bool
+operator>=(const map<_Key, _Tp, _Compare, _Alloc>& x, const map<_Key, _Tp, _Compare, _Alloc>& y)
+{ return !(x < y); }
 
 } /* namespace ft */
 

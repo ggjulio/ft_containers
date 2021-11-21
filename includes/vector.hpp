@@ -60,24 +60,24 @@ namespace ft{
 		pointer _m_ptr;
 	}; /* struct vector_iterator */
 
-    template <typename T>
-    typename vector_iterator<T>::difference_type
-     operator-(const vector_iterator<T>& lhs,
-              const vector_iterator<T>& rhs)
-    {
-        return (lhs.base() - rhs.base());
-    }
+	template <typename T>
+	typename vector_iterator<T>::difference_type
+	 operator-(const vector_iterator<T>& lhs,
+			  const vector_iterator<T>& rhs)
+	{
+		return (lhs.base() - rhs.base());
+	}
 
 	template<typename IteratorL, typename IteratorR>
-    typename vector_iterator<IteratorL>::difference_type
-     operator-(const vector_iterator<IteratorL>& lhs,
-              const vector_iterator<IteratorR>& rhs)
-    {
-        return (lhs.base() - rhs.base());
-    }
+	typename vector_iterator<IteratorL>::difference_type
+	 operator-(const vector_iterator<IteratorL>& lhs,
+			  const vector_iterator<IteratorR>& rhs)
+	{
+		return (lhs.base() - rhs.base());
+	}
 
 	template<typename Iterator>
-    vector_iterator<Iterator>
+	vector_iterator<Iterator>
 	 operator+(typename vector_iterator<Iterator>::difference_type n,
  				vector_iterator<Iterator>& i)
 	{
@@ -96,10 +96,13 @@ struct _vector_impl
 	pointer  _m_end_of_storage;
 
 	_vector_impl()
-	{
-		_m_start = _m_finish = _m_end_of_storage = 0;
-	}
+		: _m_start(), _m_finish(), _m_end_of_storage()
+	{}
 
+	void _m_reset()
+	{
+		*this = _vector_impl();
+	}
 };
 
 template<typename _T, typename _Alloc = std::allocator<_T> >
@@ -186,7 +189,13 @@ public:
 	// capacity
 	size_type	size() const										{ return _m_impl._m_finish - _m_impl._m_start; }
 	size_type	max_size() const									{ return _m_alloc.max_size(); }
-	void		resize (size_type n, value_type val = value_type()) {(void)n; (void)val; }
+	void		resize (size_type n, value_type val = value_type())
+	{
+		if (n > size())
+			_m_fill_insert(end(), n - size(), val);
+		else if (n < size())
+			_m_erase_at_end(_m_impl._m_start + n);
+	}
 	size_type	capacity() const									{ return _m_impl._m_end_of_storage - _m_impl._m_start; }
 	bool		empty() const										{ return begin() == end();}
 	void		reserve(size_type n) 								{ (void)n; }
@@ -220,7 +229,7 @@ public:
 	void		pop_back() {
 		_m_alloc.destroy(--_m_impl._m_finish);
 	}
-	iterator 	insert(iterator position, const value_type& val) {(void)position; (void)val;}
+	iterator 	insert(iterator position, const value_type& val) {return  _m_insert_val(position, val); }
 	void		insert (iterator position, size_type n, const value_type& val) {(void)position; (void)val; (void)n;}
 	template <class InputIterator>
 	 void		insert (iterator position, InputIterator first, InputIterator last)	{ (void)position; (void)first; (void)last; }
@@ -230,7 +239,9 @@ public:
 	{
 		if (this == &other)
 			return;
-		ft::swap(*this, other);
+		ft::swap(_m_impl._m_start, other._m_impl._m_start);
+		ft::swap(_m_impl._m_finish, other._m_impl._m_finish);
+		ft::swap(_m_impl._m_end_of_storage, other._m_impl._m_end_of_storage);
 	}
 	void		clear()
 	{
@@ -249,6 +260,15 @@ private:
 		_m_impl._m_end_of_storage = _m_impl._m_start + n;
 	}
 
+	pointer _m_allocate(size_type n)
+	{
+		return n == 0 ? pointer() : _m_alloc.allocate(n);
+	}
+	void _m_deallocate()
+	{
+		_m_deallocate(_m_impl._m_start, _m_impl._m_end_of_storage - _m_impl._m_start);
+		_m_impl._m_reset();
+	}
 	void _m_deallocate(pointer p, size_type n)
 	{
 		pointer it = p + n;
@@ -286,19 +306,108 @@ private:
 		return first;
 	}
 
+	iterator _m_insert_val(iterator pos, const value_type& val)
+	{
+		const size_type n = pos - begin();
+		
+		if (_m_impl._m_finish != _m_impl._m_end_of_storage)
+		{
+			if (pos == end())
+				_m_alloc.construct(_m_impl._m_finish++, val);
+			else
+				_m_insert_aux(begin() + n, val);
+		}
+		else
+			_m_insert_aux(begin() + n, val);
+		return iterator(_m_impl._m_start + n);
+	}
+
+	void _m_insert_aux(iterator pos, const value_type& val)
+	{
+		if (_m_impl._m_finish != _m_impl._m_end_of_storage)
+		{
+			std::copy_backward(pos.base(), _m_impl._m_finish - 1, _m_impl._m_finish);
+			*pos = val;
+			++_m_impl._m_finish;
+		}
+		else
+		{
+			const size_type len = _m_check_len(size_type(1));
+			pointer newStart = _m_alloc.allocate(len);
+			std::uninitialized_copy(_m_impl._m_start, pos.base(), newStart);
+			_m_alloc.construct(newStart + (pos - begin()), val);
+			std::uninitialized_copy(pos, end(), newStart + (pos - begin()) + 1);
+			const size_type oldSize = size();
+			_m_deallocate();
+			_m_impl._m_end_of_storage = newStart + len;
+			_m_impl._m_start = newStart;
+			_m_impl._m_finish = newStart + oldSize + 1;
+		}
+	}
+
+	size_type _m_check_len(size_type n) const
+	{
+		if (max_size() - size() < n)
+			assert(false); // do we need to throw ?
+		const size_type len = size() + std::max(size(), n);
+		return ( len < size() || len > max_size()) ? max_size() : len;
+	}
+
+	void _m_fill_insert(iterator pos, size_type n, const value_type& val)
+	{
+		if (!n)
+			return;
+		if (size_type(_m_impl._m_end_of_storage - _m_impl._m_finish) >= n)
+		{
+			const size_type elemsAfter = end() - pos;
+			pointer oldFinish = _m_impl._m_finish;
+			if (elemsAfter > n)
+			{
+				std::uninitialized_copy(_m_impl._m_finish - n, _m_impl._m_finish, _m_impl._m_finish);
+				std::copy_backward(pos.base(), oldFinish - n, oldFinish);
+				std::fill(pos.base(), pos.base() + n, val);
+			}
+			else
+			{
+				std::uninitialized_fill_n(_m_impl._m_finish, n - elemsAfter, val);
+				std::uninitialized_copy(pos.base(), oldFinish, _m_impl._m_finish);
+				std::fill(pos.base(), oldFinish, val);
+			}
+			_m_impl._m_finish += n;
+		}
+		else
+		{
+			throw "shit";
+		}
+	}
+
 	void _m_grow()
 	{
 		const size_type actualSize = _m_impl._m_end_of_storage - _m_impl._m_start;
 		const size_type newSize = std::max(2 * actualSize, size_type(1));
 
-		const pointer newBuffer = _m_alloc.allocate(newSize);
-		std::uninitialized_copy(_m_impl._m_start, _m_impl._m_finish, newBuffer);
+		const pointer newStart = _m_alloc.allocate(newSize);
+		std::uninitialized_copy(_m_impl._m_start, _m_impl._m_finish, newStart);
 		_m_deallocate(_m_impl._m_start, actualSize);
-		_m_impl._m_start = newBuffer;
-		_m_impl._m_finish = newBuffer + actualSize;
-		_m_impl._m_end_of_storage = newBuffer + newSize;
+		_m_impl._m_start = newStart;
+		_m_impl._m_finish = newStart + actualSize;
+		_m_impl._m_end_of_storage = newStart + newSize;
 	}
 
+	void _m_grow(size_type n)
+	{
+		const size_type actualSize = _m_impl._m_end_of_storage - _m_impl._m_start;
+		const size_type doubleSize = std::max(2 * actualSize, size_type(1));
+		const size_type newSize = n > doubleSize ? n : doubleSize;
+		// const size_type newSize = std::max(2 * actualSize, size_type(1));
+
+		const pointer newStart = _m_alloc.allocate(newSize);
+		std::uninitialized_copy(_m_impl._m_start, _m_impl._m_finish, newStart);
+		_m_deallocate(_m_impl._m_start, actualSize);
+		_m_impl._m_start = newStart;
+		_m_impl._m_finish = newStart + actualSize;
+		_m_impl._m_end_of_storage = newStart + newSize;
+	}
 
 
 	template<class _T1, class _Alloc1>

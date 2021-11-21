@@ -190,6 +190,70 @@ TEST_CASE( "vector - capacity ", "[vector][capacity]" )
 	}
 }
 
+TEST_CASE( "vector - capacity - resize" ,
+	"[vector][capacity][resize]" )
+{
+	cn::vector<int> myvector;
+
+	for (int i= 1 ;i<10;i++)
+	{
+		REQUIRE( myvector.size() <= myvector.capacity());
+		size_t capacity = myvector.capacity() ? myvector.capacity() : 1;
+		bool shouldGrow = capacity == myvector.size();
+		myvector.push_back(i); // 1 2 3 4 5 6 7 8 9
+		if (shouldGrow)
+			REQUIRE(capacity * 2 == myvector.capacity());
+	}
+	SECTION( "push back should work" )
+	{
+		int i = -1;
+		while (++i < 9)
+			REQUIRE( myvector[i] == i + 1);
+		REQUIRE( &*myvector.end() == &myvector[i]);
+		REQUIRE( myvector.size() == 9);
+		REQUIRE( myvector.capacity() == 16);
+	}
+
+	myvector.resize(5);
+
+	SECTION( "resize lower" )
+	{
+		int i = -1;
+		while (++i < 5)
+			REQUIRE( myvector[i] == i + 1);
+		REQUIRE( &*myvector.end() == &myvector[i]);
+		REQUIRE( myvector.size() == 5);
+		REQUIRE( myvector.capacity() == 16);
+	}
+
+	myvector.resize(8,100);
+	SECTION( "resize bigger with 100 as default value" )
+	{
+		int i = 0;
+		for (; i < 5; i++)
+		 	REQUIRE( myvector[i] == i + 1);
+		for (; i < 8; i++)
+			REQUIRE( myvector[i] == 100);
+		REQUIRE( &*myvector.end() == &myvector[i]);
+		REQUIRE( myvector.size() == 8);
+		REQUIRE( myvector.capacity() == 16);
+	}
+	myvector.resize(12);
+	SECTION( "resize bigger with no value" )
+	{
+		int i = -1;
+		for (; i < 5; i++)
+			REQUIRE( myvector[i] == i + 1);
+		for (; i < 8; i++)
+			REQUIRE( myvector[i] == 100);
+		for (; i < 12; i++)
+			REQUIRE( myvector[i] == 0);
+		REQUIRE( &*myvector.end() == &myvector[i]);
+		REQUIRE( myvector.size() == 12);
+		REQUIRE( myvector.capacity() == 16);
+	}
+}
+
 // TEST_CASE( "vector - capacity - vectors can be sized and resized",
 // 	"[vector][capacity]" )
 // {
@@ -335,55 +399,65 @@ TEST_CASE( "vector - Modifiers - push_back() and pop_back() ", "[vector][modifie
 
 }
 
-// TEST_CASE( "vector - Modifiers - insert() ", "[vector][modifier][insert]" )
-// {
-// 	cn::vector<int> myvector (3,100);
-// 	REQUIRE( myvector[0] == 100);
-// 	REQUIRE( myvector[1] == 100);
-// 	REQUIRE( myvector[2] == 100);
-// 	REQUIRE( !myvector.empty());
-// 	REQUIRE( myvector.size() == 3);
-// 	REQUIRE( myvector.capacity() == 3);
+TEST_CASE( "vector - Modifiers - insert() ", "[vector][modifier][insert]" )
+{
+	cn::vector<int> myvector (3,100);
+	REQUIRE( myvector[0] == 100);
+	REQUIRE( myvector[1] == 100);
+	REQUIRE( myvector[2] == 100);
+	REQUIRE( &myvector[3] == &*myvector.end());
+	REQUIRE( !myvector.empty());
+	REQUIRE( myvector.size() == 3);
+	REQUIRE( myvector.capacity() == 3);
 
-// 	myvector.insert(myvector.begin(), 200);
-// 	SECTION( "Insert single element overload" )
-// 	{
-// 		REQUIRE( myvector[0] == 200);
-// 		REQUIRE( myvector.size() == 4);
-// 		REQUIRE( myvector.capacity() == 6);
-// 	}
+	myvector.insert(myvector.begin(), 200);
+	SECTION( "Insert single element overload" )
+	{
+		REQUIRE( myvector[0] == 200);
+		REQUIRE( myvector[1] == 100);
+		REQUIRE( myvector[2] == 100);
+		REQUIRE( myvector[3] == 100);
+		REQUIRE( &myvector[4] == &*myvector.end());
+		REQUIRE( myvector.size() == 4);
+		REQUIRE( myvector.capacity() == 6);
+	}
 
-// 	myvector.insert(myvector.begin(), 3, 50);
-// 	SECTION( "Insert fill overload" )
-// 	{
-// 		REQUIRE( myvector[0] == 50);
-// 		REQUIRE( myvector[1] == 50);
-// 		REQUIRE( myvector[2] == 50);
-// 		REQUIRE( myvector.size() == 7);
-// 		REQUIRE( myvector.capacity() == 8);
-// 	}
+	// myvector.insert(myvector.begin(), 3, 50);
+	// SECTION( "Insert fill overload" )
+	// {
+	// 	REQUIRE( myvector[0] == 50);
+	// 	REQUIRE( myvector[1] == 50);
+	// 	REQUIRE( myvector[2] == 50);
+	// 	REQUIRE( myvector[3] == 200);
+	// 	REQUIRE( myvector[4] == 100);
+	// 	REQUIRE( myvector[5] == 100);
+	// 	REQUIRE( myvector[6] == 100);
+	// 	REQUIRE( &myvector[7] == &*myvector.end());
+	// 	REQUIRE( myvector.size() == 7);
+	// 	REQUIRE( myvector.capacity() == 8);
+	// }
 
-// 	int myarray [] = { 501,502,503 };
-// 	myvector.insert(myvector.begin(), myarray, myarray+3);
-// 	SECTION( "Insert range from array" )
-// 	{
-// 		REQUIRE( myvector[0] == 501);
-// 		REQUIRE( myvector[1] == 502);
-// 		REQUIRE( myvector[2] == 503);
-// 		REQUIRE( myvector.size() == 10);
-// 		REQUIRE( myvector.capacity() == 14);
-// 	}
-// 	std::vector<int> anothervector (2,400);
-// 	myvector.insert(--myvector.end(),anothervector.begin(),anothervector.end());
+	// int myarray [] = { 501,502,503 };
+	// myvector.insert(myvector.begin(), myarray, myarray+3);
+	// SECTION( "Insert range from array" )
+	// {
+	// 	REQUIRE( myvector[0] == 501);
+	// 	REQUIRE( myvector[1] == 502);
+	// 	REQUIRE( myvector[2] == 503);
+	// 	REQUIRE( myvector.size() == 10);
+	// 	REQUIRE( myvector.capacity() == 14);
+	// }
+	// std::vector<int> anothervector (2,400);
+	// myvector.insert(--myvector.end(),anothervector.begin(),anothervector.end());
 
-// 	SECTION( "Insert range from basic iterator" )
-// 	{
-// 		REQUIRE( myvector[9] == 400);
-// 		REQUIRE( myvector[10] == 400);
-// 		REQUIRE( myvector.size() == 12);
-// 		REQUIRE( myvector.capacity() == 14);
-// 	}
-// }
+	// SECTION( "Insert range from basic iterator" )
+	// {
+	// 	REQUIRE( myvector[9] == 400);
+	// 	REQUIRE( myvector[10] == 400);
+	// 	REQUIRE( myvector.size() == 12);
+	// 	REQUIRE( myvector.capacity() == 14);
+	// }
+}
 
 TEST_CASE( "vector - Modifiers - erase() ", "[vector][modifier][erase]" )
 {
@@ -469,48 +543,48 @@ TEST_CASE( "vector - Modifiers - erase() ", "[vector][modifier][erase]" )
 	}
 }
 
-// TEST_CASE( "vector - Modifiers - swap ", "[vector][modifier][swap]" )
-// {
-// 	int myints[]={12,75,10,32,20,25};
-// 	cn::vector<int> first (myints,myints+2);     // 12,75
-// 	cn::vector<int> second (myints+2,myints+6);  // 10,20,25,32
+TEST_CASE( "vector - Modifiers - swap ", "[vector][modifier][swap]" )
+{
+	int myints[]={12,75,10,32,20,25};
+	cn::vector<int> first (myints,myints+2);     // 12,75
+	cn::vector<int> second (myints+2,myints+6);  // 10,20,25,32
 
-// 	REQUIRE( first.size() == 2 );
-// 	REQUIRE( first.capacity() == 2 );
-// 	REQUIRE( second.size() == 4 );
-// 	REQUIRE( second.capacity() == 4 );
+	REQUIRE( first.size() == 2 );
+	REQUIRE( first.capacity() == 2 );
+	REQUIRE( second.size() == 4 );
+	REQUIRE( second.capacity() == 4 );
 
-// 	auto it = first.begin();
-// 	REQUIRE(*it++ == 12);
-// 	REQUIRE(*it++ == 75);
-// 	REQUIRE(it == first.end());
+	auto it = first.begin();
+	REQUIRE(*it++ == 12);
+	REQUIRE(*it++ == 75);
+	REQUIRE(it == first.end());
 
-// 	it = second.begin();
-// 	REQUIRE(*it++ == 10);
-// 	REQUIRE(*it++ == 32);
-// 	REQUIRE(*it++ == 20);
-// 	REQUIRE(*it++ == 25);
-// 	REQUIRE(it == second.end());
+	it = second.begin();
+	REQUIRE(*it++ == 10);
+	REQUIRE(*it++ == 32);
+	REQUIRE(*it++ == 20);
+	REQUIRE(*it++ == 25);
+	REQUIRE(it == second.end());
 
-// 	first.swap(second);
+	first.swap(second);
 
-// 	REQUIRE( first.size() == 4 );
-// 	REQUIRE( first.capacity() == 4 );
-// 	REQUIRE( second.size() == 2 );
-// 	REQUIRE( second.capacity() == 2 );
+	REQUIRE( first.size() == 4 );
+	REQUIRE( first.capacity() == 4 );
+	REQUIRE( second.size() == 2 );
+	REQUIRE( second.capacity() == 2 );
 
-// 	it = first.begin();
-// 	REQUIRE(*it++ == 10);
-// 	REQUIRE(*it++ == 32);
-// 	REQUIRE(*it++ == 20);
-// 	REQUIRE(*it++ == 25);
-// 	REQUIRE(it == first.end());
+	it = first.begin();
+	REQUIRE(*it++ == 10);
+	REQUIRE(*it++ == 32);
+	REQUIRE(*it++ == 20);
+	REQUIRE(*it++ == 25);
+	REQUIRE(it == first.end());
 
-// 	it = second.begin();
-// 	REQUIRE(*it++ == 12);
-// 	REQUIRE(*it++ == 75);
-// 	REQUIRE(it == second.end());
-// }
+	it = second.begin();
+	REQUIRE(*it++ == 12);
+	REQUIRE(*it++ == 75);
+	REQUIRE(it == second.end());
+}
 
 TEST_CASE( "vector - Modifiers - clear ", "[vector][modifier][clear]" )
 {
@@ -579,45 +653,69 @@ TEST_CASE( "vector - non-member - relational operators", "[vector][non-member][r
 
 }
 
-// TEST_CASE( "vector - non-member - swap", "[vector][non-member][swap]" )
-// {
-// 	int myints[]={12,75,10,32,20,25};
-// 	cn::vector<int> first (myints,myints+2);     // 12,75
-// 	cn::vector<int> second (myints+2,myints+6);  // 10,20,25,32
+TEST_CASE( "vector - non-member - swap", "[vector][non-member][swap]" )
+{
+	int myints[]={12,75,10,32,20,25};
+	cn::vector<int> first (myints,myints+2);     // 12,75
+	cn::vector<int> second (myints+2,myints+6);  // 10,20,25,32
 
-// 	REQUIRE( first.size() == 2 );
-// 	REQUIRE( first.capacity() == 2 );
-// 	REQUIRE( second.size() == 4 );
-// 	REQUIRE( second.capacity() == 4 );
+	cn::vector<int>::pointer first_start = &*first.begin();
+	cn::vector<int>::pointer first_finish = &*first.end();
+	cn::vector<int>::pointer first_end_of_storage = &*first.begin() + first.capacity();
+	REQUIRE( first_start + 2 == first_finish);
+	REQUIRE( first_finish == first_end_of_storage);
 
-// 	auto it = first.begin();
-// 	REQUIRE(*it++ == 12);
-// 	REQUIRE(*it++ == 75);
-// 	REQUIRE(it == first.end());
+	cn::vector<int>::pointer second_start = &*second.begin();
+	cn::vector<int>::pointer second_finish = &*second.end();
+	cn::vector<int>::pointer second_end_of_storage = &*second.begin() + second.capacity();
+	REQUIRE( second_start + 4 == second_finish);
+	REQUIRE( second_finish == second_end_of_storage);
 
-// 	it = second.begin();
-// 	REQUIRE(*it++ == 10);
-// 	REQUIRE(*it++ == 32);
-// 	REQUIRE(*it++ == 20);
-// 	REQUIRE(*it++ == 25);
-// 	REQUIRE(it == second.end());
 
-// 	cn::swap(first, second);
+	REQUIRE( first.size() == 2 );
+	REQUIRE( first.capacity() == 2 );
+	REQUIRE( second.size() == 4 );
+	REQUIRE( second.capacity() == 4 );
 
-// 	REQUIRE( first.size() == 4 );
-// 	REQUIRE( first.capacity() == 4 );
-// 	REQUIRE( second.size() == 2 );
-// 	REQUIRE( second.capacity() == 2 );
+	auto it = first.begin();
+	REQUIRE(*it++ == 12);
+	REQUIRE(*it++ == 75);
+	REQUIRE(it == first.end());
 
-// 	it = first.begin();
-// 	REQUIRE(*it++ == 10);
-// 	REQUIRE(*it++ == 32);
-// 	REQUIRE(*it++ == 20);
-// 	REQUIRE(*it++ == 25);
-// 	REQUIRE(it == first.end());
+	it = second.begin();
+	REQUIRE(*it++ == 10);
+	REQUIRE(*it++ == 32);
+	REQUIRE(*it++ == 20);
+	REQUIRE(*it++ == 25);
+	REQUIRE(it == second.end());
 
-// 	it = second.begin();
-// 	REQUIRE(*it++ == 12);
-// 	REQUIRE(*it++ == 75);
-// 	REQUIRE(it == second.end());
-// }
+	cn::swap(first, second);
+
+	REQUIRE( first.size() == 4 );
+	REQUIRE( first.capacity() == 4 );
+	REQUIRE( second.size() == 2 );
+	REQUIRE( second.capacity() == 2 );
+
+	it = first.begin();
+	REQUIRE(*it++ == 10);
+	REQUIRE(*it++ == 32);
+	REQUIRE(*it++ == 20);
+	REQUIRE(*it++ == 25);
+	REQUIRE(it == first.end());
+
+	it = second.begin();
+	REQUIRE(*it++ == 12);
+	REQUIRE(*it++ == 75);
+	REQUIRE(it == second.end());
+
+	SECTION( "Must only swap pointers. No allocation should be done" )
+	{
+		REQUIRE( first_start == &*second.begin());
+		REQUIRE( first_finish == &*second.end());
+		REQUIRE( first_end_of_storage == &*second.begin() + second.capacity());
+
+		REQUIRE( second_start == &*first.begin());
+		REQUIRE( second_finish == &*first.end());
+		REQUIRE( second_end_of_storage == &*first.begin() + first.capacity());
+	}
+}

@@ -386,9 +386,9 @@ public:
 	const_iterator	upper_bound(const _Key& k)const		{ return _m_upper_bound(_m_begin(), _m_end(), k); }
 
 	pair<iterator,iterator>    equal_range(const _Key& k)
-		{ return make_pair<iterator, iterator>(lower_bound(k), upper_bound(k)); }
+		{ return ft::make_pair<iterator, iterator>(lower_bound(k), upper_bound(k)); }
 	pair<const_iterator,const_iterator>    equal_range(const _Key& k) const
-		{ return make_pair<const_iterator, const_iterator>(lower_bound(k), upper_bound(k)); }
+		{ return ft::make_pair<const_iterator, const_iterator>(lower_bound(k), upper_bound(k)); }
 
 private:
 	base_ptr&				_m_root()					throw() { return _m_impl._header.parent;}
@@ -689,9 +689,7 @@ private:
 		{
 			sibling->color = kRed;
 			if (x->parent->color == kBlack)
-			{
 				fixShit(x->parent);
-			}
 			else
 				x->parent->color = kBlack;
 		}
@@ -706,7 +704,7 @@ private:
 				_rightRotate(sibling, _m_root());
 				sibling = x->parent->right;
 			}
-			else if (!xIsleftChild && sibling->left->color == kBlack)
+			else if (!xIsleftChild && (sibling->left == NULL || sibling->left->color == kBlack))
 			{
 				sibling->right->color = kBlack;
 				sibling->color = kRed;
@@ -899,9 +897,8 @@ private:
 	
 		__rb_tree_print(static_cast<link_type>(root->right), &trunk, true);
 	
-		if (!prev) {
+		if (!prev)
 			trunk.str = "———";
-		}
 		else if (isLeft)
 		{
 			trunk.str = ".———";
@@ -920,9 +917,8 @@ private:
 		
 		std::cout << root->data << std::endl;
 	
-		if (prev) {
+		if (prev)
 			prev->str = prev_str;
-		}
 		trunk.str = "   |";
 	
 		__rb_tree_print(static_cast<link_type>(root->left), &trunk, false);

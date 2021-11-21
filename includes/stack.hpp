@@ -1,7 +1,7 @@
 #ifndef STACK_HPP
 #define STACK_HPP
 
-#include <deque> // to remove #######################
+#include "vector.hpp"
 
 namespace ft{
 
@@ -32,7 +32,7 @@ namespace ft{
    *  @c push, @c pop, and @c top, which are standard %stack/FILO
    *  operations.
   */
-template<class _T, class _Container=std::deque<_T> >
+template<class _T, class _Container = ft::vector<_T> >
 class stack
 {
 public:

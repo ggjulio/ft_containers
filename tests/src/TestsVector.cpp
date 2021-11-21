@@ -204,7 +204,7 @@ TEST_CASE( "vector - capacity - resize" ,
 		if (shouldGrow)
 			REQUIRE(capacity * 2 == myvector.capacity());
 	}
-	SECTION( "push back should work" )
+	// push back should work
 	{
 		int i = -1;
 		while (++i < 9)
@@ -214,9 +214,8 @@ TEST_CASE( "vector - capacity - resize" ,
 		REQUIRE( myvector.capacity() == 16);
 	}
 
+	// resize lower
 	myvector.resize(5);
-
-	SECTION( "resize lower" )
 	{
 		int i = -1;
 		while (++i < 5)
@@ -226,8 +225,8 @@ TEST_CASE( "vector - capacity - resize" ,
 		REQUIRE( myvector.capacity() == 16);
 	}
 
+	// resize bigger with 100 as default value
 	myvector.resize(8,100);
-	SECTION( "resize bigger with 100 as default value" )
 	{
 		int i = 0;
 		for (; i < 5; i++)
@@ -238,8 +237,9 @@ TEST_CASE( "vector - capacity - resize" ,
 		REQUIRE( myvector.size() == 8);
 		REQUIRE( myvector.capacity() == 16);
 	}
+
+	// resize bigger with no value
 	myvector.resize(12);
-	SECTION( "resize bigger with no value" )
 	{
 		int i = 0;
 		for (; i < 5; i++)

@@ -200,7 +200,7 @@ TEST_CASE( "set - capacity ", "[set][capacity]" )
 	}
 	SECTION( "max_size(), May not be equal to the std because depend on the underlying implementation of the node. (also OS dependant linux_side != macos_size)" )
 	{
-		REQUIRE(std_set.max_size() == mine.max_size());
+		CHECK_NOFAIL(std_set.max_size() == mine.max_size());
 	}
 }
 

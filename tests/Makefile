@@ -70,7 +70,7 @@ SRC+= TestsIterator.cpp
 SRC+= TestsAlgorithm.cpp
 SRC+= TestsFunction.cpp
 
-# SRC+= TestsRbTree.cpp
+SRC+= TestsRbTree.cpp
 
 
 OBJ = $(addprefix  $(OBJ_DIR)/,$(SRC:%.cpp=%.o))

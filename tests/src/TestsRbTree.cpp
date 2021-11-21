@@ -37,8 +37,8 @@ TEST_CASE( "rbTree::insert_unique - random insert value + decrease insert", "[rb
 		++len;
 	}
 
-	ft::rbTree<int, int, int>::iterator it = tree.begin();
-	ft::rbTree<int, int, int>::iterator end = tree.end();
+	ft::rbTree<int, int, ft::_Identity<int>>::iterator it = tree.begin();
+	ft::rbTree<int, int, ft::_Identity<int>>::iterator end = tree.end();
 
 	int prev = static_cast<ft::node<int>>(*it).data;
 	++it;
@@ -48,7 +48,7 @@ TEST_CASE( "rbTree::insert_unique - random insert value + decrease insert", "[rb
 
 TEST_CASE( "rbTree::insert_unique - test insert increase value", "[rb_tree][insert_unique]" )
 {
-	ft::rbTree<int, int, int> tree;
+	ft::rbTree<int, int, ft::_Identity<int>> tree;
 	
 	for (size_t i = 0; i < 60; i++)
 	{
@@ -273,6 +273,33 @@ TEST_CASE( "rbTree::erase node with no left sibbling", "[rb_tree][erase][iterato
 	REQUIRE(tree.size() == 9);
 	REQUIRE(tree.find(35) == tree.end());
 	REQUIRE(*tree.find(30) == 30);
+	REQUIRE(tree.__rb_verify());
+}
+
+
+TEST_CASE( "rbTree::erase node with left sibbling and a nephew", "[rb_tree][erase][iterator][position][l][sibling][nephew]" )
+{
+	ft::rbTree<int, int, ft::_Identity<int> > tree;
+	
+	for (int i=1; i<10; i++)
+		insert_v(tree, i*10, i - 1); // 10 20 30 40 50 60 70 80 90
+	insert_v(tree, 35, 9);
+	insert_v(tree, 11, 10);
+	
+	/*
+	            .———90
+	        .———80
+	       |    `———70
+	    .———60
+	   |    `———50
+	———40       .———35
+	   |    .———30
+	    `———20  .———11
+	        `———10
+	*/
+	tree.erase(tree.find(30));
+	REQUIRE(tree.size() == 10);
+	REQUIRE(tree.find(30) == tree.end());
 	REQUIRE(tree.__rb_verify());
 }
 

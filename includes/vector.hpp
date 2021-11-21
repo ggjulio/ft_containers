@@ -24,8 +24,9 @@ namespace ft{
 
 		typedef vector_iterator<value_type> Self;
 
-		vector_iterator()						: _m_ptr(0) {}
-		vector_iterator(pointer ptr) throw()	: _m_ptr(ptr) {}
+		vector_iterator()						: _m_ptr(pointer()) {}
+		vector_iterator(pointer ptr): _m_ptr(ptr) {}
+		vector_iterator(const T& i) : _m_ptr(i) {}
 		// vector_iterator(const Self& it) throw()	: _m_ptr(it._m_ptr) {}
 
 		operator vector_iterator<const T> () const
@@ -39,7 +40,7 @@ namespace ft{
 		Self operator++(int) throw()	{ Self tmp = *this; ++_m_ptr; return tmp; }
 
 		Self &operator--() throw()		{ _m_ptr -= 1; return *this; }
-		Self operator--(int) throw()	{ Self tmp = *this; _m_ptr -= 1; return tmp; }
+		Self operator--(int) throw()	{ Self tmp = *this; --_m_ptr; return tmp; }
 
 		Self  operator+ (difference_type n) const	{ return _m_ptr + n;}
 		Self& operator+=(difference_type n)			{ _m_ptr += n; return *this;}
@@ -53,8 +54,8 @@ namespace ft{
 		// bool operator<=	(const Self &other) const { return (_m_ptr <= other._m_ptr); };
 		// bool operator>=	(const Self &other) const { return (_m_ptr >= other._m_ptr); };
 
-		friend bool operator==(const Self &x, const Self &y) throw() { return x._m_ptr == y._m_ptr; }
-		friend bool operator!=(const Self &x, const Self &y) throw() { return !(x._m_ptr == y._m_ptr); }
+		// friend bool operator==(const Self &x, const Self &y) throw() { return x._m_ptr == y._m_ptr; }
+		// friend bool operator!=(const Self &x, const Self &y) throw() { return !(x._m_ptr == y._m_ptr); }
 
 
 		pointer base() const {return _m_ptr; }
@@ -63,6 +64,69 @@ namespace ft{
 	protected:
 		pointer _m_ptr;
 	}; /* struct vector_iterator */
+
+template<typename IterL, typename IterR>
+inline bool
+operator==(const vector_iterator<IterL>& x, const vector_iterator<IterR>& y) throw()
+{ return x.base() == y.base(); }
+
+template<typename _T>
+inline bool
+operator==(const vector_iterator<_T>& x, const vector_iterator<_T>& y) throw()
+{ return x.base() == y.base(); }
+
+template<typename IterL, typename IterR>
+inline bool
+operator!=(const vector_iterator<IterL>& x, const vector_iterator<IterR>& y) throw()
+{ return x.base() != y.base(); }
+
+template<typename _T>
+inline bool
+operator!=(const vector_iterator<_T>& x, const vector_iterator<_T>& y) throw()
+{ return x.base() != y.base(); }
+
+  // Random access iterator requirements
+template<typename IterL, typename IterR>
+inline bool
+operator<(const vector_iterator<IterL>& x, const vector_iterator<IterR>& y) throw()
+{ return x.base() < y.base(); }
+
+template<typename _T>
+inline bool
+operator<(const vector_iterator<_T>& x, const vector_iterator<_T>& y) throw()
+{ return x.base() < y.base(); }
+
+template<typename IterL, typename IterR>
+inline bool
+operator>(const vector_iterator<IterL>& x, const vector_iterator<IterR>& y) throw()
+{ return x.base() > y.base(); }
+
+template<typename _T>
+inline bool
+operator>(const vector_iterator<_T>& x, const vector_iterator<_T>& y) throw()
+{ return x.base() > y.base(); }
+
+template<typename IterL, typename IterR>
+inline bool
+operator<=(const vector_iterator<IterL>& x, const vector_iterator<IterR>& y) throw()
+{ return x.base() <= y.base(); }
+
+template<typename _T>
+inline bool
+operator<=(const vector_iterator<_T>& x, const vector_iterator<_T>& y) throw()
+{ return x.base() <= y.base(); }
+
+template<typename IterL, typename IterR>
+inline bool
+operator>=(const vector_iterator<IterL>& x, const vector_iterator<IterR>& y) throw()
+{ return x.base() >= y.base(); }
+
+template<typename _T>
+inline bool
+operator>=(const vector_iterator<_T>& x, const vector_iterator<_T>& y) throw()
+{ return x.base() >= y.base(); }
+
+
 
 	template <typename T>
 	typename vector_iterator<T>::difference_type
@@ -297,7 +361,7 @@ private:
 
 	iterator _m_erase(iterator position)
 	{
-		if (position + 1 != _m_impl._m_finish)
+		if (position.base() + 1 != _m_impl._m_finish)
 			std::copy(position + 1, end(), position);
 		--_m_impl._m_finish;
 		_m_alloc.destroy(_m_impl._m_finish);

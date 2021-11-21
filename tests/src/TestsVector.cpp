@@ -241,7 +241,7 @@ TEST_CASE( "vector - capacity - resize" ,
 	myvector.resize(12);
 	SECTION( "resize bigger with no value" )
 	{
-		int i = -1;
+		int i = 0;
 		for (; i < 5; i++)
 			REQUIRE( myvector[i] == i + 1);
 		for (; i < 8; i++)

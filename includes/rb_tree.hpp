@@ -177,6 +177,17 @@ struct rb_tree_header
 
 	rb_tree_header() throw() { _header.color = kRed; reset(); }
 
+	void _m_move_data(rb_tree_header& other)
+	{
+		_header.color = other._header.color;
+		_header.parent = other._header.parent;
+		_header.left = other._header.left;
+		_header.right = other._header.right;
+		_header.parent->parent = &_header;
+		_nodeCount = other._nodeCount;
+		other.reset();
+	}
+
 	void reset() throw()
 	{
 		_header.parent = NULL;
@@ -333,7 +344,26 @@ public:
 	{
 		if (this == &other)
 			return;
-		ft::swap(*this, other);
+		if (_m_root() == 0)
+		{
+			if (other._m_root())
+				_m_impl._m_move_data(other._m_impl);
+		}
+		else if (other._m_root() == 0)
+			other._m_impl._m_move_data(_m_impl);
+		else
+		{
+			ft::swap(_m_root(), other._m_root());
+			ft::swap(_m_leftmost(), other._m_leftmost());
+			ft::swap(_m_rightmost(), other._m_rightmost());
+
+			_m_root()->parent = _m_end();
+			other._m_root()->parent = other._m_end();
+			ft::swap(_m_impl._nodeCount, other._m_impl._nodeCount);
+		}
+		ft::swap(_m_impl._m_key_compare, other._m_impl._m_key_compare);
+
+		//swap allocator ?
 	}
 	void clear() {
 		_m_erase(_m_begin());

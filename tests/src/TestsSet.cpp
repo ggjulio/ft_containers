@@ -299,6 +299,14 @@ TEST_CASE( "set - Modifiers - swap ", "[set][modifier][swap]" )
 	cn::set<int> first (myints,myints+2);     // 12,75
 	cn::set<int> second (myints+2,myints+6);  // 10,20,25,32
 
+	void* first_begin = (void*)&*first.begin();
+	void* second_begin = (void*)&*second.begin();
+
+	cn::set<int>::size_type first_size = first.size();
+	cn::set<int>::size_type second_size = second.size();
+	REQUIRE(first_size == 2 );
+	REQUIRE(second_size == 4 );
+
 	auto it = first.begin();
 	REQUIRE(*it++ == 12);
 	REQUIRE(*it++ == 75);
@@ -313,6 +321,9 @@ TEST_CASE( "set - Modifiers - swap ", "[set][modifier][swap]" )
 
 	first.swap(second);
 
+	REQUIRE(first_size == second.size() );
+	REQUIRE(second_size == first.size() );
+
 	it = first.begin();
 	REQUIRE(*it++ == 10);
 	REQUIRE(*it++ == 20);
@@ -324,6 +335,13 @@ TEST_CASE( "set - Modifiers - swap ", "[set][modifier][swap]" )
 	REQUIRE(*it++ == 12);
 	REQUIRE(*it++ == 75);
 	REQUIRE(it == second.end());
+
+	SECTION( "Must only swap pointers. No allocation should be done" )
+	{
+		REQUIRE( first_begin == (void*)&*second.begin());
+		REQUIRE( second_begin == (void*)&*first.begin());
+	}
+
 }
 
 TEST_CASE( "set - Modifiers - clear ", "[set][modifier][clear]" )

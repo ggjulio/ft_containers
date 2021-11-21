@@ -549,6 +549,19 @@ TEST_CASE( "vector - Modifiers - swap ", "[vector][modifier][swap]" )
 	cn::vector<int> first (myints,myints+2);     // 12,75
 	cn::vector<int> second (myints+2,myints+6);  // 10,20,25,32
 
+	cn::vector<int>::pointer first_start = &*first.begin();
+	cn::vector<int>::pointer first_finish = &*first.end();
+	cn::vector<int>::pointer first_end_of_storage = &*first.begin() + first.capacity();
+	REQUIRE( first_start + 2 == first_finish);
+	REQUIRE( first_finish == first_end_of_storage);
+
+	cn::vector<int>::pointer second_start = &*second.begin();
+	cn::vector<int>::pointer second_finish = &*second.end();
+	cn::vector<int>::pointer second_end_of_storage = &*second.begin() + second.capacity();
+	REQUIRE( second_start + 4 == second_finish);
+	REQUIRE( second_finish == second_end_of_storage);
+
+
 	REQUIRE( first.size() == 2 );
 	REQUIRE( first.capacity() == 2 );
 	REQUIRE( second.size() == 4 );
@@ -584,6 +597,18 @@ TEST_CASE( "vector - Modifiers - swap ", "[vector][modifier][swap]" )
 	REQUIRE(*it++ == 12);
 	REQUIRE(*it++ == 75);
 	REQUIRE(it == second.end());
+
+
+	SECTION( "Must only swap pointers. No allocation should be done" )
+	{
+		REQUIRE( first_start == &*second.begin());
+		REQUIRE( first_finish == &*second.end());
+		REQUIRE( first_end_of_storage == &*second.begin() + second.capacity());
+
+		REQUIRE( second_start == &*first.begin());
+		REQUIRE( second_finish == &*first.end());
+		REQUIRE( second_end_of_storage == &*first.begin() + first.capacity());
+	}
 }
 
 TEST_CASE( "vector - Modifiers - clear ", "[vector][modifier][clear]" )

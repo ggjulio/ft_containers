@@ -358,6 +358,15 @@ TEST_CASE( "map - Modifiers - swap ", "[map][modifier][swap]" )
 	second['b']=22;
 	second['c']=33;
 
+	void* first_begin = (void*)&*first.begin();
+	void* second_begin = (void*)&*second.begin();
+
+	cn::map<char, int>::size_type first_size = first.size();
+	cn::map<char, int>::size_type second_size = second.size();
+	REQUIRE(first_size == 2 );
+	REQUIRE(second_size == 3 );
+
+
 	auto it = first.begin();
 	REQUIRE( it->first == 'x');
 	REQUIRE( it++->second == 100);
@@ -376,6 +385,10 @@ TEST_CASE( "map - Modifiers - swap ", "[map][modifier][swap]" )
 
 	first.swap(second);
 
+	REQUIRE(first_size == second.size() );
+	REQUIRE(second_size == first.size() );
+
+
 	it = first.begin();
 	REQUIRE( it->first == 'a');
 	REQUIRE( it++->second == 11);
@@ -383,14 +396,20 @@ TEST_CASE( "map - Modifiers - swap ", "[map][modifier][swap]" )
 	REQUIRE( it++->second == 22);
 	REQUIRE( it->first == 'c');
 	REQUIRE( it++->second == 33);
-	REQUIRE(it == first.end());
+	REQUIRE( it == first.end());
 
 	it = second.begin();
 	REQUIRE( it->first == 'x');
 	REQUIRE( it++->second == 100);
 	REQUIRE( it->first == 'y');
 	REQUIRE( it++->second == 200);
-	REQUIRE(it == second.end());
+	REQUIRE( it == second.end());
+
+	SECTION( "Must only swap pointers. No allocation should be done" )
+	{
+		REQUIRE( first_begin == (void*)&*second.begin());
+		REQUIRE( second_begin == (void*)&*first.begin());
+	}
 }
 
 TEST_CASE( "map - Modifiers - clear ", "[map][modifier][clear]" )

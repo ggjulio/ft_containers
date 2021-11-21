@@ -165,7 +165,10 @@ public:
 		// this->_m_impl = other._m_impl;
 	}
 
-	~vector() {}
+	~vector() {
+		if (_m_impl._m_start)
+			_m_deallocate();
+	}
 
 	vector& operator= (const vector& other)
 	{

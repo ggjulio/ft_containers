@@ -166,6 +166,7 @@ TEST_CASE( "vector - reverse iterator ", "[vector][reverse_iterator]" )
 TEST_CASE( "vector - capacity ", "[vector][capacity]" )
 {
 	cn::vector<int> myvector;
+	std::vector<int> std_vector;
 
 	SECTION( "empty container should be empty (insightful)" )
 	{
@@ -186,7 +187,7 @@ TEST_CASE( "vector - capacity ", "[vector][capacity]" )
 	}
 	SECTION( "max_size(), For now I don't know which value is suposed to be equal to (probably depend on the underlying implementation)" )
 	{
-		REQUIRE(myvector.max_size() == 2305843009213693951);
+		REQUIRE(std_vector.max_size() == myvector.max_size());
 	}
 }
 

@@ -34,17 +34,21 @@ TEST_CASE( "vector - construct", "[vector][constructors]" )
 		REQUIRE( !third.empty());
 		REQUIRE( second.capacity() == 4);
 	}
-	// cn::vector<int> fourth (third);
-	// SECTION( "copy constructor" )
-	// {
-	// 	CHECK( fourth[0] == 100);
-	// 	CHECK( fourth[1] == 100);
-	// 	CHECK( fourth[2] == 100);
-	// 	CHECK( fourth[3] == 100);
-	// 	REQUIRE( fourth.size() == 4);
-	// 	REQUIRE( !fourth.empty());
-	// 	REQUIRE( second.capacity() == 4);
-	// }
+	cn::vector<int> fourth (third);
+	SECTION( "copy constructor" )
+	{
+		CHECK( fourth[0] == 100);
+		CHECK( fourth[1] == 100);
+		CHECK( fourth[2] == 100);
+		CHECK( fourth[3] == 100);
+		REQUIRE( fourth.size() == 4);
+		REQUIRE( !fourth.empty());
+		REQUIRE( second.capacity() == 4);
+		
+		SECTION( "A deep_copy/clone must be made" ) {
+			REQUIRE( &fourth[0] != &third[0]);
+		}
+	}
 	SECTION( "the iterator constructor can also be used to construct from arrays" )
 	{
 		int myints[] = {16,2,77,29, 42};

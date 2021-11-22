@@ -244,9 +244,12 @@ public:
 	
 	vector(const vector& other)
 	{
-		if (this == &other)
+		if (this == &other || other._m_impl._m_start == 0)
 			return;
-		// this->_m_impl = other._m_impl;
+		const size_type otherLen = other.size();
+		_m_impl._m_start = _m_allocate_and_copy(otherLen, other.begin(), other.end());
+		_m_impl._m_finish = _m_impl._m_start + otherLen;
+		_m_impl._m_end_of_storage = _m_impl._m_finish;
 	}
 
 	~vector() {

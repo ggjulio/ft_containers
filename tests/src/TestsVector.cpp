@@ -61,23 +61,23 @@ TEST_CASE( "vector - construct", "[vector][constructors]" )
 	}
 }
 
-// TEST_CASE( "vector - operator - assignment ", "[vector][operator][assignment]" )
-// {
-// 	cn::vector<int> first(3, 42);
-// 	cn::vector<int> second(5, 43);
+TEST_CASE( "vector - operator - assignment ", "[vector][operator][assignment]" )
+{
+	cn::vector<int> first(3, 42);
+	cn::vector<int> second(5, 43);
 
-// 	REQUIRE(first.size() == 3);
-// 	REQUIRE(second.size() == 5);
+	REQUIRE(first.size() == 3);
+	REQUIRE(second.size() == 5);
 
-// 	second = first;
-// 	REQUIRE(first.size() == 3);
-// 	REQUIRE(second.size() == 3);
-// 	REQUIRE(second[0] == 42);
+	second = first;
+	REQUIRE(first.size() == 3);
+	REQUIRE(second.size() == 3);
+	REQUIRE(second[0] == 42);
 
-// 	first = cn::vector<int>();
-// 	REQUIRE(first.size() == 0);
-// 	REQUIRE(first.empty());
-// }
+	first = cn::vector<int>();
+	REQUIRE(first.size() == 0);
+	REQUIRE(first.empty());
+}
 
 TEST_CASE( "vector - iterator ", "[vector][iterator]" )
 {
@@ -255,38 +255,38 @@ TEST_CASE( "vector - capacity - resize" ,
 	}
 }
 
-// TEST_CASE( "vector - capacity - vectors can be sized and resized",
-// 	"[vector][capacity]" )
-// {
-// 	cn::vector<int> v( 5 );
-// 	REQUIRE( v.size() == 5 );
-// 	REQUIRE( v.capacity() >= 5 );
+TEST_CASE( "vector - capacity - vectors can be sized and resized",
+	"[vector][capacity]" )
+{
+	cn::vector<int> v( 5 );
+	REQUIRE( v.size() == 5 );
+	REQUIRE( v.capacity() >= 5 );
 
-// 	SECTION("resizing bigger changes size and capacity") {
-// 		v.resize( 10 );
+	SECTION("resizing bigger changes size and capacity") {
+		v.resize( 10 );
 
-// 		REQUIRE( v.size() == 10 );
-// 		REQUIRE( v.capacity() >= 10 );
-// 	}
-// 	SECTION("resizing smaller changes size but not capacity") {
-// 		v.resize( 0 );
+		REQUIRE( v.size() == 10 );
+		REQUIRE( v.capacity() >= 10 );
+	}
+	SECTION("resizing smaller changes size but not capacity") {
+		v.resize( 0 );
 
-// 		REQUIRE( v.size() == 0 );
-// 		REQUIRE( v.capacity() >= 5 );
-// 	}
-// 	SECTION("We can use the 'swap trick' to reset the capacity") {
-// 		cn::vector<int> empty;
-// 		empty.swap( v );
+		REQUIRE( v.size() == 0 );
+		REQUIRE( v.capacity() >= 5 );
+	}
+	SECTION("We can use the 'swap trick' to reset the capacity") {
+		cn::vector<int> empty;
+		empty.swap( v );
 
-// 		REQUIRE( v.capacity() == 0 );
-// 	}
-// 	SECTION("reserving smaller does not change size or capacity") {
-// 		v.reserve( 0 );
+		REQUIRE( v.capacity() == 0 );
+	}
+	SECTION("reserving smaller does not change size or capacity") {
+		v.reserve( 0 );
 		
-// 		REQUIRE( v.size() == 5 );
-// 		REQUIRE( v.capacity() >= 5 );
-// 	}
-// }
+		REQUIRE( v.size() == 5 );
+		REQUIRE( v.capacity() >= 5 );
+	}
+}
 
 TEST_CASE( "vector - Element access - operator[] (subscript) ", "[vector][element_access][operator][subscript]" )
 {
@@ -328,33 +328,33 @@ TEST_CASE( "vector - Element access - back() ", "[vector][element_access][back]"
 	REQUIRE( v.back() == -42);
 }
 
-// TEST_CASE( "vector - Modifiers - assign() ", "[vector][modifier][assign]" )
-// {
-// 	cn::vector<int>::iterator it;
-// 	cn::vector<int> first;
+TEST_CASE( "vector - Modifiers - assign() ", "[vector][modifier][assign]" )
+{
+	cn::vector<int>::iterator it;
+	cn::vector<int> first;
 
-// 	REQUIRE( first.empty());
-// 	first.assign(7,100);
-// 	SECTION( "assign fill should work" )
-// 	{
-// 		REQUIRE( first.size() == 7);
-// 	}
+	REQUIRE( first.empty());
+	first.assign(7,100);
+	SECTION( "assign fill should work" )
+	{
+		REQUIRE( first.size() == 7);
+	}
 
-// 	it = first.begin()+1;
-// 	cn::vector<int> second;
-// 	SECTION( "assign range should work" )
-// 	{
-// 		second.assign (it, first.end()-1); // the 5 central values of first
-// 		REQUIRE( second.size() == 5);
-// 	}
-// 	SECTION( "assign range from simple array" )
-// 	{
-// 		int myints[] = {1776,7,4};
-// 		cn::vector<int> third;
-// 		third.assign (myints, myints+3);
-// 		REQUIRE( third.size() == 3);
-// 	}
-// }
+	// it = first.begin()+1;
+	// cn::vector<int> second;
+	// SECTION( "assign range should work" )
+	// {
+	// 	second.assign (it, first.end()-1); // the 5 central values of first
+	// 	REQUIRE( second.size() == 5);
+	// }
+	// SECTION( "assign range from simple array" )
+	// {
+	// 	int myints[] = {1776,7,4};
+	// 	cn::vector<int> third;
+	// 	third.assign (myints, myints+3);
+	// 	REQUIRE( third.size() == 3);
+	// }
+}
 
 TEST_CASE( "vector - Modifiers - push_back() and pop_back() ", "[vector][modifier][push_back][pop_back]" )
 {
@@ -411,8 +411,8 @@ TEST_CASE( "vector - Modifiers - insert() ", "[vector][modifier][insert]" )
 	REQUIRE( myvector.size() == 3);
 	REQUIRE( myvector.capacity() == 3);
 
+	// Insert single element overload
 	myvector.insert(myvector.begin(), 200);
-	SECTION( "Insert single element overload" )
 	{
 		REQUIRE( myvector[0] == 200);
 		REQUIRE( myvector[1] == 100);
@@ -423,41 +423,42 @@ TEST_CASE( "vector - Modifiers - insert() ", "[vector][modifier][insert]" )
 		REQUIRE( myvector.capacity() == 6);
 	}
 
-	// myvector.insert(myvector.begin(), 3, 50);
-	// SECTION( "Insert fill overload" )
-	// {
-	// 	REQUIRE( myvector[0] == 50);
-	// 	REQUIRE( myvector[1] == 50);
-	// 	REQUIRE( myvector[2] == 50);
-	// 	REQUIRE( myvector[3] == 200);
-	// 	REQUIRE( myvector[4] == 100);
-	// 	REQUIRE( myvector[5] == 100);
-	// 	REQUIRE( myvector[6] == 100);
-	// 	REQUIRE( &myvector[7] == &*myvector.end());
-	// 	REQUIRE( myvector.size() == 7);
-	// 	REQUIRE( myvector.capacity() == 8);
-	// }
+  // Insert fill overload
+	myvector.insert(myvector.begin(), 3, 50);
+	{
+		REQUIRE( myvector[0] == 50);
+		REQUIRE( myvector[1] == 50);
+		REQUIRE( myvector[2] == 50);
+		REQUIRE( myvector[3] == 200);
+		REQUIRE( myvector[4] == 100);
+		REQUIRE( myvector[5] == 100);
+		REQUIRE( myvector[6] == 100);
+		REQUIRE( &myvector[7] == &*myvector.end());
+		REQUIRE( myvector.size() == 7);
+		REQUIRE( myvector.capacity() == 8);
+	}
 
-	// int myarray [] = { 501,502,503 };
-	// myvector.insert(myvector.begin(), myarray, myarray+3);
-	// SECTION( "Insert range from array" )
-	// {
-	// 	REQUIRE( myvector[0] == 501);
-	// 	REQUIRE( myvector[1] == 502);
-	// 	REQUIRE( myvector[2] == 503);
-	// 	REQUIRE( myvector.size() == 10);
-	// 	REQUIRE( myvector.capacity() == 14);
-	// }
-	// std::vector<int> anothervector (2,400);
-	// myvector.insert(--myvector.end(),anothervector.begin(),anothervector.end());
+	// Insert range from array
+	int myarray [] = { 501,502,503 };
+	myvector.insert(myvector.begin(), myarray, myarray+3);
+	{
+		REQUIRE( myvector[0] == 501);
+		REQUIRE( myvector[1] == 502);
+		REQUIRE( myvector[2] == 503);
+		REQUIRE( myvector.size() == 10);
+		REQUIRE( myvector.capacity() == 14);
+	}
 
-	// SECTION( "Insert range from basic iterator" )
-	// {
-	// 	REQUIRE( myvector[9] == 400);
-	// 	REQUIRE( myvector[10] == 400);
-	// 	REQUIRE( myvector.size() == 12);
-	// 	REQUIRE( myvector.capacity() == 14);
-	// }
+
+	// Insert range from basic iterator
+	std::vector<int> anothervector (2,400);
+	myvector.insert(--myvector.end(),anothervector.begin(),anothervector.end());
+	{
+		REQUIRE( myvector[9] == 400);
+		REQUIRE( myvector[10] == 400);
+		REQUIRE( myvector.size() == 12);
+		REQUIRE( myvector.capacity() == 14);
+	}
 }
 
 TEST_CASE( "vector - Modifiers - erase() ", "[vector][modifier][erase]" )

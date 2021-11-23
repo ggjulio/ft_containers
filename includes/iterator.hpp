@@ -170,6 +170,135 @@ template <class IterL, class IterR>
 
 
 
+template <typename T>
+struct normal_iterator
+{
+	typedef T	value_type;
+	typedef value_type	&reference;
+	typedef value_type	*pointer;
+
+	typedef std::random_access_iterator_tag		iterator_category;
+	typedef std::ptrdiff_t						difference_type;
+
+	typedef normal_iterator<value_type> Self;
+
+	normal_iterator()						: _m_ptr(pointer()) {}
+	normal_iterator(pointer ptr): _m_ptr(ptr) {}
+	normal_iterator(const T& i) : _m_ptr(i) {}
+
+	operator normal_iterator<const T> () const
+		{ return (normal_iterator<const T>(this->_m_ptr)); }
+
+	reference	operator*() const throw()		{ return *_m_ptr; }
+	pointer		operator->() const throw()		{ return _m_ptr; }
+	reference	operator[](size_t n) const		{ return *(_m_ptr + n); }
+
+	Self &operator++() throw()		{ ++_m_ptr; return *this; }
+	Self operator++(int) throw()	{ Self tmp = *this; ++_m_ptr; return tmp; }
+
+	Self &operator--() throw()		{ _m_ptr -= 1; return *this; }
+	Self operator--(int) throw()	{ Self tmp = *this; --_m_ptr; return tmp; }
+
+	Self  operator+ (difference_type n) const	{ return _m_ptr + n;}
+	Self& operator+=(difference_type n)			{ _m_ptr += n; return *this;}
+	Self  operator- (difference_type n) const	{ return _m_ptr - n;}
+	Self& operator-=(difference_type n) 		{ _m_ptr -= n; return *this;}
+
+	pointer base() const {return _m_ptr; }
+
+protected:
+	pointer _m_ptr;
+}; /* struct normal_iterator */
+
+template<typename IterL, typename IterR>
+inline bool
+operator==(const normal_iterator<IterL>& x, const normal_iterator<IterR>& y) throw()
+{ return x.base() == y.base(); }
+
+template<typename _T>
+inline bool
+operator==(const normal_iterator<_T>& x, const normal_iterator<_T>& y) throw()
+{ return x.base() == y.base(); }
+
+template<typename IterL, typename IterR>
+inline bool
+operator!=(const normal_iterator<IterL>& x, const normal_iterator<IterR>& y) throw()
+{ return x.base() != y.base(); }
+
+template<typename _T>
+inline bool
+operator!=(const normal_iterator<_T>& x, const normal_iterator<_T>& y) throw()
+{ return x.base() != y.base(); }
+
+  // Random access iterator requirements
+template<typename IterL, typename IterR>
+inline bool
+operator<(const normal_iterator<IterL>& x, const normal_iterator<IterR>& y) throw()
+{ return x.base() < y.base(); }
+
+template<typename _T>
+inline bool
+operator<(const normal_iterator<_T>& x, const normal_iterator<_T>& y) throw()
+{ return x.base() < y.base(); }
+
+template<typename IterL, typename IterR>
+inline bool
+operator>(const normal_iterator<IterL>& x, const normal_iterator<IterR>& y) throw()
+{ return x.base() > y.base(); }
+
+template<typename _T>
+inline bool
+operator>(const normal_iterator<_T>& x, const normal_iterator<_T>& y) throw()
+{ return x.base() > y.base(); }
+
+template<typename IterL, typename IterR>
+inline bool
+operator<=(const normal_iterator<IterL>& x, const normal_iterator<IterR>& y) throw()
+{ return x.base() <= y.base(); }
+
+template<typename _T>
+inline bool
+operator<=(const normal_iterator<_T>& x, const normal_iterator<_T>& y) throw()
+{ return x.base() <= y.base(); }
+
+template<typename IterL, typename IterR>
+inline bool
+operator>=(const normal_iterator<IterL>& x, const normal_iterator<IterR>& y) throw()
+{ return x.base() >= y.base(); }
+
+template<typename _T>
+inline bool
+operator>=(const normal_iterator<_T>& x, const normal_iterator<_T>& y) throw()
+{ return x.base() >= y.base(); }
+
+
+
+template <typename T>
+typename normal_iterator<T>::difference_type
+  operator-(const normal_iterator<T>& x,
+      const normal_iterator<T>& other)
+{
+  return (x.base() - other.base());
+}
+
+template<typename IteratorL, typename IteratorR>
+typename normal_iterator<IteratorL>::difference_type
+  operator-(const normal_iterator<IteratorL>& x,
+      const normal_iterator<IteratorR>& other)
+{
+  return (x.base() - other.base());
+}
+
+template<typename Iterator>
+normal_iterator<Iterator>
+  operator+(typename normal_iterator<Iterator>::difference_type n,
+      normal_iterator<Iterator>& i)
+{
+  return i.base() + n;
+}
+
+
+
 } /* namespace ft */
 
 #endif /* ITERATOR */

@@ -23,7 +23,9 @@ namespace NS_NAME
 	}
 }
 
-// Simulate an int, but allocated
+// Just an int, but on the heap.
+// This class allow to test whether objects are (constructed && destructed) or not.
+// If not, then there will be nasty leaks everywhere, even segv if copy on uninitialised mem :)
 class IsLeaky
 {
 	int* leakPtr;

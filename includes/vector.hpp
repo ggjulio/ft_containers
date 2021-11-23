@@ -1,7 +1,6 @@
 #ifndef VECTOR_H
 #define VECTOR_H
 
-
 #include <memory>
 #include <stdexcept>
 #include <algorithm>
@@ -12,217 +11,83 @@
 
 namespace ft{
 
-
-	template <typename T>
-	struct vector_iterator
-	{
-		typedef T	value_type;
-		typedef value_type	&reference;
-		typedef value_type	*pointer;
-
-		typedef std::random_access_iterator_tag		iterator_category;
-		typedef std::ptrdiff_t						difference_type;
-
-		typedef vector_iterator<value_type> Self;
-
-		vector_iterator()						: _m_ptr(pointer()) {}
-		vector_iterator(pointer ptr): _m_ptr(ptr) {}
-		vector_iterator(const T& i) : _m_ptr(i) {}
-
-		operator vector_iterator<const T> () const
-			{ return (vector_iterator<const T>(this->_m_ptr)); }
-
-		reference	operator*() const throw()		{ return *_m_ptr; }
-		pointer		operator->() const throw()		{ return _m_ptr; }
-		reference	operator[](size_t n) const		{ return *(_m_ptr + n); }
-
-		Self &operator++() throw()		{ ++_m_ptr; return *this; }
-		Self operator++(int) throw()	{ Self tmp = *this; ++_m_ptr; return tmp; }
-
-		Self &operator--() throw()		{ _m_ptr -= 1; return *this; }
-		Self operator--(int) throw()	{ Self tmp = *this; --_m_ptr; return tmp; }
-
-		Self  operator+ (difference_type n) const	{ return _m_ptr + n;}
-		Self& operator+=(difference_type n)			{ _m_ptr += n; return *this;}
-		Self  operator- (difference_type n) const	{ return _m_ptr - n;}
-		Self& operator-=(difference_type n) 		{ _m_ptr -= n; return *this;}
-
-		pointer base() const {return _m_ptr; }
-
-		// operator Self<const value_type > () const { return _m_ptr; }
-	protected:
-		pointer _m_ptr;
-	}; /* struct vector_iterator */
-
-template<typename IterL, typename IterR>
-inline bool
-operator==(const vector_iterator<IterL>& x, const vector_iterator<IterR>& y) throw()
-{ return x.base() == y.base(); }
-
-template<typename _T>
-inline bool
-operator==(const vector_iterator<_T>& x, const vector_iterator<_T>& y) throw()
-{ return x.base() == y.base(); }
-
-template<typename IterL, typename IterR>
-inline bool
-operator!=(const vector_iterator<IterL>& x, const vector_iterator<IterR>& y) throw()
-{ return x.base() != y.base(); }
-
-template<typename _T>
-inline bool
-operator!=(const vector_iterator<_T>& x, const vector_iterator<_T>& y) throw()
-{ return x.base() != y.base(); }
-
-  // Random access iterator requirements
-template<typename IterL, typename IterR>
-inline bool
-operator<(const vector_iterator<IterL>& x, const vector_iterator<IterR>& y) throw()
-{ return x.base() < y.base(); }
-
-template<typename _T>
-inline bool
-operator<(const vector_iterator<_T>& x, const vector_iterator<_T>& y) throw()
-{ return x.base() < y.base(); }
-
-template<typename IterL, typename IterR>
-inline bool
-operator>(const vector_iterator<IterL>& x, const vector_iterator<IterR>& y) throw()
-{ return x.base() > y.base(); }
-
-template<typename _T>
-inline bool
-operator>(const vector_iterator<_T>& x, const vector_iterator<_T>& y) throw()
-{ return x.base() > y.base(); }
-
-template<typename IterL, typename IterR>
-inline bool
-operator<=(const vector_iterator<IterL>& x, const vector_iterator<IterR>& y) throw()
-{ return x.base() <= y.base(); }
-
-template<typename _T>
-inline bool
-operator<=(const vector_iterator<_T>& x, const vector_iterator<_T>& y) throw()
-{ return x.base() <= y.base(); }
-
-template<typename IterL, typename IterR>
-inline bool
-operator>=(const vector_iterator<IterL>& x, const vector_iterator<IterR>& y) throw()
-{ return x.base() >= y.base(); }
-
-template<typename _T>
-inline bool
-operator>=(const vector_iterator<_T>& x, const vector_iterator<_T>& y) throw()
-{ return x.base() >= y.base(); }
-
-
-
-	template <typename T>
-	typename vector_iterator<T>::difference_type
-	 operator-(const vector_iterator<T>& x,
-			  const vector_iterator<T>& other)
-	{
-		return (x.base() - other.base());
-	}
-
-	template<typename IteratorL, typename IteratorR>
-	typename vector_iterator<IteratorL>::difference_type
-	 operator-(const vector_iterator<IteratorL>& x,
-			  const vector_iterator<IteratorR>& other)
-	{
-		return (x.base() - other.base());
-	}
-
-	template<typename Iterator>
-	vector_iterator<Iterator>
-	 operator+(typename vector_iterator<Iterator>::difference_type n,
- 				vector_iterator<Iterator>& i)
-	{
-		return i.base() + n;
-	}
-
-
-
-template<typename _T, typename _Alloc = std::allocator<_T> >
-struct _vector_impl
-{
-	typedef _T*			pointer;
-
-	pointer  _m_start;
-	pointer  _m_finish;
-	pointer  _m_end_of_storage;
-
-	_vector_impl()
-		: _m_start(), _m_finish(), _m_end_of_storage()
-	{}
-
-	void _m_copy_data(_vector_impl& other)
-	{
-		_m_start = other._m_start;
-		_m_finish = other._m_finish;
-		_m_end_of_storage = other._m_end_of_storage;
-	}
-	void _m_swap_data(_vector_impl& other)
-	{
-		_vector_impl tmp;
-
-		tmp._m_copy_data(*this);
-		_m_copy_data(other);
-		other._m_copy_data(tmp);
-	}
-
-	void _m_reset()
-	{
-		*this = _vector_impl();
-	}
-};
-
 template<typename _T, typename _Alloc = std::allocator<_T> >
 class vector
 {
+	template<typename __T>
+	struct _vector_impl
+	{
+		typedef __T*			pointer;
+
+		pointer  _m_start;
+		pointer  _m_finish;
+		pointer  _m_end_of_storage;
+
+		_vector_impl()
+			: _m_start(), _m_finish(), _m_end_of_storage()
+		{}
+
+		void _m_copy_data(_vector_impl& other)
+		{
+			_m_start = other._m_start;
+			_m_finish = other._m_finish;
+			_m_end_of_storage = other._m_end_of_storage;
+		}
+		void _m_swap_data(_vector_impl& other)
+		{
+			_vector_impl tmp;
+
+			tmp._m_copy_data(*this);
+			_m_copy_data(other);
+			other._m_copy_data(tmp);
+		}
+
+		void _m_reset()
+		{
+			*this = _vector_impl();
+		}
+	};
+
 
 public:
 	typedef _T								value_type;
 	typedef _Alloc							allocator_type;
 
-	typedef size_t									size_type; 
-	typedef std::ptrdiff_t								difference_type;
-	typedef value_type&								reference;
-	typedef const value_type&						const_reference;
-	typedef value_type								*pointer;
-	typedef const value_type						*const_pointer;
+	typedef size_t							size_type; 
+	typedef std::ptrdiff_t					difference_type;
+	typedef value_type&						reference;
+	typedef const value_type&				const_reference;
+	typedef value_type*						pointer;
+	typedef const value_type*				const_pointer;
 
-	typedef vector_iterator<value_type>				iterator;
-	typedef vector_iterator<const value_type>		const_iterator;
-	typedef ft::reverse_iterator<iterator>				reverse_iterator;
-	typedef ft::reverse_iterator<const_iterator>		const_reverse_iterator;
+	typedef normal_iterator<value_type>				iterator;
+	typedef normal_iterator<const value_type>		const_iterator;
+	typedef ft::reverse_iterator<iterator>			reverse_iterator;
+	typedef ft::reverse_iterator<const_iterator>	const_reverse_iterator;
 
 private:
 	_vector_impl<value_type> _m_impl;
-	static allocator_type _m_alloc;
+	allocator_type _m_alloc;
 
 public:
-	// default	
+	// default
 	explicit vector (const allocator_type& alloc = allocator_type())
-	{
-		(void)alloc;
-	}
+		: _m_alloc(alloc)
+	{}
 	// fill
 	explicit vector (size_type n, const value_type& val = value_type(),
 			const allocator_type& alloc = allocator_type())
+		: _m_alloc(alloc)
 	{
-		(void)alloc;
 		_m_create_storage(n);
 		_m_impl._m_finish = std::uninitialized_fill_n(_m_impl._m_start, n, val);
 	}
 	// range
-	// template <class InputIterator,
-	// 	typename enable_if<!is_integral<InputIterator>::value, bool>::type = true>
 	template <class InputIterator>
 	vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type(),
 		typename enable_if<!is_integral<InputIterator>::value, bool>::type = true)
+		: _m_alloc(alloc)
 	{
-		(void)alloc;
 		_m_create_storage(std::distance(first, last));
 		while (first != last)
 		{
@@ -239,6 +104,7 @@ public:
 		_m_impl._m_start = _m_allocate_and_copy(otherLen, other.begin(), other.end());
 		_m_impl._m_finish = _m_impl._m_start + otherLen;
 		_m_impl._m_end_of_storage = _m_impl._m_finish;
+		_m_alloc = other._m_alloc;
 	}
 
 	~vector() {
@@ -304,11 +170,10 @@ public:
 	void		reserve(size_type n)
 	{
 		if (n > max_size())
-			assert(0); // throw ?
+			throw std::length_error("AH");
 		if (capacity() < n)
 			_m_reallocate(n);
 	}
-
 
 	// Element access
 	reference			operator[](size_type n)	throw()			{ return *(_m_impl._m_start + n); }
@@ -400,6 +265,7 @@ public:
 		ft::swap(_m_impl._m_start, other._m_impl._m_start);
 		ft::swap(_m_impl._m_finish, other._m_impl._m_finish);
 		ft::swap(_m_impl._m_end_of_storage, other._m_impl._m_end_of_storage);
+		ft::swap(_m_alloc, other._m_alloc);
 	}
 	void		clear()
 	{
@@ -528,7 +394,8 @@ private:
 	{
 		if (_m_impl._m_finish != _m_impl._m_end_of_storage)
 		{
-			std::copy_backward(pos.base(), _m_impl._m_finish, _m_impl._m_finish + 1);
+			_m_alloc.construct(_m_impl._m_finish, *(_m_impl._m_finish-1));
+			std::copy_backward(pos.base(), _m_impl._m_finish - 1, _m_impl._m_finish);
 			*pos = val;
 			++_m_impl._m_finish;
 		}
@@ -551,7 +418,7 @@ private:
 	size_type _m_check_len(size_type n) const
 	{
 		if (max_size() - size() < n)
-			assert(0); // do we need to throw ?
+			throw std::length_error("AH");
 		const size_type len = size() + std::max(size(), n);
 		return ( len < size() || len > max_size()) ? max_size() : len;
 	}
@@ -559,7 +426,7 @@ private:
 	void _m_range_check(size_type n) const
 	{
 		if (n >= size())
-			throw std::out_of_range("no");
+			throw std::out_of_range("AH");
 	}
 
 	void _m_fill_insert(iterator pos, size_type n, const value_type& val)
@@ -665,10 +532,6 @@ operator>=(const vector<_T, _Alloc>& x, const vector<_T, _Alloc>& y)
 
 template <class _T, class _Alloc>
   void swap (vector<_T, _Alloc>& x, vector<_T, _Alloc>& y) { x.swap(y); }
-
-template<class _T, class _Alloc>
-typename vector<_T, _Alloc>::allocator_type  vector<_T, _Alloc>::_m_alloc;
-
 
 } /* namespace ft */
 

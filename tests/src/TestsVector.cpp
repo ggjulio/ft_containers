@@ -260,7 +260,7 @@ TEMPLATE_TEST_CASE( "vector - capacity - resize" ,
 }
 
 TEMPLATE_TEST_CASE( "vector - capacity - vectors can be sized and resized",
-	"[vector][capacity][leak]", int, IsLeaky )
+	"[vector][capacity][reserve][leak]", int, IsLeaky )
 {
 	cn::vector<TestType> v( 5 );
 	REQUIRE( v.size() == 5 );
@@ -289,6 +289,30 @@ TEMPLATE_TEST_CASE( "vector - capacity - vectors can be sized and resized",
 		
 		REQUIRE( v.size() == 5 );
 		REQUIRE( v.capacity() >= 5 );
+	}
+	SECTION("reserving should work") {
+		cn::vector<TestType> vec;
+
+		REQUIRE( vec.size() == 0 );
+		REQUIRE( vec.capacity() == 0 );
+		
+		vec.reserve(1);
+		REQUIRE( vec.size() == 0 );
+		REQUIRE( vec.capacity() == 1 );
+		
+		vec.reserve(3);
+		REQUIRE( vec.size() == 0 );
+		REQUIRE( vec.capacity() == 3 );
+
+		vec.push_back(42);
+		vec.push_back(42);
+		vec.push_back(42);
+		REQUIRE( vec.size() == 3 );
+		REQUIRE( vec.capacity() == 3 );
+
+		vec.push_back(42);
+		REQUIRE( vec.size() == 4 );
+		REQUIRE( vec.capacity() == 6 );
 	}
 }
 
@@ -749,7 +773,8 @@ TEMPLATE_TEST_CASE( "vector - non-member - swap", "[vector][non-member][swap][le
 
 
 // make check && valgrind --leak-check=full --show-leak-kinds=all --show-reachable=yes --track-origins=yes ./build/tests '-s [leak]'
-TEST_CASE( "vector - destruction - If there is leaks here, then things are not destroyed properly", "[vector][destruction][leak]" )
+TEST_CASE( "vector - destruction - Having leaks here, mean objects are not destroyed properly",
+	"[vector][destruction][leak]" )
 {
 	SECTION( "constructor empty - bro, impossible to have a leak here")
 	{
@@ -904,9 +929,13 @@ TEST_CASE( "vector - destruction - If there is leaks here, then things are not d
 		REQUIRE(vec.capacity() == 4);
 		vec.insert(vec.end(), 46);
 		vec.insert(vec.end(), 47);
-		vec.insert(vec.end(), 48);
-		// vec.insert(vec.begin()+1, 49);
-
+		vec.insert(vec.begin()+1, 48); // sigsegv here: i was copying (copy call operator=() ) on the uninitialised block at end()
+		REQUIRE( *--vec.end() == 47 );
+		REQUIRE( *(vec.end()- 2) == 46 );
+		REQUIRE( *++vec.begin() == 48 );
+		vec.insert(vec.end() - 3, 50);
+		vec.insert(vec.begin()+1, 51);
+		vec.insert(--vec.end(), 52);
 	}
 	SECTION( "insert range")
 	{

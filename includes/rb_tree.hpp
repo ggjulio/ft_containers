@@ -43,8 +43,6 @@ namespace ft
 
 enum color { kBlack = false,	kRed = true, };
 
-
-
 struct node_base
 {
 	typedef node_base*			base_ptr;
@@ -254,16 +252,17 @@ private:
 	};
 	rbTree_impl<_Compare> _m_impl;
 
-	static node_allocator _nodeAlloc;
+	node_allocator _m_nodeAlloc;
 public:
 
 	rbTree() {}
 	rbTree(const _Compare& comp, const allocator_type& alloc = allocator_type())
-		: _m_impl(comp) { (void)alloc;}
+		: _m_impl(comp), _m_nodeAlloc(alloc) {}
 	rbTree(const rbTree& other)
 	{
 		if (other._m_root())
 			_m_impl._header.parent = _m_copy(other);
+		_m_nodeAlloc = other._m_nodeAlloc;
 	}
 	~rbTree() {
 		_m_erase(_m_begin());
@@ -290,9 +289,9 @@ public:
 	reverse_iterator		rend() 			{ return reverse_iterator(begin()); }
 	const_reverse_iterator	rend() const 	{ return const_reverse_iterator(begin()); }
 
-	bool			empty() const				{ return _m_impl._nodeCount == 0; }
-	size_type		size() const				{ return _m_impl._nodeCount; }
-	size_type		max_size() const throw()	{ return _nodeAlloc.max_size(); }
+	bool				empty() const							{ return _m_impl._nodeCount == 0; }
+	size_type		size() const							{ return _m_impl._nodeCount; }
+	size_type		max_size() const throw()	{ return _m_nodeAlloc.max_size(); }
 
 	allocator_type get_allocator() const throw(){ return allocator_type();}
 
@@ -362,8 +361,10 @@ public:
 			ft::swap(_m_impl._nodeCount, other._m_impl._nodeCount);
 		}
 		ft::swap(_m_impl._m_key_compare, other._m_impl._m_key_compare);
+		ft::swap(_m_nodeAlloc, other._m_nodeAlloc);
 
-		//swap allocator ?
+		//swap allocator ? undefined in c++98 
+		//swap key compare ? also undefined, we do what we want.
 	}
 	void clear() {
 		_m_erase(_m_begin());
@@ -407,7 +408,6 @@ private:
 	const_link_type			_m_end()const 				throw() { return static_cast<const_link_type>(&_m_impl._header);}
 
 	static const _Key&		_s_key(const_link_type x) 	throw()	{ return _KeyOfValue()(*x->_m_dataPtr());}
-	// static const _Key&		_s_key(const_link_type x) 	throw()	{ return (*x->_m_dataPtr());}
 	static const _Key&		_s_key(const_base_ptr x)  	throw()	{ return _s_key(static_cast<const_link_type>(x)) ;}
 
 	static link_type		_s_left(base_ptr x)		 	throw() { return static_cast<link_type>(x->left);}
@@ -449,8 +449,6 @@ private:
 	pair<iterator, bool> _m_insert_unique(const value_type& v)
 	{
 		pair<base_ptr, base_ptr> result = _m_get_insert_pos(_KeyOfValue()(v));
-		// pair<base_ptr, base_ptr> result = _m_get_insert_pos((v));
-
 		if (result.second)
 			return pair<iterator, bool>(
 						_m_insert_(result.first, result.second, v),
@@ -461,9 +459,8 @@ private:
 	iterator _m_insert_(base_ptr x, base_ptr parent, const value_type& v)
 	{
 		(void)x;
-		(void)parent;
-		link_type z = _nodeAlloc.allocate(1);
-		_nodeAlloc.construct(z, v);
+		link_type z = _m_nodeAlloc.allocate(1);
+		_m_nodeAlloc.construct(z, v);
 		
 		_m_tree_insert_and_rebalance(z, parent);
 
@@ -561,8 +558,8 @@ private:
 		{
 			_m_erase(_s_right(n));
 			link_type x = _s_left(n);
-			_nodeAlloc.destroy(n);
-			_nodeAlloc.deallocate(n, 1);
+			_m_nodeAlloc.destroy(n);
+			_m_nodeAlloc.deallocate(n, 1);
 			n = x;
 		}
 	}
@@ -651,7 +648,7 @@ private:
 			y->color = z->color;
 		}
 		if (yOriginalColor == kBlack)
-			fixShit(x);
+			fixRbTree(x);
 		if (x == &nil_node)
 			_m_transplant(x, NULL, &_m_impl._header);
 
@@ -660,12 +657,11 @@ private:
 			_m_impl._header.left = _m_impl._header.parent == NULL ? &_m_impl._header : _s_minimum(_m_root());
 		if (z == _m_impl._header.right)
 			_m_impl._header.right = _m_impl._header.parent == NULL ? &_m_impl._header : _s_maximum(_m_root());
-		_nodeAlloc.destroy(static_cast<link_type>(z));
-		_nodeAlloc.deallocate(static_cast<link_type>(z), 1);
-
-		assert( __rb_verify() == true);
+		_m_nodeAlloc.destroy(static_cast<link_type>(z));
+		_m_nodeAlloc.deallocate(static_cast<link_type>(z), 1);
 	}
-	void fixShit(base_ptr x)
+
+	void fixRbTree(base_ptr x)
 	{
 		if (x == _m_root())
 			return; // case one
@@ -689,7 +685,7 @@ private:
 		{
 			sibling->color = kRed;
 			if (x->parent->color == kBlack)
-				fixShit(x->parent);
+				fixRbTree(x->parent);
 			else
 				x->parent->color = kBlack;
 		}
@@ -792,14 +788,13 @@ private:
 	{
 		if (root == NULL)
 			return NULL;
-		link_type x = _nodeAlloc.allocate(1);
-		_nodeAlloc.construct(x, root->data);
+		link_type x = _m_nodeAlloc.allocate(1);
+		_m_nodeAlloc.construct(x, root->data);
 
 		x->parent = parent;
 		x->left = _m_copy_node(_s_left(root), x);
 		x->right = _m_copy_node(_s_right(root), x);
 		x->color = root->color;
-		// x->data = root->data;
 		return x;
 	}
 
@@ -888,9 +883,8 @@ private:
 
 	void __rb_tree_print(link_type root, Trunk *prev, bool isLeft)
 	{
-		if (root == NULL) {
+		if (root == NULL)
 			return;
-		}
 	
 		std::string prev_str = "    ";
 		Trunk trunk(prev, prev_str);
@@ -911,9 +905,9 @@ private:
 	
 		showTrunks(&trunk);
 		if (root->color == kRed)
-			std::cout << "R";
+			std::cout << "R-";
 		else
-			std::cout << "B";
+			std::cout << "B-";
 		
 		std::cout << root->data << std::endl;
 	
@@ -926,11 +920,6 @@ private:
 }; /* class rbTree */
 
 size_t _rb_tree_black_count(const node_base *node, const node_base *root) throw();
-
-template<typename _Key, typename _Val, typename _KeyOfValue, typename _Compare, typename _Alloc >
-typename	rbTree<_Key, _Val, _KeyOfValue, _Compare, _Alloc>::node_allocator 
-			rbTree<_Key, _Val, _KeyOfValue, _Compare, _Alloc>::_nodeAlloc;
-
 
 } /* namespace ft */
 

@@ -128,6 +128,9 @@ show:
 check:
 	@$(MAKE) check -C tests ARGS="$(ARGS)"
 
+tests_simple:
+	@$(MAKE) run -C tests_simple
+
 clean:
 	@rm -rf $(OBJ_DIR) output_valgrind
 	@printf "$(_RED)Removed :$(_MAGENTA) $(OBJ_DIR)/ $(_MAGENTA)\n"

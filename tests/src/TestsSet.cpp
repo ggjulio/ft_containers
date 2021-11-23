@@ -12,21 +12,21 @@ struct classcomp_set {
 	{ return lhs>rhs; }
 };
 
-TEST_CASE( "set - constructor ", "[set][constructor]" )
+TEMPLATE_TEST_CASE( "set - constructor ", "[set][constructor][leak]", int, IsLeaky )
 {
 	SECTION( "empty construtor" ) {
-		cn::set<int> first;
+		cn::set<TestType> first;
 		REQUIRE(first.empty());
 		REQUIRE(first.size() == 0);
 	}
-	int myints[]= {10,20,30,40,50};
-	cn::set<int> second (myints, myints+5);
+	TestType myints[]= {10,20,30,40,50};
+	cn::set<TestType> second (myints, myints+5);
 	SECTION( "range construtor" ) {
 		REQUIRE(!second.empty());
 		REQUIRE(second.size() == 5);
 	}
 	SECTION( "copy construtor" ) {
-		cn::set<int> third (second);
+		cn::set<TestType> third (second);
 		REQUIRE(!third.empty());
 		REQUIRE(third.size() == 5);
 	
@@ -39,12 +39,12 @@ TEST_CASE( "set - constructor ", "[set][constructor]" )
 		}
 	}
 	SECTION( "iterator construtor" ) {
-		cn::set<int> fourth (second.begin(), second.end());
+		cn::set<TestType> fourth (second.begin(), second.end());
 		REQUIRE(!fourth.empty());
 		REQUIRE(fourth.size() == 5);
 	}
 	SECTION( "class as Compare" ) {
-		cn::set<int,classcomp_set> fifth;
+		cn::set<TestType,classcomp_set> fifth;
 		fifth.insert(1);
 		fifth.insert(2);
 		REQUIRE(*fifth.begin() == 2);
@@ -53,7 +53,7 @@ TEST_CASE( "set - constructor ", "[set][constructor]" )
 	}
 	SECTION( "function ptr as Compare" ) {
 		bool(*fn_pt)(int,int) = fncomp_set;
-		cn::set<int,bool(*)(int,int)> sixth (fn_pt);
+		cn::set<TestType,bool(*)(int,int)> sixth (fn_pt);
 
 		sixth.insert(1);
 		sixth.insert(2);
@@ -64,11 +64,12 @@ TEST_CASE( "set - constructor ", "[set][constructor]" )
 
 }
 
-TEST_CASE( "set - operator - assignment ", "[set][operator][assignment]" )
+TEMPLATE_TEST_CASE( "set - operator - assignment ",
+	"[set][operator][assignment][leak]", int, IsLeaky )
 {
-	int myints[] = { 10,20,30,40,50 };
-	cn::set<int> first (myints,myints+5);
-	cn::set<int> second;
+	TestType myints[] = { 10,20,30,40,50 };
+	cn::set<TestType> first (myints,myints+5);
+	cn::set<TestType> second;
 	
 	REQUIRE(!first.empty());
 	REQUIRE(first.size() == 5);
@@ -88,13 +89,14 @@ TEST_CASE( "set - operator - assignment ", "[set][operator][assignment]" )
 		REQUIRE(*first.find(10) == 10);
 	}
 	SECTION( "Must have no leaks when running w ur fav leak detect prog" ) {
-		first = cn::set<int>();
+		first = cn::set<TestType>();
 	}
 }
 
-TEST_CASE( "set - iterator ", "[set][iterator]" )
+TEMPLATE_TEST_CASE( "set - iterator ",
+	"[set][iterator][leak]", int, IsLeaky )
 {
-	cn::set<int> myset;
+	cn::set<TestType> myset;
 	SECTION( "empty container should have begin() == end()" )
 	{
 		REQUIRE( myset.begin() == myset.end() );
@@ -134,9 +136,10 @@ TEST_CASE( "set - iterator ", "[set][iterator]" )
 	}
 }
 
-TEST_CASE( "set - reverse iterator ", "[set][reverse_iterator]" )
+TEMPLATE_TEST_CASE( "set - reverse iterator ",
+	"[set][reverse_iterator][leak]", int, IsLeaky )
 {
-	cn::set<int> myset;
+	cn::set<TestType> myset;
 	SECTION( "empty container should have begin() == end()" )
 	{
 		REQUIRE( myset.rbegin() == myset.rend() );
@@ -204,11 +207,12 @@ TEST_CASE( "set - capacity ", "[set][capacity]" )
 	}
 }
 
-TEST_CASE( "set - Modifiers - insert ", "[set][modifier][insert]" )
+TEMPLATE_TEST_CASE( "set - Modifiers - insert ",
+	"[set][modifier][insert][leak]", int, IsLeaky )
 {
-	cn::set<int> myset;
-	cn::set<int>::iterator it_res;
-	cn::pair<cn::set<int>::iterator,bool> ret;
+	cn::set<TestType> myset;
+	typename cn::set<TestType>::iterator it_res;
+	cn::pair< typename cn::set<TestType>::iterator,bool> ret;
 	
 	ret = myset.insert(42);
 	SECTION( "Insert single value" )
@@ -237,8 +241,8 @@ TEST_CASE( "set - Modifiers - insert ", "[set][modifier][insert]" )
 		REQUIRE(myset.size() == 2);
 	}
 
-	int myints[]= {40,41,42,43};
-	myset.insert(myints, myints+4);
+	TestType myType[]= {40,41,42,43};
+	myset.insert(myType, myType+4);
 	SECTION( "Insert range, with some values already inserted should not be inserted twice")
 	{
 		REQUIRE(myset.size() == 4);
@@ -250,9 +254,9 @@ TEST_CASE( "set - Modifiers - insert ", "[set][modifier][insert]" )
 	}
 }
 
-TEST_CASE( "set - Modifiers - erase ", "[set][modifier][erase]" )
+TEMPLATE_TEST_CASE( "set - Modifiers - erase ", "[set][modifier][erase][leak]", int, IsLeaky )
 {
-	cn::set<int> myset;
+	cn::set<TestType> myset;
 
 	for (int i=1; i<10; i++)
 		myset.insert(i*10);  // 10 20 30 40 50 60 70 80 90
@@ -271,8 +275,8 @@ TEST_CASE( "set - Modifiers - erase ", "[set][modifier][erase]" )
 		REQUIRE(myset.size() == 7);
 	}
 	
-	cn::set<int>::iterator it = ++myset.begin();
-	cn::set<int>::iterator endRange =  --myset.end();
+	typename cn::set<TestType>::iterator it = ++myset.begin();
+	typename cn::set<TestType>::iterator endRange =  --myset.end();
 	--endRange; --endRange; --endRange;
 	REQUIRE(*it == 40);
 	REQUIRE(*endRange == 60);
@@ -293,17 +297,18 @@ TEST_CASE( "set - Modifiers - erase ", "[set][modifier][erase]" )
 
 }
 
-TEST_CASE( "set - Modifiers - swap ", "[set][modifier][swap]" )
+TEMPLATE_TEST_CASE( "set - Modifiers - swap ",
+	"[set][modifier][swap][leak]", int, IsLeaky )
 {
-	int myints[]={12,75,10,32,20,25};
-	cn::set<int> first (myints,myints+2);     // 12,75
-	cn::set<int> second (myints+2,myints+6);  // 10,20,25,32
+	TestType myints[]={12,75,10,32,20,25};
+	cn::set<TestType> first (myints,myints+2);     // 12,75
+	cn::set<TestType> second (myints+2,myints+6);  // 10,20,25,32
 
 	void* first_begin = (void*)&*first.begin();
 	void* second_begin = (void*)&*second.begin();
 
-	cn::set<int>::size_type first_size = first.size();
-	cn::set<int>::size_type second_size = second.size();
+	typename cn::set<TestType>::size_type first_size = first.size();
+	typename cn::set<TestType>::size_type second_size = second.size();
 	REQUIRE(first_size == 2 );
 	REQUIRE(second_size == 4 );
 
@@ -344,9 +349,10 @@ TEST_CASE( "set - Modifiers - swap ", "[set][modifier][swap]" )
 
 }
 
-TEST_CASE( "set - Modifiers - clear ", "[set][modifier][clear]" )
+TEMPLATE_TEST_CASE( "set - Modifiers - clear ",
+	"[set][modifier][clear][leak]", int, IsLeaky )
 {
-	cn::set<int> emptySet;
+	cn::set<TestType> emptySet;
 	SECTION( "Empty set being clear should be okay" )
 	{
 		emptySet.clear();
@@ -354,8 +360,8 @@ TEST_CASE( "set - Modifiers - clear ", "[set][modifier][clear]" )
 		REQUIRE( emptySet.size() == 0);
 	}
 
-	int myints[]={12,75,10,32,20,25};
-	cn::set<int> myset (myints,myints+6);
+	TestType myints[]={12,75,10,32,20,25};
+	cn::set<TestType> myset (myints,myints+6);
 	REQUIRE( !myset.empty() );
 	REQUIRE( myset.size() == 6);
 	myset.clear();

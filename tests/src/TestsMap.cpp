@@ -10,9 +10,10 @@ struct classcomp_map {
   {return lhs>rhs;}
 };
 
-TEST_CASE( "map - construct", "[map][constructors]" )
+TEMPLATE_TEST_CASE( "map - construct",
+	"[map][constructors][leak]", int, IsLeaky )
 {
-    cn::map<char,int> first;
+    cn::map<char,TestType> first;
 	SECTION( "empty construtor" ) {
 		REQUIRE(first.empty());
 		REQUIRE(first.size() == 0);
@@ -24,13 +25,13 @@ TEST_CASE( "map - construct", "[map][constructors]" )
     first['e']=50;
     REQUIRE(first.size() == 5);
 
-	cn::map<char,int> second (first.begin(), first.end());
+	cn::map<char,TestType> second (first.begin(), first.end());
 	SECTION( "range construtor" ) {
 		REQUIRE(!second.empty());
 		REQUIRE(second.size() == 5);
 	}
 	SECTION( "copy construtor" ) {
-		cn::map<char,int> third (second);
+		cn::map<char,TestType> third (second);
 		REQUIRE(!third.empty());
 		REQUIRE(third.size() == 5);
 
@@ -43,12 +44,12 @@ TEST_CASE( "map - construct", "[map][constructors]" )
 		}
 	}
 	SECTION( "iterator construtor" ) {
-		cn::map<char,int> fourth (second.begin(), second.end());
+		cn::map<char,TestType> fourth (second.begin(), second.end());
 		REQUIRE(!fourth.empty());
 		REQUIRE(fourth.size() == 5);
 	}
 	SECTION( "class as Compare" ) {
-		cn::map<char,int,classcomp_map> fifth;
+		cn::map<char,TestType,classcomp_map> fifth;
 		fifth.insert(cn::pair('a', 10));
 		fifth.insert(cn::pair('b', 20));
 		REQUIRE(fifth.begin()->second == 20);
@@ -57,7 +58,7 @@ TEST_CASE( "map - construct", "[map][constructors]" )
 	}
 	SECTION( "function ptr as Compare" ) {
 		bool(*fn_pt)(int,int) = fncomp_map;
-		cn::map<char,int,bool(*)(int,int)> sixth (fn_pt);
+		cn::map<char,TestType,bool(*)(int,int)> sixth (fn_pt);
 
 		sixth.insert(cn::pair('a', 10));
 		sixth.insert(cn::pair('b', 20));
@@ -67,10 +68,11 @@ TEST_CASE( "map - construct", "[map][constructors]" )
 	}
 }
 
-TEST_CASE( "map - operator - assignment ", "[map][operator][assignment]" )
+TEMPLATE_TEST_CASE( "map - operator - assignment ",
+	"[map][operator][assignment][leak]", int, IsLeaky )
 {
-	cn::map<char,int> first;
-  	cn::map<char,int> second;
+	cn::map<char,TestType> first;
+  	cn::map<char,TestType> second;
 	
 	first['x']=10;
 	first['y']=20;
@@ -93,13 +95,14 @@ TEST_CASE( "map - operator - assignment ", "[map][operator][assignment]" )
 		REQUIRE(first.find('x')->second == 10);
 	}
 	SECTION( "Must have no leaks when running w ur fav leak detect prog" ) {
-		first = cn::map<char,int>();
+		first = cn::map<char,TestType>();
 	}
 }
 
-TEST_CASE( "map - iterator ", "[map][iterator]" )
+TEMPLATE_TEST_CASE( "map - iterator ",
+	"[map][iterator][leak]", int, IsLeaky )
 {
-	cn::map<char, int> first;
+	cn::map<char, TestType> first;
 	SECTION( "empty container should have begin() == end()" )
 	{
 		REQUIRE( first.begin() == first.end() );
@@ -139,9 +142,10 @@ TEST_CASE( "map - iterator ", "[map][iterator]" )
 	}
 }
 
-TEST_CASE( "map - reverse iterator ", "[map][reverse_iterator]" )
+TEMPLATE_TEST_CASE( "map - reverse iterator ",
+	"[map][reverse_iterator][leak]", int, IsLeaky )
 {
-	cn::map<char,int> mymap;
+	cn::map<char,TestType> mymap;
 	SECTION( "empty container should have begin() == end()" )
 	{
 		REQUIRE( mymap.rbegin() == mymap.rend() );
@@ -181,10 +185,11 @@ TEST_CASE( "map - reverse iterator ", "[map][reverse_iterator]" )
 	}
 }
 
-TEST_CASE( "map - capacity ", "[map][capacity]" )
+TEMPLATE_TEST_CASE( "map - capacity ",
+	"[map][capacity][leak]", int, IsLeaky )
 {
-	cn::map<char, int> mine;
-	std::map<char, int> std_map;
+	cn::map<char, TestType> mine;
+	std::map<char, TestType> std_map;
 
 	SECTION( "empty container should be empty (insightful)" )
 	{
@@ -235,11 +240,12 @@ TEST_CASE( "map - Element access - operator[] (subscript) ", "[map][element_acce
 	REQUIRE( mymap.find('b')->second == "another element");
 }
 
-TEST_CASE( "map - Modifiers ", "[map][modifier][insert]" )
+TEMPLATE_TEST_CASE( "map - Modifiers ",
+	"[map][modifier][insert][leak]", int, IsLeaky )
 {
-	cn::map<char,int> mymap;
-	cn::map<char,int>::iterator it_res;
-	cn::pair<cn::map<char,int>::iterator,bool> ret;
+	cn::map<char,TestType> mymap;
+	typename cn::map<char,TestType>::iterator it_res;
+	cn::pair< typename cn::map<char,TestType>::iterator,bool> ret;
 	
 	ret = mymap.insert(cn::pair('c', 42));
 	SECTION( "Insert single value" )
@@ -272,7 +278,7 @@ TEST_CASE( "map - Modifiers ", "[map][modifier][insert]" )
 		REQUIRE(mymap.size() == 2);
 	}
 
-	cn::pair<char,int> myints[]= {
+	cn::pair<char,TestType> myints[]= {
 		cn::pair('a',40),
 		cn::pair('b',41),
 		cn::pair('c',42),
@@ -295,9 +301,10 @@ TEST_CASE( "map - Modifiers ", "[map][modifier][insert]" )
 }
 
 
-TEST_CASE( "map - Modifiers - erase ", "[map][modifier][erase]" )
+TEMPLATE_TEST_CASE( "map - Modifiers - erase ",
+	"[map][modifier][erase][leak]", int, IsLeaky )
 {
-	cn::map<char,int> mymap;
+	cn::map<char,TestType> mymap;
 
 	mymap['a']=10;
 	mymap['b']=20;
@@ -324,8 +331,8 @@ TEST_CASE( "map - Modifiers - erase ", "[map][modifier][erase]" )
 		REQUIRE(mymap.size() == 7);
 	}
 	
-	cn::map<char,int>::iterator it = ++mymap.begin();
-	cn::map<char,int>::iterator endRange =  --mymap.end();
+	typename cn::map<char,TestType>::iterator it = ++mymap.begin();
+	typename cn::map<char,TestType>::iterator endRange =  --mymap.end();
 	--endRange; --endRange; --endRange;
 	REQUIRE(it->first == 'd');
 	REQUIRE(endRange->first == 'f');
@@ -346,10 +353,10 @@ TEST_CASE( "map - Modifiers - erase ", "[map][modifier][erase]" )
 	}
 }
 
-
-TEST_CASE( "map - Modifiers - swap ", "[map][modifier][swap]" )
+TEMPLATE_TEST_CASE( "map - Modifiers - swap ",
+	"[map][modifier][swap][leak]", int, IsLeaky )
 {
-	cn::map<char,int> first,second;
+	cn::map<char,TestType> first,second;
 
 	first['x']=100;
 	first['y']=200;
@@ -361,8 +368,8 @@ TEST_CASE( "map - Modifiers - swap ", "[map][modifier][swap]" )
 	void* first_begin = (void*)&*first.begin();
 	void* second_begin = (void*)&*second.begin();
 
-	cn::map<char, int>::size_type first_size = first.size();
-	cn::map<char, int>::size_type second_size = second.size();
+	typename cn::map<char, TestType>::size_type first_size = first.size();
+	typename cn::map<char, TestType>::size_type second_size = second.size();
 	REQUIRE(first_size == 2 );
 	REQUIRE(second_size == 3 );
 
@@ -412,9 +419,10 @@ TEST_CASE( "map - Modifiers - swap ", "[map][modifier][swap]" )
 	}
 }
 
-TEST_CASE( "map - Modifiers - clear ", "[map][modifier][clear]" )
+TEMPLATE_TEST_CASE( "map - Modifiers - clear ",
+	"[map][modifier][clear][leak]", int, IsLeaky )
 {
-	cn::map<char,int> emptyMap;
+	cn::map<char,TestType> emptyMap;
 	SECTION( "Empty set being clear should be okay" )
 	{
 		emptyMap.clear();
@@ -422,7 +430,7 @@ TEST_CASE( "map - Modifiers - clear ", "[map][modifier][clear]" )
 		REQUIRE( emptyMap.size() == 0);
 	}
 
-	cn::map<char, int> mymap;
+	cn::map<char, TestType> mymap;
 	mymap['a']=10;
 	mymap['b']=20;
 	mymap['c']=30;

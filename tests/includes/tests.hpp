@@ -51,9 +51,8 @@ public:
 	int& operator*() const { return *leakPtr; }
 	int* operator->() const { return leakPtr; }
 
-	friend bool operator==(const IsLeaky& x, const IsLeaky& y) { return *x.leakPtr == *y.leakPtr; }
-	friend bool operator!=(const IsLeaky& x, const IsLeaky& y) { return *x.leakPtr != *y.leakPtr; }
-
+	operator int() const { return *leakPtr; }
+	
 	friend std::ostream&	operator<<(std::ostream& os, const IsLeaky& leak)
 	{
 		os << *leak.leakPtr;

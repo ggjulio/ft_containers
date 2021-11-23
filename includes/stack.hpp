@@ -44,7 +44,7 @@ protected:
 	_Container c;
 
 public:
-	stack(const _Container& ctnr = _Container()): c(ctnr){}
+	explicit stack(const _Container& ctnr = _Container()): c(ctnr){}
 
 	bool				empty(void) const 				{ return c.empty(); }
 	size_type			size() const					{ return c.size(); }

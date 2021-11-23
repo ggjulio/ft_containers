@@ -566,8 +566,6 @@ private:
 
 	void _m_transplant(base_ptr u, base_ptr v, base_ptr header)
 	{
-		assert(_m_root()->parent == &_m_impl._header);
-		assert(_m_root()->parent == _m_impl._header.parent->parent );
 		if (u->parent == header->parent->parent)
 			header->parent = v;
 		else if (u == u->parent->left)

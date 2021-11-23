@@ -158,6 +158,9 @@ inline bool
 operator>=(const set<_Key, _Compare, _Alloc>& x, const set<_Key, _Compare, _Alloc>& y)
 { return !(x < y); }
 
+template <class T, class Compare, class Alloc>
+  void swap (set<T,Compare,Alloc>& x, set<T,Compare,Alloc>& y) { x.swap(y); }
+
 } /* namespace ft */
 
 #endif /* SET_HPP */

@@ -608,3 +608,68 @@ TEST_CASE( "map - Allocator - get_allocator ", "[map][allocator][get_allocator]"
 
   mymap.get_allocator().deallocate(p,5);
 }
+
+TEMPLATE_TEST_CASE( "map - non-member - swap", "[map][non-member][swap][leak]", int, IsLeaky )
+{
+	cn::map<char,TestType> first,second;
+
+	first['x']=100;
+	first['y']=200;
+
+	second['a']=11;
+	second['b']=22;
+	second['c']=33;
+
+	void* first_begin = (void*)&*first.begin();
+	void* second_begin = (void*)&*second.begin();
+
+	typename cn::map<char, TestType>::size_type first_size = first.size();
+	typename cn::map<char, TestType>::size_type second_size = second.size();
+	REQUIRE(first_size == 2 );
+	REQUIRE(second_size == 3 );
+
+
+	auto it = first.begin();
+	REQUIRE( it->first == 'x');
+	REQUIRE( it++->second == 100);
+	REQUIRE( it->first == 'y');
+	REQUIRE( it++->second == 200);
+	REQUIRE( it == first.end());
+
+	it = second.begin();
+	REQUIRE( it->first == 'a');
+	REQUIRE( it++->second == 11);
+	REQUIRE( it->first == 'b');
+	REQUIRE( it++->second == 22);
+	REQUIRE( it->first == 'c');
+	REQUIRE( it++->second == 33);
+	REQUIRE(it == second.end());
+
+	cn::swap(first, second);
+
+	REQUIRE(first_size == second.size() );
+	REQUIRE(second_size == first.size() );
+
+
+	it = first.begin();
+	REQUIRE( it->first == 'a');
+	REQUIRE( it++->second == 11);
+	REQUIRE( it->first == 'b');
+	REQUIRE( it++->second == 22);
+	REQUIRE( it->first == 'c');
+	REQUIRE( it++->second == 33);
+	REQUIRE( it == first.end());
+
+	it = second.begin();
+	REQUIRE( it->first == 'x');
+	REQUIRE( it++->second == 100);
+	REQUIRE( it->first == 'y');
+	REQUIRE( it++->second == 200);
+	REQUIRE( it == second.end());
+
+	SECTION( "Must only swap pointers. No allocation should be done" )
+	{
+		REQUIRE( first_begin == (void*)&*second.begin());
+		REQUIRE( second_begin == (void*)&*first.begin());
+	}
+}

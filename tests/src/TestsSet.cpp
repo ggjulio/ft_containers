@@ -519,3 +519,54 @@ TEST_CASE( "set - Allocator - get_allocator ", "[set][allocator][get_allocator]"
 
 	myset.get_allocator().deallocate(p,5);
 }
+
+TEMPLATE_TEST_CASE( "set - non-member - swap", "[set][non-member][swap][leak]", int, IsLeaky )
+{
+		TestType myints[]={12,75,10,32,20,25};
+	cn::set<TestType> first (myints,myints+2);     // 12,75
+	cn::set<TestType> second (myints+2,myints+6);  // 10,20,25,32
+
+	void* first_begin = (void*)&*first.begin();
+	void* second_begin = (void*)&*second.begin();
+
+	typename cn::set<TestType>::size_type first_size = first.size();
+	typename cn::set<TestType>::size_type second_size = second.size();
+	REQUIRE(first_size == 2 );
+	REQUIRE(second_size == 4 );
+
+	auto it = first.begin();
+	REQUIRE(*it++ == 12);
+	REQUIRE(*it++ == 75);
+	REQUIRE(it == first.end());
+
+	it = second.begin();
+	REQUIRE(*it++ == 10);
+	REQUIRE(*it++ == 20);
+	REQUIRE(*it++ == 25);
+	REQUIRE(*it++ == 32);
+	REQUIRE(it == second.end());
+
+	cn::swap(first, second);
+
+	REQUIRE(first_size == second.size() );
+	REQUIRE(second_size == first.size() );
+
+	it = first.begin();
+	REQUIRE(*it++ == 10);
+	REQUIRE(*it++ == 20);
+	REQUIRE(*it++ == 25);
+	REQUIRE(*it++ == 32);
+	REQUIRE(it == first.end());
+
+	it = second.begin();
+	REQUIRE(*it++ == 12);
+	REQUIRE(*it++ == 75);
+	REQUIRE(it == second.end());
+
+	SECTION( "Must only swap pointers. No allocation should be done" )
+	{
+		REQUIRE( first_begin == (void*)&*second.begin());
+		REQUIRE( second_begin == (void*)&*first.begin());
+	}
+
+}

@@ -185,6 +185,9 @@ inline bool
 operator>=(const map<_Key, _Tp, _Compare, _Alloc>& x, const map<_Key, _Tp, _Compare, _Alloc>& y)
 { return !(x < y); }
 
+template <class Key, class T, class Compare, class Alloc>
+  void swap (map<Key,T,Compare,Alloc>& x, map<Key,T,Compare,Alloc>& y) { x.swap(y); }
+
 } /* namespace ft */
 
 #endif /* MAP_HPP */

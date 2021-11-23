@@ -3,20 +3,33 @@
 namespace ft
 {
 
-size_t _rb_tree_black_count(const node_base *node, const node_base *root) throw()
+node_base::base_ptr node_base::_s_minimum(base_ptr iterator)
 {
-	size_t len = 0;
-	if (node != NULL)
-		while (node != root)
-		{
-			if (node->color == kBlack)
-				++len;
-			node = node->parent;
-		}
-	return len;
+	while (iterator->left)
+		iterator = iterator->left;
+	return iterator;
 }
 
+node_base::const_base_ptr node_base::_s_minimum(const_base_ptr iterator)
+{
+	while (iterator->left)
+		iterator = iterator->left;
+	return iterator;
+}
 
+node_base::base_ptr node_base::_s_maximum(base_ptr iterator)
+{
+	while (iterator->right)
+		iterator = iterator->right;
+	return iterator;
+}
+
+node_base::const_base_ptr node_base::_s_maximum(const_base_ptr iterator)
+{
+	while (iterator->right)
+		iterator = iterator->right;
+	return iterator;
+}
 node_base*			_rb_tree_increment(node_base * x) throw()
 {
 	if (x->right != 0)
@@ -106,6 +119,30 @@ const node_base *	_rb_tree_decrement(const node_base *x) throw()
 	return x;
 }
 
+
+rb_tree_header::rb_tree_header() throw()
+{
+	_header.color = kRed; reset();
+}
+void 	rb_tree_header::_m_move_data(rb_tree_header& other) throw()
+{
+	_header.color = other._header.color;
+	_header.parent = other._header.parent;
+	_header.left = other._header.left;
+	_header.right = other._header.right;
+	_header.parent->parent = &_header;
+	_nodeCount = other._nodeCount;
+	other.reset();
+}
+void rb_tree_header::reset() throw()
+{
+	_header.parent = NULL;
+	_header.left = &_header;
+	_header.right = &_header;
+	_nodeCount = 0;
+}
+
+
 /*      y   right rotate     x
 /      / \  ------------>   / \ 
 /     x	  c                 a   y 
@@ -154,5 +191,17 @@ void _leftRotate(node_base *x, node_base*& root)
 	x->parent = y;
 }
 
+size_t _rb_tree_black_count(const node_base *node, const node_base *root) throw()
+{
+	size_t len = 0;
+	if (node != NULL)
+		while (node != root)
+		{
+			if (node->color == kBlack)
+				++len;
+			node = node->parent;
+		}
+	return len;
+}
 
 } /* namespace ft */

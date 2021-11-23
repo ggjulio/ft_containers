@@ -53,30 +53,10 @@ struct node_base
 	base_ptr left;
 	base_ptr right;
 
-	static base_ptr _s_minimum(base_ptr iterator)
-	{
-		while (iterator->left)
-			iterator = iterator->left;
-		return iterator;
-	}
-	static const_base_ptr _s_minimum(const_base_ptr iterator)
-	{
-		while (iterator->left)
-			iterator = iterator->left;
-		return iterator;
-	}
-	static base_ptr _s_maximum(base_ptr iterator)
-	{
-		while (iterator->right)
-			iterator = iterator->right;
-		return iterator;
-	}
-	static const_base_ptr _s_maximum(const_base_ptr iterator)
-	{
-		while (iterator->right)
-			iterator = iterator->right;
-		return iterator;
-	}
+	static base_ptr			_s_minimum(base_ptr iterator);
+	static const_base_ptr	_s_minimum(const_base_ptr iterator);
+	static base_ptr			_s_maximum(base_ptr iterator);
+	static const_base_ptr	_s_maximum(const_base_ptr iterator);
 }; /* struct node_base */
 
 template <class T>
@@ -173,26 +153,10 @@ struct rb_tree_header
 	node_base _header;
 	size_t	_nodeCount;
 
-	rb_tree_header() throw() { _header.color = kRed; reset(); }
+	rb_tree_header() throw();
 
-	void _m_move_data(rb_tree_header& other)
-	{
-		_header.color = other._header.color;
-		_header.parent = other._header.parent;
-		_header.left = other._header.left;
-		_header.right = other._header.right;
-		_header.parent->parent = &_header;
-		_nodeCount = other._nodeCount;
-		other.reset();
-	}
-
-	void reset() throw()
-	{
-		_header.parent = NULL;
-		_header.left = &_header;
-		_header.right = &_header;
-		_nodeCount = 0;
-	}
+	void _m_move_data(rb_tree_header& other) throw();
+	void reset() throw();
 };
 
 template <typename _Compare>

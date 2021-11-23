@@ -7,12 +7,12 @@
 TEMPLATE_TEST_CASE( "vector - construct", "[vector][constructors][leak]", int, IsLeaky )
 {
 	SECTION( "empty construtor" ) {
-		cn::vector<int> first;
+		cn::vector<TestType> first;
 		REQUIRE( first.size() == 0);
 		REQUIRE( first.empty());
 		REQUIRE( first.capacity() == 0);
 	}
-	cn::vector<int> second (4,100);
+	cn::vector<TestType> second (4,100);
 	SECTION( "fill constructor" )
 	{
 		CHECK( second[0] == 100);
@@ -23,7 +23,7 @@ TEMPLATE_TEST_CASE( "vector - construct", "[vector][constructors][leak]", int, I
 		REQUIRE( !second.empty());
 		REQUIRE( second.capacity() == 4);
 	}
-	cn::vector<int> third (second.begin(),second.end());
+	cn::vector<TestType> third (second.begin(),second.end());
 	SECTION( "range constructor" )
 	{
 		CHECK( third[0] == 100);
@@ -34,7 +34,7 @@ TEMPLATE_TEST_CASE( "vector - construct", "[vector][constructors][leak]", int, I
 		REQUIRE( !third.empty());
 		REQUIRE( second.capacity() == 4);
 	}
-	cn::vector<int> fourth (third);
+	cn::vector<TestType> fourth (third);
 	SECTION( "copy constructor" )
 	{
 		CHECK( fourth[0] == 100);
@@ -51,8 +51,8 @@ TEMPLATE_TEST_CASE( "vector - construct", "[vector][constructors][leak]", int, I
 	}
 	SECTION( "the iterator constructor can also be used to construct from arrays" )
 	{
-		int myints[] = {16,2,77,29, 42};
-		cn::vector<int> fifth(myints, myints + sizeof(myints) / sizeof(int));
+		TestType myT[] = {16,2,77,29, 42};
+		cn::vector<TestType> fifth(myT, myT + sizeof(myT) / sizeof(TestType));
 
 		CHECK( fifth[0] == 16);
 		CHECK( fifth[1] == 2);
@@ -67,8 +67,8 @@ TEMPLATE_TEST_CASE( "vector - construct", "[vector][constructors][leak]", int, I
 
 TEMPLATE_TEST_CASE( "vector - operator - assignment ", "[vector][operator][assignment][leak]", int, IsLeaky )
 {
-	cn::vector<int> first(3, 42);
-	cn::vector<int> second(5, 43);
+	cn::vector<TestType> first(3, 42);
+	cn::vector<TestType> second(5, 43);
 
 	REQUIRE(first.size() == 3);
 	REQUIRE(second.size() == 5);
@@ -78,14 +78,14 @@ TEMPLATE_TEST_CASE( "vector - operator - assignment ", "[vector][operator][assig
 	REQUIRE(second.size() == 3);
 	REQUIRE(second[0] == 42);
 
-	first = cn::vector<int>();
+	first = cn::vector<TestType>();
 	REQUIRE(first.size() == 0);
 	REQUIRE(first.empty());
 }
 
 TEMPLATE_TEST_CASE( "vector - iterator ", "[vector][iterator][leak]", int, IsLeaky )
 {
-	cn::vector<int> myvector;
+	cn::vector<TestType> myvector;
 	SECTION( "empty container should have begin() == end()" )
 	{
 		REQUIRE( myvector.begin() == myvector.end() );
@@ -127,7 +127,7 @@ TEMPLATE_TEST_CASE( "vector - iterator ", "[vector][iterator][leak]", int, IsLea
 
 TEMPLATE_TEST_CASE( "vector - reverse iterator ", "[vector][reverse_iterator][leak]", int, IsLeaky )
 {
-	cn::vector<int> myvector;
+	cn::vector<TestType> myvector;
 	SECTION( "empty container should have begin() == end()" )
 	{
 		REQUIRE( myvector.rbegin() == myvector.rend() );
@@ -169,8 +169,8 @@ TEMPLATE_TEST_CASE( "vector - reverse iterator ", "[vector][reverse_iterator][le
 
 TEMPLATE_TEST_CASE( "vector - capacity ", "[vector][capacity][leak]", int, IsLeaky )
 {
-	cn::vector<int> myvector;
-	std::vector<int> std_vector;
+	cn::vector<TestType> myvector;
+	std::vector<TestType> std_vector;
 
 	SECTION( "empty container should be empty (insightful)" )
 	{
@@ -198,7 +198,7 @@ TEMPLATE_TEST_CASE( "vector - capacity ", "[vector][capacity][leak]", int, IsLea
 TEMPLATE_TEST_CASE( "vector - capacity - resize" ,
 	"[vector][capacity][resize][leak]", int, IsLeaky )
 {
-	cn::vector<int> myvector;
+	cn::vector<TestType> myvector;
 
 	for (int i= 1 ;i<10;i++)
 	{
@@ -262,7 +262,7 @@ TEMPLATE_TEST_CASE( "vector - capacity - resize" ,
 TEMPLATE_TEST_CASE( "vector - capacity - vectors can be sized and resized",
 	"[vector][capacity][leak]", int, IsLeaky )
 {
-	cn::vector<int> v( 5 );
+	cn::vector<TestType> v( 5 );
 	REQUIRE( v.size() == 5 );
 	REQUIRE( v.capacity() >= 5 );
 
@@ -279,7 +279,7 @@ TEMPLATE_TEST_CASE( "vector - capacity - vectors can be sized and resized",
 		REQUIRE( v.capacity() >= 5 );
 	}
 	SECTION("We can use the 'swap trick' to reset the capacity") {
-		cn::vector<int> empty;
+		cn::vector<TestType> empty;
 		empty.swap( v );
 
 		REQUIRE( v.capacity() == 0 );
@@ -338,7 +338,7 @@ TEST_CASE( "vector - Element access - back() ", "[vector][element_access][back]"
 TEMPLATE_TEST_CASE( "vector - Modifiers - assign() ",
 	"[vector][modifier][assign][leak]", int, IsLeaky )
 {
-	cn::vector<int> first;
+	cn::vector<TestType> first;
 
 	REQUIRE( first.empty());
 	first.assign(7,100);
@@ -347,7 +347,7 @@ TEMPLATE_TEST_CASE( "vector - Modifiers - assign() ",
 		REQUIRE( first.size() == 7);
 	}
 
-	cn::vector<int> second;
+	cn::vector<TestType> second;
 	SECTION( "assign range should work" )
 	{
 		second.assign (first.begin()+1, first.end()-1); // the 5 central values of first
@@ -355,9 +355,9 @@ TEMPLATE_TEST_CASE( "vector - Modifiers - assign() ",
 	}
 	SECTION( "assign range from simple array" )
 	{
-		int myints[] = {1776,7,4};
-		cn::vector<int> third;
-		third.assign (myints, myints+3);
+		TestType myT[] = {1776,7,4};
+		cn::vector<TestType> third;
+		third.assign (myT, myT+3);
 		REQUIRE( third.size() == 3);
 	}
 }
@@ -365,7 +365,7 @@ TEMPLATE_TEST_CASE( "vector - Modifiers - assign() ",
 TEMPLATE_TEST_CASE( "vector - Modifiers - push_back() and pop_back() ",
 	"[vector][modifier][push_back][pop_back][leak]", int, IsLeaky )
 {
-	cn::vector<int> myvector;
+	cn::vector<TestType> myvector;
 
 	myvector.push_back(42);
 	REQUIRE( myvector.size() == 1);
@@ -400,7 +400,7 @@ TEMPLATE_TEST_CASE( "vector - Modifiers - push_back() and pop_back() ",
 TEMPLATE_TEST_CASE( "vector - Modifiers - insert() ",
 	"[vector][modifier][insert][leak]", int, IsLeaky )
 {
-	cn::vector<int> myvector (3,100);
+	cn::vector<TestType> myvector (3,100);
 	REQUIRE( myvector[0] == 100);
 	REQUIRE( myvector[1] == 100);
 	REQUIRE( myvector[2] == 100);
@@ -437,7 +437,7 @@ TEMPLATE_TEST_CASE( "vector - Modifiers - insert() ",
 	}
 
 	// Insert range from array
-	int myarray [] = { 501,502,503 };
+	TestType myarray[] = { 501,502,503 };
 	myvector.insert(myvector.begin(), myarray, myarray+3);
 	{
 		REQUIRE( myvector[0] == 501);
@@ -449,7 +449,7 @@ TEMPLATE_TEST_CASE( "vector - Modifiers - insert() ",
 
 
 	// Insert range from basic iterator
-	std::vector<int> anothervector (2,400);
+	std::vector<TestType> anothervector (2,400);
 	myvector.insert(--myvector.end(),anothervector.begin(),anothervector.end());
 	{
 		REQUIRE( myvector[9] == 400);
@@ -547,19 +547,19 @@ TEMPLATE_TEST_CASE( "vector - Modifiers - erase() ",
 TEMPLATE_TEST_CASE( "vector - Modifiers - swap ",
 	"[vector][modifier][swap][leak]", int, IsLeaky )
 {
-	int myints[]={12,75,10,32,20,25};
-	cn::vector<int> first (myints,myints+2);     // 12,75
-	cn::vector<int> second (myints+2,myints+6);  // 10,20,25,32
+	TestType myT[]={12,75,10,32,20,25};
+	cn::vector<TestType> first (myT,myT+2);     // 12,75
+	cn::vector<TestType> second (myT+2,myT+6);  // 10,20,25,32
 
-	cn::vector<int>::pointer first_start = &*first.begin();
-	cn::vector<int>::pointer first_finish = &*first.end();
-	cn::vector<int>::pointer first_end_of_storage = &*first.begin() + first.capacity();
+	typename cn::vector<TestType>::pointer first_start = &*first.begin();
+	typename cn::vector<TestType>::pointer first_finish = &*first.end();
+	typename cn::vector<TestType>::pointer first_end_of_storage = &*first.begin() + first.capacity();
 	REQUIRE( first_start + 2 == first_finish);
 	REQUIRE( first_finish == first_end_of_storage);
 
-	cn::vector<int>::pointer second_start = &*second.begin();
-	cn::vector<int>::pointer second_finish = &*second.end();
-	cn::vector<int>::pointer second_end_of_storage = &*second.begin() + second.capacity();
+	typename cn::vector<TestType>::pointer second_start = &*second.begin();
+	typename cn::vector<TestType>::pointer second_finish = &*second.end();
+	typename cn::vector<TestType>::pointer second_end_of_storage = &*second.begin() + second.capacity();
 	REQUIRE( second_start + 4 == second_finish);
 	REQUIRE( second_finish == second_end_of_storage);
 
@@ -682,19 +682,19 @@ TEST_CASE( "vector - non-member - relational operators", "[vector][non-member][r
 
 TEMPLATE_TEST_CASE( "vector - non-member - swap", "[vector][non-member][swap][leak]", int, IsLeaky )
 {
-	int myints[]={12,75,10,32,20,25};
-	cn::vector<int> first (myints,myints+2);     // 12,75
-	cn::vector<int> second (myints+2,myints+6);  // 10,20,25,32
+	TestType myints[]={12,75,10,32,20,25};
+	cn::vector<TestType> first (myints,myints+2);     // 12,75
+	cn::vector<TestType> second (myints+2,myints+6);  // 10,20,25,32
 
-	cn::vector<int>::pointer first_start = &*first.begin();
-	cn::vector<int>::pointer first_finish = &*first.end();
-	cn::vector<int>::pointer first_end_of_storage = &*first.begin() + first.capacity();
+	typename cn::vector<TestType>::pointer first_start = &*first.begin();
+	typename cn::vector<TestType>::pointer first_finish = &*first.end();
+	typename cn::vector<TestType>::pointer first_end_of_storage = &*first.begin() + first.capacity();
 	REQUIRE( first_start + 2 == first_finish);
 	REQUIRE( first_finish == first_end_of_storage);
 
-	cn::vector<int>::pointer second_start = &*second.begin();
-	cn::vector<int>::pointer second_finish = &*second.end();
-	cn::vector<int>::pointer second_end_of_storage = &*second.begin() + second.capacity();
+	typename cn::vector<TestType>::pointer second_start = &*second.begin();
+	typename cn::vector<TestType>::pointer second_finish = &*second.end();
+	typename cn::vector<TestType>::pointer second_end_of_storage = &*second.begin() + second.capacity();
 	REQUIRE( second_start + 4 == second_finish);
 	REQUIRE( second_finish == second_end_of_storage);
 

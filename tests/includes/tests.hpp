@@ -29,7 +29,7 @@ class IsLeaky
 	int* leakPtr;
 public:
 	IsLeaky() {
-		leakPtr = new int(-42);
+		leakPtr = new int(0);
 	}
 	IsLeaky(int n) {
 		leakPtr = new int(n);

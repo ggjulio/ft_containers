@@ -1,11 +1,11 @@
 #ifndef QUEUE_HPP
 #define QUEUE_HPP
 
-#include <deque> // to remove #######################
+#include <deque>
 
 namespace ft{
 
-template<class _T, class _Container=std::deque<_T> >
+template<class _T, class _Container = std::deque<_T> >
 class queue
 {
 public:

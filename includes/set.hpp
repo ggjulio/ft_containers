@@ -90,25 +90,6 @@ public:
 		return pair<iterator,bool>(res.first, res.second);
 	}
 
-	/**
-	 *  @brief Attempts to insert an element into the %set.
-	 *  @param  __position  An iterator that serves as a hint as to where the
-	 *                    element should be inserted.
-	 *  @param  __x  Element to be inserted.
-	 *  @return An iterator that points to the element with key of
-	 *           @a __x (may or may not be the element passed in).
-	 *
-	 *  This function is not concerned about whether the insertion took place,
-	 *  and thus does not return a boolean like the single-argument insert()
-	 *  does.  Note that the first parameter is only a hint and can
-	 *  potentially improve the performance of the insertion process.  A bad
-	 *  hint would cause no gains in efficiency.
-	 *
-	 *  For more on @a hinting, see:
-	 *  https://gcc.gnu.org/onlinedocs/libstdc++/manual/associative.html#containers.associative.insert_hints
-	 *
-	 *  Insertion requires logarithmic time (if the hint is not taken).
-	 */
 	iterator			insert(iterator position, const value_type& val)
 	{
 		pair<typename __tree::iterator,bool> res = _tree.insert_unique(position, val);

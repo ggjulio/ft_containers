@@ -334,7 +334,6 @@ TEST_CASE( "vector - Element access - back() ", "[vector][element_access][back]"
 
 TEST_CASE( "vector - Modifiers - assign() ", "[vector][modifier][assign]" )
 {
-	cn::vector<int>::iterator it;
 	cn::vector<int> first;
 
 	REQUIRE( first.empty());
@@ -344,20 +343,19 @@ TEST_CASE( "vector - Modifiers - assign() ", "[vector][modifier][assign]" )
 		REQUIRE( first.size() == 7);
 	}
 
-	// it = first.begin()+1;
-	// cn::vector<int> second;
-	// SECTION( "assign range should work" )
-	// {
-	// 	second.assign (it, first.end()-1); // the 5 central values of first
-	// 	REQUIRE( second.size() == 5);
-	// }
-	// SECTION( "assign range from simple array" )
-	// {
-	// 	int myints[] = {1776,7,4};
-	// 	cn::vector<int> third;
-	// 	third.assign (myints, myints+3);
-	// 	REQUIRE( third.size() == 3);
-	// }
+	cn::vector<int> second;
+	SECTION( "assign range should work" )
+	{
+		second.assign (first.begin()+1, first.end()-1); // the 5 central values of first
+		REQUIRE( second.size() == 5);
+	}
+	SECTION( "assign range from simple array" )
+	{
+		int myints[] = {1776,7,4};
+		cn::vector<int> third;
+		third.assign (myints, myints+3);
+		REQUIRE( third.size() == 3);
+	}
 }
 
 TEST_CASE( "vector - Modifiers - push_back() and pop_back() ", "[vector][modifier][push_back][pop_back]" )

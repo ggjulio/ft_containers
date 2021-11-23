@@ -3,6 +3,7 @@
 
 
 #include <memory>
+#include <stdexcept>
 #include <algorithm>
 #include <cassert>
 #include "utility.hpp"
@@ -46,17 +47,6 @@ namespace ft{
 		Self& operator+=(difference_type n)			{ _m_ptr += n; return *this;}
 		Self  operator- (difference_type n) const	{ return _m_ptr - n;}
 		Self& operator-=(difference_type n) 		{ _m_ptr -= n; return *this;}
-
-		// bool operator==	(const Self &other) { return (_m_ptr == other._m_ptr); };
-		// bool operator!=	(const Self &other) { return (_m_ptr != other._m_ptr); };
-		// bool operator<	(const Self &other) const { return (_m_ptr < other._m_ptr); };
-		// bool operator>	(const Self &other) const { return (_m_ptr > other._m_ptr); };
-		// bool operator<=	(const Self &other) const { return (_m_ptr <= other._m_ptr); };
-		// bool operator>=	(const Self &other) const { return (_m_ptr >= other._m_ptr); };
-
-		// friend bool operator==(const Self &x, const Self &y) throw() { return x._m_ptr == y._m_ptr; }
-		// friend bool operator!=(const Self &x, const Self &y) throw() { return !(x._m_ptr == y._m_ptr); }
-
 
 		pointer base() const {return _m_ptr; }
 
@@ -319,8 +309,8 @@ public:
 	// Element access
 	reference			operator[](size_type n)			{ return *(_m_impl._m_start + n); }
 	const_reference		operator[](size_type n) const	{ return *(_m_impl._m_start + n); }
-	reference 			at(size_type n) 				{ return (*this)[n]; }
-	const_reference 	at(size_type n) const			{ return (*this)[n]; }
+	reference 			at(size_type n) 				{ _m_range_check(n); return (*this)[n]; }
+	const_reference 	at(size_type n) const			{ _m_range_check(n); return (*this)[n]; }
 	reference 			front()							{ return *begin(); }
 	const_reference		front() const					{ return *begin(); }
 	reference			back()							{ return *(end() - 1); }
@@ -481,9 +471,24 @@ private:
 	template <class _Iter>
 	 void _m_assign_aux(_Iter first, _Iter last)
 	 {
-		 (void)first;
-		 (void)last;
-		// pointer current(_m_impl._m_start);
+		const size_type len = std::distance(first, last);
+		if (len > capacity())
+		{
+			pointer newStart = _m_allocate_and_copy(len, first, last);
+			_m_deallocate();
+			_m_impl._m_start = newStart;
+			_m_impl._m_finish = newStart + len;
+			_m_impl._m_end_of_storage = _m_impl._m_finish;
+		}
+		else if (size() >= len)
+			_m_erase_at_end(std::copy(first, last, _m_impl._m_start));
+		else
+		{
+			_Iter mid = first;
+			std::advance(mid, size());
+			std::copy(first, mid, _m_impl._m_start);
+			_m_impl._m_finish = std::uninitialized_copy(mid, last, _m_impl._m_finish);
+		}
 	 }
 
 	iterator _m_insert_val(iterator pos, const value_type& val)
@@ -531,6 +536,12 @@ private:
 			assert(0); // do we need to throw ?
 		const size_type len = size() + std::max(size(), n);
 		return ( len < size() || len > max_size()) ? max_size() : len;
+	}
+
+	void _m_range_check(size_type n) const
+	{
+		if (n >= size())
+			throw std::out_of_range("no");
 	}
 
 	void _m_fill_insert(iterator pos, size_type n, const value_type& val)

@@ -23,5 +23,43 @@ namespace NS_NAME
 	}
 }
 
+// Simulate an int, but allocated
+class IsLeaky
+{
+	int* leakPtr;
+public:
+	IsLeaky() {
+		leakPtr = new int(-42);
+	}
+	IsLeaky(int n) {
+		leakPtr = new int(n);
+	}
+	IsLeaky(const IsLeaky& other) {
+		if (this == &other)
+			return;
+		leakPtr = new int(*other.leakPtr);
+	}
+	IsLeaky& operator=(const IsLeaky& other)
+	{
+		if (this != &other)
+			*leakPtr = *other.leakPtr;
+		return *this;
+	}
+	~IsLeaky() {
+		delete leakPtr;
+	}
+	int& operator*() const { return *leakPtr; }
+	int* operator->() const { return leakPtr; }
+
+	friend bool operator==(const IsLeaky& x, const IsLeaky& y) { return *x.leakPtr == *y.leakPtr; }
+	friend bool operator!=(const IsLeaky& x, const IsLeaky& y) { return *x.leakPtr != *y.leakPtr; }
+
+	friend std::ostream&	operator<<(std::ostream& os, const IsLeaky& leak)
+	{
+		os << *leak.leakPtr;
+		return os;
+	}
+};
+
 
 #endif /* TESTS_HPP */

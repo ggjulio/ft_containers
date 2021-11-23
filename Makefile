@@ -58,7 +58,7 @@ INCS_DIR = $(shell find $(INC_DIR) -type d)
 
 vpath %.hpp $(INCS_DIR)
 
-SRC = main.cpp
+SRC = main.cpp rb_tree.cpp
 
 
 OBJ = $(addprefix  $(OBJ_DIR)/,$(SRC:%.cpp=%.o))

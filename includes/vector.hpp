@@ -28,7 +28,6 @@ namespace ft{
 		vector_iterator()						: _m_ptr(pointer()) {}
 		vector_iterator(pointer ptr): _m_ptr(ptr) {}
 		vector_iterator(const T& i) : _m_ptr(i) {}
-		// vector_iterator(const Self& it) throw()	: _m_ptr(it._m_ptr) {}
 
 		operator vector_iterator<const T> () const
 			{ return (vector_iterator<const T>(this->_m_ptr)); }
@@ -244,20 +243,25 @@ public:
 
 	~vector() {
 		if (_m_impl._m_start)
+		{
+			clear();
 			_m_deallocate();
+		}
 	}
 
 	vector& operator= (const vector& other)
 	{
 		if (this == &other)
 			return *this;
-		clear();
 		const size_type otherLen = other.size();
 		if (otherLen > capacity())
 		{
 			pointer start = _m_allocate_and_copy(otherLen, other.begin(), other.end());
 			if (_m_impl._m_start)
+			{
+				_m_destroy();
 				_m_deallocate();
+			}
 			_m_impl._m_start = start;
 			_m_impl._m_end_of_storage = start + otherLen;
 		}
@@ -307,14 +311,14 @@ public:
 
 
 	// Element access
-	reference			operator[](size_type n)			{ return *(_m_impl._m_start + n); }
-	const_reference		operator[](size_type n) const	{ return *(_m_impl._m_start + n); }
+	reference			operator[](size_type n)	throw()			{ return *(_m_impl._m_start + n); }
+	const_reference		operator[](size_type n) const throw()	{ return *(_m_impl._m_start + n); }
 	reference 			at(size_type n) 				{ _m_range_check(n); return (*this)[n]; }
 	const_reference 	at(size_type n) const			{ _m_range_check(n); return (*this)[n]; }
-	reference 			front()							{ return *begin(); }
-	const_reference		front() const					{ return *begin(); }
-	reference			back()							{ return *(end() - 1); }
-	const_reference		back() const					{ return *(end() - 1); }
+	reference 			front()	throw()					{ return *begin(); }
+	const_reference		front() const throw()			{ return *begin(); }
+	reference			back() throw()					{ return *(end() - 1); }
+	const_reference		back() const throw()			{ return *(end() - 1); }
 
 	// Modifiers
 	template <class InputIterator>
@@ -380,6 +384,7 @@ public:
 			std::uninitialized_copy(begin().base(), position.base(), newStart);
 			std::uninitialized_copy(first, last, newStart + (position.base() - _m_impl._m_start));
 			pointer newFinish = std::uninitialized_copy(position.base(), end().base(), newStart + (position.base() - _m_impl._m_start) + n);
+			_m_destroy();
 			_m_deallocate();
 			_m_impl._m_start = newStart;
 			_m_impl._m_finish = newFinish;
@@ -436,6 +441,17 @@ private:
 		_m_alloc.deallocate(p, n);
 	}
 
+	void _m_destroy()
+	{
+		_m_destroy_range(_m_impl._m_start, _m_impl._m_finish);
+		_m_impl._m_finish = _m_impl._m_start;
+	}
+	void _m_destroy_range(pointer first, pointer last)
+	{
+		while(first != last)
+			_m_alloc.destroy(--last);
+	}
+
 	void _m_erase_at_end(pointer p)
 	{
 		const size_type n = _m_impl._m_finish - p;
@@ -475,6 +491,7 @@ private:
 		if (len > capacity())
 		{
 			pointer newStart = _m_allocate_and_copy(len, first, last);
+			_m_destroy();
 			_m_deallocate();
 			_m_impl._m_start = newStart;
 			_m_impl._m_finish = newStart + len;
@@ -523,6 +540,7 @@ private:
 			_m_alloc.construct(newStart + (pos - begin()), val);
 			std::uninitialized_copy(pos, end(), newStart + (pos - begin()) + 1);
 			const size_type oldSize = size();
+			_m_destroy();
 			_m_deallocate();
 			_m_impl._m_end_of_storage = newStart + len;
 			_m_impl._m_start = newStart;
@@ -578,6 +596,7 @@ private:
 			newFinish += n;
 			newFinish = std::uninitialized_copy(pos.base(), _m_impl._m_finish, newFinish);
 		
+			_m_destroy();
 			_m_deallocate(_m_impl._m_start, _m_impl._m_end_of_storage - _m_impl._m_start);
 			_m_impl._m_start = newStart;
 			_m_impl._m_finish = newFinish;
@@ -589,7 +608,8 @@ private:
 	void _m_reallocate(size_type n)
 	{
 		pointer newStart(_m_allocate(n));
-		pointer newFinish(std::uninitialized_copy(_m_impl._m_start, _m_impl._m_finish, newStart));		
+		pointer newFinish(std::uninitialized_copy(_m_impl._m_start, _m_impl._m_finish, newStart));
+		_m_destroy();
 		_m_deallocate(_m_impl._m_start, _m_impl._m_end_of_storage - _m_impl._m_start);
 		_m_impl._m_start = newStart;
 		_m_impl._m_finish = newFinish;
@@ -603,21 +623,7 @@ private:
 
 		const pointer newStart = _m_alloc.allocate(newSize);
 		std::uninitialized_copy(_m_impl._m_start, _m_impl._m_finish, newStart);
-		_m_deallocate(_m_impl._m_start, actualSize);
-		_m_impl._m_start = newStart;
-		_m_impl._m_finish = newStart + actualSize;
-		_m_impl._m_end_of_storage = newStart + newSize;
-	}
-
-	void _m_grow(size_type n)
-	{
-		const size_type actualSize = _m_impl._m_end_of_storage - _m_impl._m_start;
-		const size_type doubleSize = std::max(2 * actualSize, size_type(1));
-		const size_type newSize = n > doubleSize ? n : doubleSize;
-		// const size_type newSize = std::max(2 * actualSize, size_type(1));
-
-		const pointer newStart = _m_alloc.allocate(newSize);
-		std::uninitialized_copy(_m_impl._m_start, _m_impl._m_finish, newStart);
+		_m_destroy();
 		_m_deallocate(_m_impl._m_start, actualSize);
 		_m_impl._m_start = newStart;
 		_m_impl._m_finish = newStart + actualSize;

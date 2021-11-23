@@ -4,7 +4,7 @@
 #include <string>
 #include "vector.hpp"
 
-TEST_CASE( "vector - construct", "[vector][constructors]" )
+TEMPLATE_TEST_CASE( "vector - construct", "[vector][constructors][leak]", int, IsLeaky )
 {
 	SECTION( "empty construtor" ) {
 		cn::vector<int> first;
@@ -65,7 +65,7 @@ TEST_CASE( "vector - construct", "[vector][constructors]" )
 	}
 }
 
-TEST_CASE( "vector - operator - assignment ", "[vector][operator][assignment]" )
+TEMPLATE_TEST_CASE( "vector - operator - assignment ", "[vector][operator][assignment][leak]", int, IsLeaky )
 {
 	cn::vector<int> first(3, 42);
 	cn::vector<int> second(5, 43);
@@ -83,7 +83,7 @@ TEST_CASE( "vector - operator - assignment ", "[vector][operator][assignment]" )
 	REQUIRE(first.empty());
 }
 
-TEST_CASE( "vector - iterator ", "[vector][iterator]" )
+TEMPLATE_TEST_CASE( "vector - iterator ", "[vector][iterator][leak]", int, IsLeaky )
 {
 	cn::vector<int> myvector;
 	SECTION( "empty container should have begin() == end()" )
@@ -125,7 +125,7 @@ TEST_CASE( "vector - iterator ", "[vector][iterator]" )
 	}
 }
 
-TEST_CASE( "vector - reverse iterator ", "[vector][reverse_iterator]" )
+TEMPLATE_TEST_CASE( "vector - reverse iterator ", "[vector][reverse_iterator][leak]", int, IsLeaky )
 {
 	cn::vector<int> myvector;
 	SECTION( "empty container should have begin() == end()" )
@@ -167,7 +167,7 @@ TEST_CASE( "vector - reverse iterator ", "[vector][reverse_iterator]" )
 	}
 }
 
-TEST_CASE( "vector - capacity ", "[vector][capacity]" )
+TEMPLATE_TEST_CASE( "vector - capacity ", "[vector][capacity][leak]", int, IsLeaky )
 {
 	cn::vector<int> myvector;
 	std::vector<int> std_vector;
@@ -195,8 +195,8 @@ TEST_CASE( "vector - capacity ", "[vector][capacity]" )
 	}
 }
 
-TEST_CASE( "vector - capacity - resize" ,
-	"[vector][capacity][resize]" )
+TEMPLATE_TEST_CASE( "vector - capacity - resize" ,
+	"[vector][capacity][resize][leak]", int, IsLeaky )
 {
 	cn::vector<int> myvector;
 
@@ -259,8 +259,8 @@ TEST_CASE( "vector - capacity - resize" ,
 	}
 }
 
-TEST_CASE( "vector - capacity - vectors can be sized and resized",
-	"[vector][capacity]" )
+TEMPLATE_TEST_CASE( "vector - capacity - vectors can be sized and resized",
+	"[vector][capacity][leak]", int, IsLeaky )
 {
 	cn::vector<int> v( 5 );
 	REQUIRE( v.size() == 5 );
@@ -312,6 +312,9 @@ TEST_CASE( "vector - Element access - at() ", "[vector][element_access][at]" )
 	REQUIRE( v.at(0) == -42);
 	v.at(1) = v.at(0);
 	REQUIRE( v.at(1) == -42);
+
+	REQUIRE_NOTHROW(v.at(4));
+	REQUIRE_THROWS_AS(v.at(5), std::out_of_range);
 }
 
 TEST_CASE( "vector - Element access - front() ", "[vector][element_access][front]" )
@@ -332,7 +335,8 @@ TEST_CASE( "vector - Element access - back() ", "[vector][element_access][back]"
 	REQUIRE( v.back() == -42);
 }
 
-TEST_CASE( "vector - Modifiers - assign() ", "[vector][modifier][assign]" )
+TEMPLATE_TEST_CASE( "vector - Modifiers - assign() ",
+	"[vector][modifier][assign][leak]", int, IsLeaky )
 {
 	cn::vector<int> first;
 
@@ -358,7 +362,8 @@ TEST_CASE( "vector - Modifiers - assign() ", "[vector][modifier][assign]" )
 	}
 }
 
-TEST_CASE( "vector - Modifiers - push_back() and pop_back() ", "[vector][modifier][push_back][pop_back]" )
+TEMPLATE_TEST_CASE( "vector - Modifiers - push_back() and pop_back() ",
+	"[vector][modifier][push_back][pop_back][leak]", int, IsLeaky )
 {
 	cn::vector<int> myvector;
 
@@ -390,19 +395,10 @@ TEST_CASE( "vector - Modifiers - push_back() and pop_back() ", "[vector][modifie
 	REQUIRE( myvector.capacity() == 4);
 	REQUIRE( myvector.empty());
 
-
-	myvector.pop_back();
-	SECTION( "pop_back an empty vector" )
-	{
-		REQUIRE( myvector.size() == (size_t)-1);
-		REQUIRE( !myvector.empty());
-	}
-
-	// also add tests for resize when size > capacity
-
 }
 
-TEST_CASE( "vector - Modifiers - insert() ", "[vector][modifier][insert]" )
+TEMPLATE_TEST_CASE( "vector - Modifiers - insert() ",
+	"[vector][modifier][insert][leak]", int, IsLeaky )
 {
 	cn::vector<int> myvector (3,100);
 	REQUIRE( myvector[0] == 100);
@@ -463,9 +459,10 @@ TEST_CASE( "vector - Modifiers - insert() ", "[vector][modifier][insert]" )
 	}
 }
 
-TEST_CASE( "vector - Modifiers - erase() ", "[vector][modifier][erase]" )
+TEMPLATE_TEST_CASE( "vector - Modifiers - erase() ",
+	"[vector][modifier][erase][leak]", int, IsLeaky)
 {
-	 cn::vector<int> myvector;
+	 cn::vector<TestType> myvector;
 
 	for (int i=1; i<=10; i++)
 		myvector.push_back(i); // 1 2 3 4 5 6 7 8 9 10
@@ -547,7 +544,8 @@ TEST_CASE( "vector - Modifiers - erase() ", "[vector][modifier][erase]" )
 	}
 }
 
-TEST_CASE( "vector - Modifiers - swap ", "[vector][modifier][swap]" )
+TEMPLATE_TEST_CASE( "vector - Modifiers - swap ",
+	"[vector][modifier][swap][leak]", int, IsLeaky )
 {
 	int myints[]={12,75,10,32,20,25};
 	cn::vector<int> first (myints,myints+2);     // 12,75
@@ -682,7 +680,7 @@ TEST_CASE( "vector - non-member - relational operators", "[vector][non-member][r
 
 }
 
-TEST_CASE( "vector - non-member - swap", "[vector][non-member][swap]" )
+TEMPLATE_TEST_CASE( "vector - non-member - swap", "[vector][non-member][swap][leak]", int, IsLeaky )
 {
 	int myints[]={12,75,10,32,20,25};
 	cn::vector<int> first (myints,myints+2);     // 12,75
@@ -747,4 +745,180 @@ TEST_CASE( "vector - non-member - swap", "[vector][non-member][swap]" )
 		REQUIRE( second_finish == &*first.end());
 		REQUIRE( second_end_of_storage == &*first.begin() + first.capacity());
 	}
+}
+
+
+// make check && valgrind --leak-check=full --show-leak-kinds=all --show-reachable=yes --track-origins=yes ./build/tests '-s [leak]'
+TEST_CASE( "vector - destruction - If there is leaks here, then things are not destroyed properly", "[vector][destruction][leak]" )
+{
+	SECTION( "constructor empty - bro, impossible to have a leak here")
+	{
+		cn::vector<IsLeaky> vec;
+	}
+	SECTION( "constructor fill - basic may be some leak if destructor does not manage properly destruction")
+	{
+		cn::vector<IsLeaky> vec(5);
+	}
+	SECTION( "constructor fill - same shit as previous section")
+	{
+		cn::vector<IsLeaky> vec(5, 42);
+	}
+	SECTION( "constructor fill - same shit as previous section")
+	{
+		cn::vector<IsLeaky> vec(5, 42);
+	}
+	SECTION( "constructor range - same shit as previous section")
+	{
+		IsLeaky array[] = {1,2,3,4};
+		cn::vector<IsLeaky> vec(array, array +  sizeof(array) / sizeof(IsLeaky));
+	}
+	SECTION( "assignment operator - basic")
+	{
+		cn::vector<IsLeaky> vec(5,42);
+		cn::vector<IsLeaky> vec2;
+
+		vec2 = vec;
+	}
+	SECTION( "assignment operator - destination capacity is greater than source")
+	{
+		cn::vector<IsLeaky> vec(5,42);
+		cn::vector<IsLeaky> vec2(10,21);
+
+		vec2 = vec;
+	}
+	SECTION( "assignment operator - destination capacity is lower than source (some leaks maybe ?)")
+	{
+		cn::vector<IsLeaky> vec(5,42);
+		cn::vector<IsLeaky> vec2(2,21);
+
+		vec2 = vec;
+	}
+	SECTION( "assignment operator - destination has same capacity than source")
+	{
+		cn::vector<IsLeaky> vec(5,42);
+		cn::vector<IsLeaky> vec2(5,21);
+
+		vec2 = vec;
+	}
+	SECTION( "assignment operator - destination capacity > source, bus dest size == 1")
+	{
+		cn::vector<IsLeaky> vec(5,42);
+		cn::vector<IsLeaky> vec2(1,42);
+
+		vec2.reserve(10);
+		vec2 = vec;
+	}
+	SECTION( "Resize - no comment")
+	{
+		cn::vector<IsLeaky> vec;
+
+		vec.resize(10);
+		vec.resize(5);
+		vec.resize(15);
+		vec.resize(3);
+	}
+	SECTION( "Reserve - no comment")
+	{
+		cn::vector<IsLeaky> vec(2, 42);
+
+		vec.reserve(5);
+		vec.reserve(10);
+		vec.reserve(15);
+		vec.reserve(0); // lol useless 
+	}
+	SECTION( "Assign fill " )
+	{
+		cn::vector<IsLeaky> vec;
+
+		vec.assign(4, 44);
+		vec.assign(5, 45);
+		vec.assign(5, 45);
+		vec.assign(6, 46);
+		vec.assign(9, 47);
+		vec.assign(0, 47);
+		vec.assign(5, 47);
+		vec.assign(0, 47);
+	}
+	SECTION( "Assign fill " )
+	{
+		cn::vector<IsLeaky> vec(5, 42);
+
+		vec.assign(4, 44);
+		vec.assign(5, 45);
+		vec.assign(5, 45);
+		vec.assign(6, 46);
+		vec.assign(9, 47);
+		vec.assign(0, 47);
+		vec.assign(5, 47);
+	}
+	SECTION( "Assign range " )
+	{
+		cn::vector<IsLeaky> vec;
+
+		IsLeaky array1[] = {1,2,3};
+		IsLeaky array2[] = {1,2,3,4};
+		IsLeaky array3[] = {1,2,3,4,5};
+		vec.assign(array2, array2 +  sizeof(array2) / sizeof(IsLeaky));
+		vec.assign(array1, array1 +  sizeof(array1) / sizeof(IsLeaky));
+		vec.assign(array3, array3 +  sizeof(array3) / sizeof(IsLeaky));
+		vec.assign(array1, array1 +  sizeof(array1) / sizeof(IsLeaky));
+		vec.assign(array1, array1 +  sizeof(array1) / sizeof(IsLeaky));
+
+	}
+	SECTION( "Some push_back, thus some grow/relocation (and hopefully destruct...)")
+	{
+		cn::vector<IsLeaky> vec;
+
+		REQUIRE(vec.capacity() == 0);
+		vec.push_back(33);
+		REQUIRE(vec.capacity() == 1);
+		vec.push_back(33);
+		vec.push_back(33);
+	}
+	SECTION( "Some push_back, and pop back")
+	{
+		cn::vector<IsLeaky> vec;
+
+		REQUIRE(vec.capacity() == 0);
+		vec.push_back(33);
+		REQUIRE(vec.capacity() == 1);
+		vec.pop_back();
+		vec.push_back(33);
+		vec.push_back(33);
+		REQUIRE(vec.capacity() == 2);
+		vec.push_back(33);
+		REQUIRE(vec.capacity() == 4);
+		vec.pop_back();
+	}
+	SECTION( "insert pos")
+	{
+		cn::vector<IsLeaky> vec;
+
+		REQUIRE(vec.capacity() == 0);
+		vec.insert(vec.begin(), 42);
+		REQUIRE(vec.capacity() == 1);
+		vec.insert(vec.begin(), 43);
+		REQUIRE(vec.capacity() == 2);
+		vec.insert(vec.begin(), 44);
+		vec.insert(vec.end(), 45);
+		REQUIRE(vec.capacity() == 4);
+		vec.insert(vec.end(), 46);
+		vec.insert(vec.end(), 47);
+		vec.insert(vec.end(), 48);
+		// vec.insert(vec.begin()+1, 49);
+
+	}
+	SECTION( "insert range")
+	{
+		cn::vector<IsLeaky> vec;
+
+		IsLeaky array[] = {1};
+		REQUIRE(vec.capacity() == 0);
+		vec.insert(vec.begin(), array, array +  sizeof(array) / sizeof(IsLeaky));
+		REQUIRE(vec.capacity() == 1);
+		vec.insert(vec.begin(), array, array +  sizeof(array) / sizeof(IsLeaky));
+		REQUIRE(vec.capacity() == 2);
+		vec.insert(vec.begin(), array, array +  sizeof(array) / sizeof(IsLeaky));
+	}
+
 }

@@ -91,18 +91,9 @@ $(NAME): $(OBJ)
 	@printf "$(_GREEN)Compiled : $(_MAGENTA)$(NAME)$(_R)\n"
 	@printf "\nDo $(_CYAN)$(_BOLD)make show$(_R) to debug the Makefile\n"
 	@printf "Do $(_RED)$(_BOLD)make debug$(_R) to run tests with lldb\n"
-	@printf "Do $(_YELLOW)$(_BOLD)make valgrind$(_R) to run valgrind $(_MAGENTA)(May have falses positives under OSX)$(_R)\n"
-	@printf "Do $(_GREEN)$(_BOLD)make check$(_R) to run unit tests $(_R)\n"
 
 run: $(NAME)
 	@./$(NAME)
-
-valgrind: $(NAME)
-	@valgrind --leak-check=full --show-leak-kinds=all --show-reachable=yes --track-origins=yes --log-file=output_valgrind ./$(NAME)
-	@printf "$(_BOLD)$(_RED)################################################################$(_R)\n"
-	@printf "$(_BOLD)$(_RED)##########################  $(_GREEN)Valgrind$(_RED)  ##########################$(_R)\n"
-	@printf "$(_BOLD)$(_RED)################################################################$(_R)\n\n"
-	@cat output_valgrind
 
 show:
 	@printf "$(_MAGENTA)UNAME  :$(_GREEN)  $(UNAME)$(_END)\n"
@@ -132,4 +123,4 @@ re: fclean all
 
 -include $(DEP)
 
-.PHONY: all run valgrind show clean fclean re
+.PHONY: all run show clean fclean re

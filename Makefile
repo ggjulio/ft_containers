@@ -123,7 +123,7 @@ re: fclean all
 
 -include $(DEP)
 
-.PHONY: all run debug valgrind show check tests_simple tests_speed clean fclean re
+.PHONY: all show check tests_simple tests_speed clean fclean re
 
 
 #******************************************************************************#

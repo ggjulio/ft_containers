@@ -91,7 +91,6 @@ $(NAME): $(OBJ)
 	@printf "\nDo $(_CYAN)$(_BOLD)make show$(_R) to debug the Makefile\n"
 	@printf "Do $(_RED)$(_BOLD)make debug$(_R) to run tests with lldb\n"
 	@printf "Do $(_YELLOW)$(_BOLD)make valgrind$(_R) to run valgrind $(_MAGENTA)(May have falses positives under OSX)$(_R)\n"
-	@printf "Do $(_GREEN)$(_BOLD)make check$(_R) to run unit tests $(_R)\n"
 
 run: $(NAME)
 	@./$(NAME)
@@ -130,9 +129,6 @@ clean:
 fclean: clean
 	@rm -fr $(NAME) $(NAME).dSYM/
 	@printf "$(_RED)Removed : $(_MAGENTA)./$(NAME), $(NAME).dSYM/$(_R)\n"
-
-check: $(NAME)
-	@./$(NAME)
 
 re: fclean all
 

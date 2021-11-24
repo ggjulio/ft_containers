@@ -53,7 +53,7 @@ parse_args(){
 }
 
 main(){
-
+	cd $(dirname $0)
 	make fclean > /dev/null
 	make NS_NAME=ft
 	mv a.out speed_ft

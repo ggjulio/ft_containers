@@ -47,8 +47,6 @@ _IWHITE   =\e[107m
 
 UNAME := $(shell uname)
 
-NAME = demo
-
 SRC_DIR = ./src
 INC_DIR = $(shell find . -type d -name "includes")
 OBJ_DIR = obj
@@ -81,32 +79,7 @@ else
 	CXXFLAGS += -D LINUX
 endif
 
-all: $(NAME)
-
-$(OBJ_DIR)/%.o: %.cpp
-	@mkdir -p $(OBJ_DIR)
-	@$(CXX) $(CXXFLAGS) $(IFLAGS) -c $< -o $@
-
-$(NAME): $(OBJ)
-	@$(CXX) $(CXXFLAGS) $(IFLAGS)  -o $@ $(OBJ) $(LDFLAGS)
-	@printf "$(_GREEN)Compiled : $(_MAGENTA)$(NAME)$(_R)\n"
-	@printf "\nDo $(_CYAN)$(_BOLD)make show$(_R) to debug the Makefile\n"
-	@printf "Do $(_RED)$(_BOLD)make debug$(_R) to run tests with lldb\n"
-	@printf "Do $(_YELLOW)$(_BOLD)make valgrind$(_R) to run valgrind $(_MAGENTA)(May have falses positives under OSX)$(_R)\n"
-
-run: $(NAME)
-	@./$(NAME)
-
-debug:	CFLAGS += -g
-debug: $(NAME)
-	@lldb $(NAME)
-
-valgrind: $(NAME)
-	@valgrind --leak-check=full --show-leak-kinds=all --show-reachable=yes --track-origins=yes --log-file=output_valgrind ./$(NAME) $(ARGS)
-	@printf "$(_BOLD)$(_RED)################################################################$(_R)\n"
-	@printf "$(_BOLD)$(_RED)##########################  $(_GREEN)Valgrind$(_RED)  ##########################$(_R)\n"
-	@printf "$(_BOLD)$(_RED)################################################################$(_R)\n\n"
-	@cat output_valgrind
+all: tests_simple tests_speed
 
 show:
 	@printf "$(_MAGENTA)UNAME   :$(_GREEN)  $(UNAME)$(_END)\n"
@@ -132,11 +105,12 @@ tests_simple:
 	@$(MAKE) run -C tests_simple/lmartin
 
 tests_speed:
-	@$(MAKE) run -C tests_speed
+	./tests_speed/run.sh
 
 clean:
-	@rm -rf $(OBJ_DIR) output_valgrind
-	@printf "$(_RED)Removed :$(_MAGENTA) $(OBJ_DIR)/ $(_MAGENTA)\n"
+	@$(MAKE) clean -C tests
+	@$(MAKE) clean -C tests_simple/lmartin
+	@$(MAKE) clean -C tests_speed
 
 fclean: clean
 	@rm -fr $(NAME) $(DEBUG_EXEC) $(NAME).dSYM/
@@ -149,7 +123,7 @@ re: fclean all
 
 -include $(DEP)
 
-.PHONY: all run debug valgrind show check tests_simple clean fclean re
+.PHONY: all run debug valgrind show check tests_simple tests_speed clean fclean re
 
 
 #******************************************************************************#

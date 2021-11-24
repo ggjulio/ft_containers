@@ -16,7 +16,7 @@ jobs:
     timeout-minutes: 5
     steps:
     - uses: actions/checkout@v2
-    - run: make test_simple
+    - run: make tests_simple
 
   unit-tests:
     runs-on: ${{ matrix.os }}

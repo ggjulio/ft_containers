@@ -129,7 +129,10 @@ check:
 	@$(MAKE) check -C tests ARGS="$(ARGS)"
 
 tests_simple:
-	@$(MAKE) run -C tests_simple
+	@$(MAKE) run -C tests_simple/lmartin
+
+tests_speed:
+	@$(MAKE) run -C tests_speed
 
 clean:
 	@rm -rf $(OBJ_DIR) output_valgrind
@@ -139,12 +142,13 @@ fclean: clean
 	@rm -fr $(NAME) $(DEBUG_EXEC) $(NAME).dSYM/
 	@printf "$(_RED)Removed : $(_MAGENTA)./$(NAME), $(NAME).dSYM/$(_R)\n"
 	@$(MAKE) fclean -C tests
+	@$(MAKE) fclean -C tests_simple/lmartin
 
 re: fclean all
 
 -include $(DEP)
 
-.PHONY: all run debug valgrind norminette bonus show check clean fclean re
+.PHONY: all run debug valgrind show check tests_simple clean fclean re
 
 
 #******************************************************************************#

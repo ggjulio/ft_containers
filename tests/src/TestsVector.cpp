@@ -123,6 +123,26 @@ TEMPLATE_TEST_CASE( "vector - iterator ", "[vector][iterator][leak]", int, IsLea
 		}
 		REQUIRE(*it == 10);
 	}
+
+	SECTION( "const iterator should be comparable with iterator" )
+	{
+		typename cn::vector<TestType>::const_iterator const_it = myvector.begin();
+		typename cn::vector<TestType>::iterator it = myvector.begin();
+		typename cn::vector<TestType>::iterator it2 = myvector.begin() + 1;
+
+		REQUIRE( const_it == it );
+		REQUIRE( const_it <= it );
+		REQUIRE( const_it >= it );
+		REQUIRE( !(const_it > it) );
+		REQUIRE( !(const_it < it) );
+	
+		REQUIRE( const_it != it2 );
+		REQUIRE( const_it <= it2 );
+		REQUIRE( const_it < it2 );
+		REQUIRE( !(const_it > it2) );
+		REQUIRE( !(const_it >= it2) );
+	}
+
 }
 
 TEMPLATE_TEST_CASE( "vector - reverse iterator ", "[vector][reverse_iterator][leak]", int, IsLeaky )
@@ -722,6 +742,11 @@ TEMPLATE_TEST_CASE( "vector - non-member - swap", "[vector][non-member][swap][le
 	REQUIRE( second_start + 4 == second_finish);
 	REQUIRE( second_finish == second_end_of_storage);
 
+	// save iterators to check their validity later after swap
+	typename cn::vector<TestType>::iterator it_save = first.begin();
+	typename cn::vector<TestType>::const_iterator const_it_save = first.begin();
+	typename cn::vector<TestType>::iterator end_save = first.end();
+	typename cn::vector<TestType>::const_iterator const_end_save = first.end();
 
 	REQUIRE( first.size() == 2 );
 	REQUIRE( first.capacity() == 2 );
@@ -769,10 +794,27 @@ TEMPLATE_TEST_CASE( "vector - non-member - swap", "[vector][non-member][swap][le
 		REQUIRE( second_finish == &*first.end());
 		REQUIRE( second_end_of_storage == &*first.begin() + first.capacity());
 	}
+
+	SECTION( "iterators. must remain valid" )
+	{
+		REQUIRE( it_save != first.begin());
+		REQUIRE( it_save == second.begin());
+
+		REQUIRE( const_it_save != first.begin());
+		REQUIRE( const_it_save == second.begin());
+
+		REQUIRE( end_save != first.end());
+		REQUIRE( end_save == second.end());
+
+		REQUIRE( const_end_save != first.end());
+		REQUIRE( const_end_save == second.end());
+	}
 }
 
 
 // make check && valgrind --leak-check=full --show-leak-kinds=all --show-reachable=yes --track-origins=yes ./build/tests '-s [leak]'
+// or just:
+// cd tests && make valgrind
 TEST_CASE( "vector - destruction - Having leaks here, mean objects are not destroyed properly",
 	"[vector][destruction][leak]" )
 {

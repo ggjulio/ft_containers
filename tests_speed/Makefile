@@ -47,10 +47,9 @@ _IWHITE   =\e[107m
 
 UNAME := $(shell uname)
 
-NAME = tests
+NAME  = a.out
 
-SRC_DIR = ./src ../src
-BUILD_DIR = ./build
+SRC_DIR = ./ ../src 
 INC_DIR = $(shell find . -type d -name "includes")
 INC_DIR+= $(shell find ../includes -type d)
 
@@ -60,17 +59,8 @@ SRCS_DIR = $(shell find $(SRC_DIR) -type d)
 
 vpath %.hpp $(INC_DIR)
 
-# Unit test framework source code
 SRC = main.cpp rb_tree.cpp
 
-# Our tests
-SRC+= TestsVector.cpp TestsStack.cpp TestsSet.cpp TestsMap.cpp
-SRC+= TestsTypeTraits.cpp TestsUtility.cpp
-SRC+= TestsIterator.cpp
-SRC+= TestsAlgorithm.cpp
-SRC+= TestsFunction.cpp
-
-SRC+= TestsRbTree.cpp
 
 
 OBJ = $(addprefix  $(OBJ_DIR)/,$(SRC:%.cpp=%.o))
@@ -82,33 +72,16 @@ DEP = $(addprefix  $(OBJ_DIR)/,$(SRC:%.cpp=%.d))
 LDFLAGS = $(foreach lib, $(LIB_DIR),-L$(lib))  $(foreach lib, $(LIB),-l$(lib))
 
 CXX = clang++
-CXXFLAGS  = -Wall -Wextra -Werror -std=c++17 -MMD -MP #-g -fstandalone-debug #-fsanitize=address  -fsanitize=undefined -fstack-protector  
+CXXFLAGS  = -Wall -Wextra -Werror -std=c++98 -MMD -MP #-g -fstandalone-debug #-fsanitize=address  -fsanitize=undefined -fstack-protector  
 IFLAGS  = $(foreach inc, $(INC_DIR),-I$(inc))
 
-#OS specific
-ifeq ($(UNAME), Darwin)
-	# mac
-	CXXFLAGS += -D DARWIN
-else
-	#Linus and others...
-	CXXFLAGS += -D LINUX
-endif
-
-ifeq ($(strip $(NS_NAME)),)
-NS_NAME := ft
-endif
-CXXFLAGS += -D NS_NAME=$(NS_NAME)
-# https://www.cmcrossroads.com/article/rebuilding-when-cppflags-changes
-# -include signature
-
-all:  $(BUILD_DIR)/$(NAME)
+all:  $(NAME)
 
 $(OBJ_DIR)/%.o: %.cpp
 	@mkdir -p $(OBJ_DIR)
 	$(CXX) $(CXXFLAGS) $(IFLAGS) -c $< -o $@
 
-$(BUILD_DIR)/$(NAME): $(OBJ)
-	mkdir -p $(BUILD_DIR)
+$(NAME): $(OBJ)
 	$(CXX) $(CXXFLAGS) $(IFLAGS) -o $@ $(OBJ) $(LDFLAGS)
 	@printf "$(_GREEN)Compiled : $(_MAGENTA)$(NAME)$(_R)\n"
 	@printf "\nDo $(_CYAN)$(_BOLD)make show$(_R) to debug the Makefile\n"
@@ -116,15 +89,11 @@ $(BUILD_DIR)/$(NAME): $(OBJ)
 	@printf "Do $(_YELLOW)$(_BOLD)make valgrind$(_R) to run valgrind $(_MAGENTA)(May have falses positives under OSX)$(_R)\n"
 	@printf "Do $(_GREEN)$(_BOLD)make check$(_R) to run unit tests $(_R)\n"
 
-run:  $(BUILD_DIR)/$(NAME)
+run: $(NAME)
 	@./$(NAME)
 
-debug:	CXXFLAGS += -g
-debug: $(BUILD_DIR)/$(NAME)
-	@lldb $(BUILD_DIR)/$(NAME) $(ARGS)
-
-valgrind: $(BUILD_DIR)/$(NAME)
-	@valgrind --leak-check=full --show-leak-kinds=all --show-reachable=yes --track-origins=yes --log-file=output_valgrind ./$(BUILD_DIR)/$(NAME) $(ARGS)
+valgrind: $(NAME)
+	@valgrind --leak-check=full --show-leak-kinds=all --show-reachable=yes --track-origins=yes --log-file=output_valgrind ./$(NAME)
 	@printf "$(_BOLD)$(_RED)################################################################$(_R)\n"
 	@printf "$(_BOLD)$(_RED)##########################  $(_GREEN)Valgrind$(_RED)  ##########################$(_R)\n"
 	@printf "$(_BOLD)$(_RED)################################################################$(_R)\n\n"
@@ -151,49 +120,11 @@ clean:
 	@printf "$(_RED)Removed :$(_MAGENTA) $(OBJ_DIR)/$(_MAGENTA)\n"
 
 fclean: clean
-	@rm -fr $(BUILD_DIR)/ $(NAME).dSYM/
+	@rm -fr $(NAME) $(NAME).dSYM/ 
 	@printf "$(_RED)Removed : $(_MAGENTA)./$(NAME), $(NAME).dSYM/$(_R)\n"
-
-check: $(BUILD_DIR)/$(NAME)
-	@$(BUILD_DIR)/$(NAME) $(ARGS)
 
 re: fclean all
 
 -include $(DEP)
 
-.PHONY: all run debug valgrind show clean fclean check re
-
-#******************************************************************************#
-#                                  REMINDER                                    #  
-#******************************************************************************# \
-                                                                                 \
-                                                                                 \
-Automatic variables :                                                            \
-                                                                                 \
-$@ : rule name  target.         			                                     \
-                                                                                 \
-$^ : The names of all the prerequisites, with spaces between them. For           \
-prerequisites which are archive members, only the named member is used.          \
-                                                                                 \
-$< : The name of the first prerequisite. If the target got its recipe from an    \
-implicit rule, this will be the first prerequisite added by the implicit rule.   \
-                                                                                 \
-$? : The names of all the prerequisites that are newer than the target, with     \
-spaces between them. For prerequisites which are archive members, only the       \
-named member is used.                                                            \
-                                                                                 \
-                                                                                 \
-source :                                                                         \
-https://www.gnu.org/software/make/manual/html_node/Automatic-Variables.html      \
-
-#******************************************************************************#
-#                                  RESSOURCES                                  #  
-#******************************************************************************# \
-resources :                                                                      \
-https://www.gnu.org/software/make/manual/html_node/index.html#SEC_Contents       \
-http://web.mit.edu/gnu/doc/html/make_toc.html#SEC88                              \
-https://www3.nd.edu/~zxu2/acms60212-40212/Makefile.pdf                           \
-																				 \
-cpp:																			 \
-																				 \
-https://www.gnu.org/software/make/manual/html_node/Catalogue-of-Rules.html
+.PHONY: all run valgrind show clean fclean re

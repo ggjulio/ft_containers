@@ -163,7 +163,7 @@ TEST_CASE( "cn::reverse_iterator - other operator",
 	}
 }
 
-TEST_CASE( "cn::reverse_iterator - compas",
+TEST_CASE( "cn::reverse_iterator - comparison",
 	"[iterator][reverse_iterator][operator][comparison]" )
 {
 	std::vector<int> vec = {1,2,3,4,5};
@@ -179,4 +179,30 @@ TEST_CASE( "cn::reverse_iterator - compas",
 	CHECK( it3 >= it3_bis );
 	CHECK( it3 > it5 );
 
+}
+
+TEST_CASE( "cn::reverse_iterator - const iter are comparable with iter",
+	"[iterator][reverse_iterator][operator][comparison]" )
+{
+	std::vector<int> vec = {1,2,3,4,5};
+
+	std::vector<int>::const_iterator b_const_it = vec.begin();
+	std::vector<int>::iterator b_it = vec.begin();
+	std::vector<int>::iterator b_it2 = vec.begin() + 1;
+
+	cn::reverse_iterator<std::vector<int>::const_iterator>	const_it(b_const_it);
+	cn::reverse_iterator<std::vector<int>::iterator> 				it(b_it);
+	cn::reverse_iterator<std::vector<int>::iterator> 				it2(b_it2);
+
+	REQUIRE( const_it == it );
+	REQUIRE( const_it <= it );
+	REQUIRE( const_it >= it );
+	REQUIRE( !(const_it > it) );
+	REQUIRE( !(const_it < it) );
+
+	REQUIRE( const_it != it2 );
+	REQUIRE( const_it > it2 );
+	REQUIRE( const_it >= it2 );
+	REQUIRE( !(const_it <= it2) );
+	REQUIRE( !(const_it < it2) );
 }

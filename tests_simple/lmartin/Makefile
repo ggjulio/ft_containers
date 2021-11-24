@@ -59,10 +59,8 @@ SRCS_DIR = $(shell find $(SRC_DIR) -type d)
 
 vpath %.hpp $(INC_DIR)
 
-# Unit test framework source code
 SRC = main.cpp rb_tree.cpp
 
-# Our tests
 SRC+= test_map.cpp
 SRC+= test_stack.cpp
 SRC+= test_vector.cpp
@@ -78,24 +76,8 @@ DEP = $(addprefix  $(OBJ_DIR)/,$(SRC:%.cpp=%.d))
 LDFLAGS = $(foreach lib, $(LIB_DIR),-L$(lib))  $(foreach lib, $(LIB),-l$(lib))
 
 CXX = clang++
-CXXFLAGS  = -Wall -Wextra -Werror -std=c++98 -MMD -MP -g -fstandalone-debug #-fsanitize=address  -fsanitize=undefined -fstack-protector  
+CXXFLAGS  = -Wall -Wextra -Werror -std=c++98 -MMD -MP #-g -fstandalone-debug #-fsanitize=address  -fsanitize=undefined -fstack-protector  
 IFLAGS  = $(foreach inc, $(INC_DIR),-I$(inc))
-
-#OS specific
-ifeq ($(UNAME), Darwin)
-	# mac
-	CXXFLAGS += -D DARWIN
-else
-	#Linus and others...
-	CXXFLAGS += -D LINUX
-endif
-
-ifeq ($(strip $(NS_NAME)),)
-NS_NAME := ft
-endif
-CXXFLAGS += -D NS_NAME=$(NS_NAME)
-# https://www.cmcrossroads.com/article/rebuilding-when-cppflags-changes
-# -include signature
 
 all:  $(NAME)
 
@@ -156,4 +138,4 @@ re: fclean all
 
 -include $(DEP)
 
-.PHONY: all run debug valgrind norminette show clean fclean re
+.PHONY: all run debug valgrind show clean fclean re

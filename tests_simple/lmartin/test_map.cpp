@@ -252,45 +252,4 @@ void		test_map(void)
 	std::cout << std::setw(40) << "map < map2: " << (map > map2) << std::endl;
 	std::cout << std::endl;
 
-
-	// TO SHOW AVL TREE ?
-	ft::map<int, int> mymap3;
-	mymap3.insert(ft::map<int, int>::value_type(1, 1));
-	mymap3.insert(ft::map<int, int>::value_type(4, 1));
-	mymap3.insert(ft::map<int, int>::value_type(3, 1));
-	mymap3.insert(ft::map<int, int>::value_type(5, 1));
-	mymap3.insert(ft::map<int, int>::value_type(9, 1));
-	mymap3.insert(ft::map<int, int>::value_type(2, 1));
-	mymap3.insert(ft::map<int, int>::value_type(8, 199));
-	mymap3.insert(ft::map<int, int>::value_type(7, 1));
-	mymap3.insert(ft::map<int, int>::value_type(6, 1));
-	mymap3.insert(ft::map<int, int>::value_type(6, 1));
-	mymap3.insert(ft::map<int, int>::value_type(0, 1));
-
-	// mymap3.print(); wtf ?
-
-	mymap3.erase(6);
-	mymap3.erase(7);
-	mymap3.erase(7);
-	mymap3.erase(3);
-	mymap3.erase(2);
-
-	printf("\nerase 6 7 3 2\n");
-	// mymap3.print();
-
-	printf("\nerase 8\n");
-	mymap3.erase(8);
-	// mymap3.print();
-
-	printf("\nerase 1\n");
-	mymap3.erase(1);
-	// mymap3.print();
-
-	printf("\nerase 5\n");
-	mymap3.erase(5);
-	// mymap3.print();
-
-	printf("\nclear\n");
-	mymap3.clear();
-	// mymap3.print();
 }

@@ -488,7 +488,7 @@ TEMPLATE_TEST_CASE( "vector - Modifiers - insert() ",
 		REQUIRE( myvector[1] == 502);
 		REQUIRE( myvector[2] == 503);
 		REQUIRE( myvector.size() == 10);
-		REQUIRE( myvector.capacity() == 14);
+		REQUIRE( myvector.capacity() >= 10);
 	}
 
 
@@ -499,7 +499,7 @@ TEMPLATE_TEST_CASE( "vector - Modifiers - insert() ",
 		REQUIRE( myvector[9] == 400);
 		REQUIRE( myvector[10] == 400);
 		REQUIRE( myvector.size() == 12);
-		REQUIRE( myvector.capacity() == 14);
+		REQUIRE( myvector.capacity() >= 12);
 	}
 }
 

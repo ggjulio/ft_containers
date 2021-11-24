@@ -12,3 +12,5 @@ output_valgrind
 demo
 obj/
 tests/build
+speed_std
+speed_ft

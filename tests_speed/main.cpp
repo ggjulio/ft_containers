@@ -1,19 +1,23 @@
 #include <iostream>
 #include <string>
 #include <deque>
-#if 0 //CREATE A REAL STL EXAMPLE
-	#include <map>
-	#include <stack>
-	#include <vector>
-	namespace cn = std;
-#else
-	#include "map.hpp"
-	#include "stack.hpp"
-	#include "vector.hpp"
-	namespace cn = ft;
+#include <stdlib.h>
+
+// std
+#include <map>
+#include <stack>
+#include <vector>
+
+// ft
+#include "map.hpp"
+#include "stack.hpp"
+#include "vector.hpp"
+
+#if !defined(NS_NAME)
+ 	#define NS_NAME ft
 #endif
 
-#include <stdlib.h>
+namespace cn = NS_NAME;
 
 #define MAX_RAM 4294967296
 #define BUFFER_SIZE 4096

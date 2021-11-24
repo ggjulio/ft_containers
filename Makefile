@@ -143,6 +143,7 @@ fclean: clean
 	@printf "$(_RED)Removed : $(_MAGENTA)./$(NAME), $(NAME).dSYM/$(_R)\n"
 	@$(MAKE) fclean -C tests
 	@$(MAKE) fclean -C tests_simple/lmartin
+	@$(MAKE) fclean -C tests_speed
 
 re: fclean all
 

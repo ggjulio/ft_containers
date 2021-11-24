@@ -807,18 +807,6 @@ public:
 		__rb_tree_print(static_cast<link_type>(_m_root()), NULL, false);
 	}
 
-	friend bool
-	operator==(const rbTree& __x, const rbTree& __y)
-	{
-		return __x.size() == __y.size()
-			&& std::equal(__x.begin(), __x.end(), __y.begin());
-	}
-
-	friend bool
-	operator<(const rbTree& __x, const rbTree& __y)
-    {
-		return std::lexicographical_compare(__x.begin(), __x.end(), __y.begin(), __y.end());
-    }
 private:
 
 	struct Trunk
@@ -880,6 +868,22 @@ private:
 		__rb_tree_print(static_cast<link_type>(root->left), &trunk, false);
 	}
 }; /* class rbTree */
+
+
+template<typename _Key, typename _Val, typename _KeyOfValue, typename _Compare, typename _Alloc>
+bool operator==(const rbTree<_Key, _Val, _KeyOfValue, _Compare, _Alloc>& __x,
+				const rbTree<_Key, _Val, _KeyOfValue, _Compare, _Alloc>& __y)
+{
+	return __x.size() == __y.size() && std::equal(__x.begin(), __x.end(), __y.begin());
+}
+
+template<typename _Key, typename _Val, typename _KeyOfValue, typename _Compare, typename _Alloc>
+bool operator<(const rbTree<_Key, _Val, _KeyOfValue, _Compare, _Alloc>& __x,
+				const rbTree<_Key, _Val, _KeyOfValue, _Compare, _Alloc>& __y)
+{
+	return std::lexicographical_compare(__x.begin(), __x.end(), __y.begin(), __y.end());
+}
+
 
 size_t _rb_tree_black_count(const node_base *node, const node_base *root) throw();
 

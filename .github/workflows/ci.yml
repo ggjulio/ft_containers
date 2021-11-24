@@ -18,6 +18,19 @@ jobs:
     - uses: actions/checkout@v2
     - run: make tests_simple
 
+  benchmark:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    timeout-minutes: 5
+    steps:
+    - uses: actions/checkout@v2
+    - run: ./run.sh 42
+      working-directory: ./tests_speed
+
+
   unit-tests:
     runs-on: ${{ matrix.os }}
     strategy:

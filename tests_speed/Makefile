@@ -75,6 +75,11 @@ CXX = clang++
 CXXFLAGS  = -Wall -Wextra -Werror -std=c++98 -MMD -MP #-g -fstandalone-debug #-fsanitize=address  -fsanitize=undefined -fstack-protector  
 IFLAGS  = $(foreach inc, $(INC_DIR),-I$(inc))
 
+ifeq ($(strip $(NS_NAME)),)
+NS_NAME := ft
+endif
+CXXFLAGS += -D NS_NAME=$(NS_NAME)
+
 all:  $(NAME)
 
 $(OBJ_DIR)/%.o: %.cpp

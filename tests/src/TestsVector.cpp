@@ -477,7 +477,7 @@ TEMPLATE_TEST_CASE( "vector - Modifiers - insert() ",
 		REQUIRE( myvector[6] == 100);
 		REQUIRE( &myvector[7] == &*myvector.end());
 		REQUIRE( myvector.size() == 7);
-		REQUIRE( myvector.capacity() == 8);
+		REQUIRE( myvector.capacity() >= 7);
 	}
 
 	// Insert range from array

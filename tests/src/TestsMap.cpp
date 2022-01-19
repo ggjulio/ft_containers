@@ -65,6 +65,8 @@ TEMPLATE_TEST_CASE( "map - construct",
 		REQUIRE(sixth.begin()->second == 20);
 		REQUIRE((--sixth.end())->second == 10);
 		REQUIRE(sixth.find('b')->second == 20);
+
+		REQUIRE( sixth.key_comp() == fn_pt ); // must return the function address
 	}
 }
 

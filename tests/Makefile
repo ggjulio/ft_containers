@@ -41,7 +41,7 @@ _IWHITE   =\e[107m
 #    By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/05/20 12:43:01 by juligonz          #+#    #+#              #
-#    Updated: 2020/08/24 16:37:55 by juligonz         ###   ########.fr        #
+#    Updated: 2022/11/24 00:19:27 by juligonz         ###   ########.fr        #
 #                                                                              #
 #******************************************************************************#
 
@@ -82,7 +82,7 @@ DEP = $(addprefix  $(OBJ_DIR)/,$(SRC:%.cpp=%.d))
 LDFLAGS = $(foreach lib, $(LIB_DIR),-L$(lib))  $(foreach lib, $(LIB),-l$(lib))
 
 CXX = clang++
-CXXFLAGS  = -Wall -Wextra -Werror -std=c++17 -MMD -MP #-g -fstandalone-debug #-fsanitize=address  -fsanitize=undefined -fstack-protector  
+CXXFLAGS  = -Wall -Wextra -Werror -std=c++14 -MMD -MP #-g -fstandalone-debug #-fsanitize=address  -fsanitize=undefined -fstack-protector  
 IFLAGS  = $(foreach inc, $(INC_DIR),-I$(inc))
 
 #OS specific

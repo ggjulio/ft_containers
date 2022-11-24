@@ -50,8 +50,8 @@ TEMPLATE_TEST_CASE( "map - construct",
 	}
 	SECTION( "class as Compare" ) {
 		cn::map<char,TestType,classcomp_map> fifth;
-		fifth.insert(cn::pair('a', 10));
-		fifth.insert(cn::pair('b', 20));
+		fifth.insert(cn::make_pair('a', 10));
+		fifth.insert(cn::make_pair('b', 20));
 		REQUIRE(fifth.begin()->second == 20);
 		REQUIRE((--fifth.end())->second == 10);
 		REQUIRE(fifth.find('b')->second == 20);
@@ -60,8 +60,8 @@ TEMPLATE_TEST_CASE( "map - construct",
 		bool(*fn_pt)(int,int) = fncomp_map;
 		cn::map<char,TestType,bool(*)(int,int)> sixth (fn_pt);
 
-		sixth.insert(cn::pair('a', 10));
-		sixth.insert(cn::pair('b', 20));
+		sixth.insert(cn::make_pair('a', 10));
+		sixth.insert(cn::make_pair('b', 20));
 		REQUIRE(sixth.begin()->second == 20);
 		REQUIRE((--sixth.end())->second == 10);
 		REQUIRE(sixth.find('b')->second == 20);
@@ -109,7 +109,7 @@ TEMPLATE_TEST_CASE( "map - iterator ",
 	{
 		REQUIRE( first.begin() == first.end() );
 	}
-	first.insert(cn::pair('a', 10));
+	first.insert(cn::make_pair('a', 10));
 	SECTION( "container with one element should have consistant boundary" )
 	{
 		REQUIRE( ++first.begin() == first.end() );
@@ -117,8 +117,8 @@ TEMPLATE_TEST_CASE( "map - iterator ",
 		REQUIRE( first.begin().operator*().second == 10 );
 		REQUIRE( first.begin().operator->() == &*first.begin() );
 	}
-	first.insert(cn::pair('b', 20));
-	first.insert(cn::pair('c', 30));
+	first.insert(cn::make_pair('b', 20));
+	first.insert(cn::make_pair('c', 30));
 	SECTION( "container with three elements should loop properly" )
 	{
 		auto it = first.begin();
@@ -152,7 +152,7 @@ TEMPLATE_TEST_CASE( "map - reverse iterator ",
 	{
 		REQUIRE( mymap.rbegin() == mymap.rend() );
 	}
-	mymap.insert(cn::pair('a', 10));
+	mymap.insert(cn::make_pair('a', 10));
 	SECTION( "container with one element should have consistant boundary" )
 	{
 		REQUIRE( ++mymap.rbegin() == mymap.rend() );
@@ -160,8 +160,8 @@ TEMPLATE_TEST_CASE( "map - reverse iterator ",
 		REQUIRE( mymap.rbegin().operator*().second == 10 );
 		REQUIRE( mymap.rbegin().operator->() == &*mymap.rbegin() );
 	}
-	mymap.insert(cn::pair('b', 20));
-	mymap.insert(cn::pair('c', 30));
+	mymap.insert(cn::make_pair('b', 20));
+	mymap.insert(cn::make_pair('c', 30));
 	SECTION( "container with three elements should loop properly" )
 	{
 		auto it = mymap.rbegin();
@@ -198,7 +198,7 @@ TEMPLATE_TEST_CASE( "map - capacity ",
 		REQUIRE(mine.empty());
 		REQUIRE(mine.size() == 0);
 	}
-	mine.insert(cn::pair('a', 10));
+	mine.insert(cn::make_pair('a', 10));
 	SECTION( "container with one element should be of size one (and not empty, of course)" )
 	{
 		REQUIRE(!mine.empty());
@@ -249,7 +249,7 @@ TEMPLATE_TEST_CASE( "map - Modifiers ",
 	typename cn::map<char,TestType>::iterator it_res;
 	cn::pair< typename cn::map<char,TestType>::iterator,bool> ret;
 	
-	ret = mymap.insert(cn::pair('c', 42));
+	ret = mymap.insert(cn::make_pair('c', 42));
 	SECTION( "Insert single value" )
 	{
 		REQUIRE(ret.second == true);
@@ -257,7 +257,7 @@ TEMPLATE_TEST_CASE( "map - Modifiers ",
 		REQUIRE((*ret.first).second == 42);
 		REQUIRE(mymap.size() == 1);
 	}
-	ret = mymap.insert(cn::pair('c', -42000));
+	ret = mymap.insert(cn::make_pair('c', -42000));
 	SECTION( "Already inserted value should not be inserted" )
 	{
 		REQUIRE(ret.second == false);
@@ -265,14 +265,14 @@ TEMPLATE_TEST_CASE( "map - Modifiers ",
 		REQUIRE(ret.first->second == 42);
 		REQUIRE(mymap.size() == 1);
 	}
-	it_res = mymap.insert(ret.first, cn::pair('d', 43));
+	it_res = mymap.insert(ret.first, cn::make_pair('d', 43));
 	SECTION( "Insert with hint" )
 	{
 		REQUIRE(it_res->first == 'd');
 		REQUIRE(it_res->second == 43);
 		REQUIRE(mymap.size() == 2);
 	}
-	it_res = mymap.insert(ret.first, cn::pair('d', -43000));
+	it_res = mymap.insert(ret.first, cn::make_pair('d', -43000));
 	SECTION( "Already inserted value even with hint should not be inserted" )
 	{
 		REQUIRE(it_res->first == 'd');
@@ -281,10 +281,10 @@ TEMPLATE_TEST_CASE( "map - Modifiers ",
 	}
 
 	cn::pair<char,TestType> myints[]= {
-		cn::pair('a',40),
-		cn::pair('b',41),
-		cn::pair('c',42),
-		cn::pair('d',43)};
+		cn::make_pair('a',40),
+		cn::make_pair('b',41),
+		cn::make_pair('c',42),
+		cn::make_pair('d',43)};
 	mymap.insert(myints, myints+4);
 	SECTION( "Insert range, with some values already inserted should not be inserted twice")
 	{

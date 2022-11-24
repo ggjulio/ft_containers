@@ -1,4 +1,4 @@
-[![C/C++ CI](https://github.com/ggjulio/ft_containers/actions/workflows/ci.yml/badge.svg)](https://github.com/ggjulio/ft_containers/actions/workflows/ci.yml)
+[![C/C++ CI](https://github.com/ggjulio/ft_containers/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/ggjulio/ft_containers/actions/workflows/ci.yml)
 
 #### ft_containers
 
